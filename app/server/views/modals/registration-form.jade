@@ -1,0 +1,37 @@
+#registration_modal.modal.hide.fade
+  .modal-header Sign Up
+    button.close(data-dismiss='modal') x
+  div.modal-content
+    #signup.signup-container
+      .modal-social-btn
+        a(href='#')
+          .fb-sign-up Sign up with Facebook
+        a(href='#')
+          .tw-sign-up Sign up with Twitter
+        .clearfix
+      .modal-signup-body
+        .middle-text or
+        .middle-dotted
+        .modal-signup-form
+          .direct-signup
+            form(method="post")#new_user_form
+              fieldset(name="user-registration")
+                .signup-username-container
+                  input#signup_username(required='required', type='text', pattern='^[A-Za-z0-9_]{4,30}$', title='4 character minimum. Must start with a number or letter. Alpha-numeric and underscores only.', name='signup-username', placeholder='username')
+                  .signup-username-comment Cannot be changed later.
+                  .clearfix
+                .signup-password-container
+                  input#signup_password(required='required', type='password', pattern='.{6,}', title='6 character minimum', name='signup-password', placeholder='password')
+                  .signup-password-comment At least 6 characters.
+                  .clearfix
+                  input#signup_password_confirm(required='required', type='password', pattern='.{6,}', title='Must be the same as the field above', name='signup-password-confirm', placeholder='password')
+                  .signup-password-confirm-comment
+                  .clearfix
+                .signup-email-container
+                  input#signup_email(required='required', type='email', name='signup-email', placeholder='e-mail address')
+                  .signup-email-comment
+                  .clearfix
+                .signup-submit-container
+                  input#signup_submit(type='submit', value='Create Account!')
+                  .signup-submit-comment By clicking, you agree to our terms and conditions.
+                  .clearfix

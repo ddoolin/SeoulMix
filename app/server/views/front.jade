@@ -1,0 +1,43 @@
+extends layout
+
+block content
+    #map_canvas(style='width: 100%; height: 100%;')
+    #banner_main
+      #banner_logo
+        a(href='') SeoulMix
+      span.divider
+      #banner_welcome
+        #banner_welcome_text
+          h3 Welcome to SeoulMix.
+          p In a city of over 10 million people, meeting new people has never been easier.
+      #registration_container
+        p#new_signup_text
+          b New?
+        a#register_btn.btn(data-toggle='modal', href='#registration_modal') Sign Up
+      #login_container.clearfix
+        form(method="post")#login_form
+          fieldset(name="user-login")
+            input#login_username(required='required', pattern='.{4,30}', title='4 character minimum', type='text', name='login-username', placeholder='username', tabindex="1")
+            label.remember-me
+              | Remember
+              input#remember_me(type='checkbox')
+            br
+            input#login_password(required='required', pattern='.{6,}', title='6 character minimum', type='password', name='login-password', placeholder='password', autocomplete='off', tabindex="2")
+            input#login_submit.btn.btn-small(type='submit', value='Login')
+            a#lost_password(data-toggle='modal', href='#lostpass_modal') Lost Password?
+
+    include modals/login-error
+    include modals/lost-password
+    include modals/registration-form
+
+block scripts
+    script(src='https://maps.googleapis.com/maps/api/js?key=AIzaSyAG1ZYoDAzhL0uivXehR0_5tDLpCcLOaqQ&sensor=false')
+    script(src='//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js')
+    script(src="vendor/jquery.form.js")
+    script(src='vendor/bootstrap.js')
+    script(src="js/front.js")
+    script(src='js/views/frontView.js')
+    script(src="js/controllers/frontController.js")
+    script(src="js/form-validators/loginValidator.js")
+    script(src="js/form-validators/emailValidator.js")
+    script(src="js/form-validators/accountValidator.js")

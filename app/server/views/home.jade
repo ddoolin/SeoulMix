@@ -1,0 +1,29 @@
+extends layout
+
+block content
+    #map_canvas(style='width: 100%; height: 100%;')
+    #banner_main
+      #banner_logo
+        a(href='') SeoulMix
+      span.divider
+      #banner_welcome
+        #banner_welcome_text
+          h3 Hello, #{userdata.user}!
+          p This is pretty neat, huh?
+      div.main-button-container
+        button#view_profile.btn
+            | Edit profile
+        button#logout.btn.btn-primary
+            i.icon-lock.icon-white
+            | Sign out
+
+    include modals/profile
+
+block scripts
+    script(src='https://maps.googleapis.com/maps/api/js?key=AIzaSyAG1ZYoDAzhL0uivXehR0_5tDLpCcLOaqQ&sensor=false')
+    script(src='//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js')
+    script(src="vendor/jquery.form.js")
+    script(src='vendor/bootstrap.js')
+    script(src="js/front.js")
+    script(src="js/views/homeView.js")
+    script(src="js/controllers/homeController.js")
