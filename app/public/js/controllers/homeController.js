@@ -2,7 +2,7 @@ function HomeController() {
     
     var that = this;
 
-    $("#logout").click(function() {
+    $("#navbar_logout").click(function() {
         if (window.confirm("Are you sure you want to log out?")) {
             that.attemptLogout();
         }

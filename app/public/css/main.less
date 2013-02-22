@@ -23,6 +23,48 @@ body {
 #map_canvas {
 	height: 100%;
 }
+#navbar_main {
+	.navbar-inner {
+
+		.container {
+			width: 100%;
+
+			#nav_logo {
+				position: absolute;
+				left: 2em;
+				padding: 2px 20px;
+				text-decoration: none;
+				font-family: "Lobster", cursive;
+				font-size: 28px;
+				color: white;
+			}
+
+			#navbar_logout {
+				position: absolute;
+				right: 10em;
+				margin-top: 6px;
+
+				i {
+					margin-right: 5px;
+				}
+			}
+
+			.language-dropdown {
+				right: 0%;
+
+				.dropdown-title {
+					padding-top: 10px;
+					color: #BBBBBB;
+					text-shadow: none;
+
+					&:hover {
+						color: white;
+					}
+				}
+			}
+		}
+	}
+}
 #banner_main {
 	position: absolute;
 	bottom: 90px;
@@ -49,17 +91,21 @@ body {
 	}
 
 	#banner_welcome {
+		display: none;
 		position: absolute;
-		left: 385px;
+		left: 380px;
 		color: white;
 		font-family: serif;
 
-		h3 {
-			margin-bottom: 0px;
-		}
+			@media only screen and (min-width: 1550px) {
+				display: block;
+			}
 
 		p {
+			font-family: arial;
 			font-size: 18px;
+			margin-top: 8px;
+			line-height: 35px;
 		}
 	}
 
@@ -98,13 +144,13 @@ body {
 
 			#login_username {
 				height: 17.5px;
-				width: 219px;
+				width: 212px;
 				font-size: 13px;
 			}
 
 			.remember-me {
 				position: relative;
-				padding-left: 13px;
+				padding-left: 15px;
 				display: inline;
 				font-size: 12px;
 				color: white;
@@ -275,7 +321,7 @@ body {
 				#new_user_form {
 					margin: 0px;
 
-					#signup_username, #signup_email, #signup_password, #signup_submit {
+					#signup_username, #signup_email, #signup_password, #signup_password_confirm, #signup_submit {
 						.box-shadow(1px, 1px, 1px, 0.1, inset);
 						float: left;
 						width: 340px;
@@ -298,7 +344,7 @@ body {
 						color: #56AAEA;
 					}
 
-					.signup-username-comment, .signup-email-comment, .signup-password-comment, .signup-submit-comment {
+					.signup-username-comment, .signup-email-comment, .signup-password-comment, .signup-password-confirm-comment, .signup-submit-comment {
 						float: left;
 						margin-left: 15px;
 						padding-top: 12px;

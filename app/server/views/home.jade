@@ -1,4 +1,4 @@
-extends layout
+extends layout-in
 
 block content
     #map_canvas(style='width: 100%; height: 100%;')
@@ -9,15 +9,15 @@ block content
       #banner_welcome
         #banner_welcome_text
           h3 Hello, #{userdata.user}!
-          p This is pretty neat, huh?
+          p#welcome_text Welcome to SeoulMix! Get started by adding details to your profile or creating a new event.
       div.main-button-container
-        button#view_profile.btn
-            | Edit profile
-        button#logout.btn.btn-primary
-            i.icon-lock.icon-white
-            | Sign out
+        button#create_event(data-toggle="modal", href="#create_event_modal").btn
+            | Create Event
+        button#view_profile(data-toggle="modal", href="#profile_modal").btn
+            | Edit Profile
 
     include modals/profile
+    include modals/create-event
 
 block scripts
     script(src='https://maps.googleapis.com/maps/api/js?key=AIzaSyAG1ZYoDAzhL0uivXehR0_5tDLpCcLOaqQ&sensor=false')

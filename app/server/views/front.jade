@@ -1,4 +1,4 @@
-extends layout
+extends layout-out
 
 block content
     #map_canvas(style='width: 100%; height: 100%;')
@@ -7,9 +7,10 @@ block content
         a(href='') SeoulMix
       span.divider
       #banner_welcome
-        #banner_welcome_text
-          h3 Welcome to SeoulMix.
-          p In a city of over 10 million people, meeting new people has never been easier.
+          p#banner_welcome_text
+            | In a city of over 10 million people, meeting new people has never been easier.
+            br
+            | Find fellow <b>Seoulites</b> to do & share with, or open your own event for others.
       #registration_container
         p#new_signup_text
           b New?
@@ -24,7 +25,7 @@ block content
             br
             input#login_password(required='required', pattern='.{6,}', title='6 character minimum', type='password', name='login-password', placeholder='password', autocomplete='off', tabindex="2")
             input#login_submit.btn.btn-small(type='submit', value='Login')
-            a#lost_password(data-toggle='modal', href='#lostpass_modal') Lost Password?
+            a#lost_password(data-toggle='modal', href='#lostpass_modal') Lost User/Pass?
 
     include modals/login-error
     include modals/lost-password
