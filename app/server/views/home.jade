@@ -7,9 +7,8 @@ block content
         a(href='') SeoulMix
       span.divider
       #banner_welcome
-        #banner_welcome_text
-          h3 Hello, #{userdata.user}!
-          p#welcome_text Welcome to SeoulMix! Get started by adding details to your profile or creating a new event.
+          h3#banner_welcome_title Hello, #{userdata.user}!
+          p#banner_welcome_text Welcome to SeoulMix! Get started by adding details to your profile or creating a new event.
       div.main-button-container
         button#create_event(data-toggle="modal", href="#create_event_modal").btn
             | Create Event

@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Lobster);
+@import url(http://fonts.googleapis.com/css?family=Lobster|Arvo);
 html{height:100%;}
 body{height:100%;margin:0;padding:0;font-size:13px;font-family:sans-serif;}
 .divider{position:absolute;left:340px;top:12px;height:64px;border-left:1px solid #CCC;}
@@ -7,7 +7,8 @@ body{height:100%;margin:0;padding:0;font-size:13px;font-family:sans-serif;}
 #navbar_main .navbar-inner .container #navbar_logout{position:absolute;right:10em;margin-top:6px;}#navbar_main .navbar-inner .container #navbar_logout i{margin-right:5px;}
 #navbar_main .navbar-inner .container .language-dropdown{right:0%;}#navbar_main .navbar-inner .container .language-dropdown .dropdown-title{padding-top:10px;color:#BBBBBB;text-shadow:none;}#navbar_main .navbar-inner .container .language-dropdown .dropdown-title:hover{color:white;}
 #banner_main{position:absolute;bottom:90px;z-index:10;height:85px;width:100%;background:rgba(0, 0, 0, 0.85);border-top:1px solid white;border-bottom:1px solid white;}#banner_main #banner_logo{display:inline;position:absolute;top:0px;left:30px;padding-right:20px;}#banner_main #banner_logo a{text-decoration:none;color:white;font-family:'Lobster',cursive;font-size:70px;}
-#banner_main #banner_welcome{display:none;position:absolute;left:380px;color:white;font-family:serif;}@media only screen and (min-width:1550px){#banner_main #banner_welcome{display:block;}}#banner_main #banner_welcome p{font-family:arial;font-size:18px;margin-top:8px;line-height:35px;}
+#banner_main #banner_welcome{display:none;position:absolute;left:380px;color:white;}@media only screen and (min-width:1550px){#banner_main #banner_welcome{display:block;}}#banner_main #banner_welcome #banner_welcome_title{margin:10px 0px 0px 0px;line-height:30px;}
+#banner_main #banner_welcome #banner_welcome_text{font-family:'Arvo',serif;font-size:18px;margin-top:8px;line-height:35px;}
 #banner_main #registration_container{display:inline;position:absolute;top:8px;right:370px;height:68px;padding-right:20px;border-right:1px solid #CCC;}#banner_main #registration_container #new_signup_text{position:relative;left:33px;margin:1px 0 7px 0;color:white;font-size:24px;font-family:serif;}
 #banner_main #registration_container #register_btn{width:100px;text-decoration:none;}
 #banner_main #login_container{position:absolute;display:inline;margin:10px 12px;right:0px;}#banner_main #login_container form{margin:0px;}#banner_main #login_container form #login_username{height:17.5px;width:212px;font-size:13px;}

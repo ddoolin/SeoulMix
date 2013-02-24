@@ -2,5 +2,19 @@
     .modal-header Account Profile
         button.close(data-dismiss="modal") x
     div.modal-content
-        p Stuff goes here
+        label.first-name
+            | First Name
+            input#update_firstname(type="text", name="update-firstname", title="First name", placeholder="first name", value= userdata.firstname)
+        label.last-name
+            | Last Name
+            input#update_lastname(type="text", name="update-lastname", title="Last name", placeholder="last name", value= userdata.lastname)
+        label.email
+            | E-mail
+            input#update_email(type="email", name="update-email", title="New e-mail address", placeholder="e-mail", value= userdata.email)
+        label.username
+            | Username
+            input#update_username(type="text", name="update-username", title="Cannot be changed", value= userdata.user, disabled="disabled")
+        label.password
+            | Password
+            input#update_password(type="password", name="update-password", pattern=".{6,}", title="6 character minimum", autocomplete="off", value="")
     

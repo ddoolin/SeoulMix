@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Lobster);
+@import url(http://fonts.googleapis.com/css?family=Lobster|Arvo);
 @import "mixins.less";
 
 // Main
@@ -95,14 +95,18 @@ body {
 		position: absolute;
 		left: 380px;
 		color: white;
-		font-family: serif;
 
 			@media only screen and (min-width: 1550px) {
 				display: block;
 			}
 
-		p {
-			font-family: arial;
+		#banner_welcome_title {
+			margin: 10px 0px 0px 0px;
+			line-height: 30px;
+		}
+
+		#banner_welcome_text {
+			font-family: 'Arvo', serif;
 			font-size: 18px;
 			margin-top: 8px;
 			line-height: 35px;

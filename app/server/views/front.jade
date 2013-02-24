@@ -16,7 +16,7 @@ block content
           b New?
         a#register_btn.btn(data-toggle='modal', href='#registration_modal') Sign Up
       #login_container.clearfix
-        form(method="post")#login_form
+        form#login_form(method="post")
           fieldset(name="user-login")
             input#login_username(required='required', pattern='.{4,30}', title='4 character minimum', type='text', name='login-username', placeholder='username', tabindex="1")
             label.remember-me
