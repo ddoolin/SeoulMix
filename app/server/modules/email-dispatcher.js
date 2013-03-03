@@ -1,27 +1,33 @@
 var ES = require("./email-settings");
-var EM = {};
+var ED = {};
 
-module.exports = EM;
+module.exports = ED;
 
-EM.server = require("emailjs/email").server.connect({
+ED.server = require("emailjs/email").server.connect({
     host: ES.host,
     user: ES.user,
     password: ES.password,
     ssl: true
 });
 
-EM.dispatchResetPasswordLink = function(account, callback)
+ED.dispatchPasswordResetLink = function(account, callback)
 {
-    EM.server.send({
+    ED.server.send({
         from         : ES.sender,
         to           : account.email,
         subject      : 'SeoulMix Password Reset',
         text         : 'something went wrong... :(',
-        attachment   : EM.composeEmail(account)
-    }, callback );
-}
+        attachment   : ED.composePasswordResetEmail(account)
+    }, function (err, msg) {
+        if (err) {
+            callback(err, null);
+        } else {
+            callback(null, msg);
+        }
+    });
+};
 
-EM.composeEmail = function(account) {
+ED.composePasswordResetEmail = function(account) {
     var link = "http://localhost/reset-password?e=" + account.email + "&p=" + account.pass;
     var html = "<html><body>";
         if (account.firstname) {
@@ -36,4 +42,4 @@ EM.composeEmail = function(account) {
         html += "</body></html>";
 
     return  [{data: html, alternative: true}];
-}
+};

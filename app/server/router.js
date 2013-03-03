@@ -1,134 +1,251 @@
 var AM = require("./modules/account-manager");
-var EM = require("./modules/email-dispatcher");
+var ED = require("./modules/email-dispatcher");
 
-module.exports = function(app) {
+module.exports = function (app) {
 
-	// Main page
-	app.get("/", function(req, res) {
-		if (req.session.user == undefined) {
-				res.render("front");
-		} else {
-			AM.autoLogin(req.session.user.user, req.session.user.pass, function(result) {
+    "use strict";
 
-				if (result != null) {
-					req.session.user = result;
-					res.redirect("/home");
-				} else {
-					res.render("front");
-				}
-			})
-		}
-	});
+    // GET
 
-	app.post("/", function(req, res) {
-		AM.manualLogin(req.param("login-username"), req.param("login-password"), function(err, result) {
-			if (!result) {
-				res.send(err, 400);
-			} else {
-				req.session.user = result;
+    // Front page
+    app.get("/", function (req, res) {
+        if (req.session.user === undefined) {
+            res.render("front");
+        } else {
 
-				if (req.param("remember-me") == "true") {
-					// 24 hours
-					req.session.cookie.maxAge = 86400000;
-				}
+            var username = req.session.user.user,
+                password = req.session.user.pass,
+                ipAddress;
 
-				res.send(result, 200);
-			}
-		});
-	});
+            if (req.header("x-forwarded-for")) {
+                ipAddress = req.header("x-forwarded-for").split("/")[0];
+            } else {
+                ipAddress = req.connection.remoteAddress;
+            }
 
-	app.post("/lost-password", function(req, res) {
-		AM.getAccountsByEmail(req.param("lostpass-email"), function(result) {
-			if (result) {
-				res.send("OK", 200);
-				EM.dispatchResetPasswordLink(result, function(err, msg) {
-					if (!err) {
-						res.send("OK", 200);
-					} else {
-						res.send("email-server-error", 400);
-						for (each in err) {
-							console.log("Error: ", each, err[each]);
-						}
-					}
-				});
-			} else {
-				res.send("email-not-found", 400);
-			}
-		});
-	});
+            AM.autoLogin(username, password, ipAddress, function (err, result) {
+                if (result != null) {
+                    req.session.user = result;
+                    res.redirect("/home");
+                } else {
+                    res.render("front");
+                }
+            });
+        }
+    });
 
-	app.get("/reset-password", function(req, res) {
-		var email = req.query["e"];
-		var passhash = req.query["p"];
+    // Main page
+    app.get("/home", function (req, res) {
+        if (req.session.user === undefined) {
+            res.redirect("/");
+        } else {
 
-		if (!email || !passhash) {
-			res.redirect("/");
-		}
+            // Render the home page and send the session data with it
+            res.render("home", {
+                userdata: req.session.user
+            });
+        }
+    });
 
-		AM.validateResetLink(email, passhash, function(response) {
-			if (response != "OK") {
-				res.redirect("/");
-			} else {
-				req.session.reset = {
-					email: email,
-					passhash: passhash
-				};
-				res.render("reset");
-			}
-		});
-	});
+    // Link served in lost password e-mail
+    app.get("/reset-password", function (req, res) {
+        var email = req.query.e,
+            passhash = req.query.p;
 
-	app.post("/reset-password", function(req, res) {
-		var newpass = req.param("pass");
-		var email = req.session.reset.email;
+        if (!email || !passhash) {
+            res.redirect("/");
+        }
 
-		req.session.destroy();
-		AM.updatePassword(email, newpass, function(result) {
-			if (result) {
-				res.send("OK", 200);
-			} else {
-				res.send("Unable to update password", 400);
-			}
-		});
-	});
+        AM.validateResetLink(email, passhash, function (err, result) {
+            if (result != null) {
+                req.session.reset = {
+                    email: email,
+                    passhash: passhash
+                };
+                res.render("reset");
+            } else {
+                res.redirect("/");
+            }
+        });
+    });
 
-	app.post("/signup", function(req, res) {
-		AM.addNewAccount({
-			user: 	req.param("signup-username"),
-			pass: 	req.param("signup-password"),
-			email: 	req.param("signup-email")
-		}, function(err) {
-			if (err) {
-				res.send(err, 400);
-			} else {
-				res.send("OK", 200);
-			}
-		});
-	});
+    // POST
 
-	app.get("/home", function(req, res) {
-		if (req.session.user == null) {
-			res.redirect("/");
-		} else {
-			res.render("home", {
-				userdata: req.session.user
-			});
-		}
-	});
+    // Login
+    app.post("/", function (req, res) {
 
-	app.post("/home", function(req, res) {
-		if (req.param("user") != undefined) {
-			// Stuff
-		} else if (req.param("logout") == "true") {
-			res.clearCookie("user");
-			res.clearCookie("pass");
-			req.session.destroy(function(err) {
-				res.send("OK", 200);
-			});
-		}
-	});
+        // Collect the field values to send to login
+        var username = req.param("login-username"),
+            password = req.param("login-password"),
+            ipAddress;
 
-	app.get("*", function(req, res) {
-		res.render("404");
-	});
+        if (req.header("x-forwarded-for")) {
+            ipAddress = req.header("x-forwarded-for").split("/")[0];
+        } else {
+            ipAddress = req.connection.remoteAddress;
+        }
+
+        AM.manualLogin(username, password, ipAddress, function (err, result) {
+            if (result != null) {
+                req.session.user = result;
+
+                if (req.param("remember-me") === "true") {
+
+                    // 24 hours
+                    req.session.cookie.maxAge = 86400000;
+                }
+
+                res.send("OK", 200);
+            } else {
+                res.send("unable-to-login", 400);
+            }
+        });
+    });
+
+    app.post("/lost-password", function (req, res) {
+
+        var i;
+
+        AM.getAccountsByEmail(req.param("lostpass-email"), function (err, result) {
+            if (result != null) {
+                res.send("OK", 200);
+                ED.dispatchPasswordResetLink(result, function (err, msg) {
+                    if (msg != null) {
+                        res.send("OK", 200);
+                    } else {
+                        res.send("email-server-error", 400);
+                        for (i = 0; i < err.length; i += 1) {
+                            console.log("Error: ", i, err[i], msg);
+                        }
+                    }
+                });
+            } else {
+                res.send("email-not-found", 400);
+            }
+        });
+    });
+
+    app.post("/reset-password", function (req, res) {
+        var newpass = req.param("new-password"),
+            email = req.session.reset.email;
+
+        req.session.destroy();
+        AM.updatePassword(email, newpass, function (err, result) {
+            if (result != null) {
+                res.send("OK", 200);
+            } else {
+                res.send("unable-to-update", 400);
+            }
+        });
+    });
+
+    app.post("/signup", function (req, res) {
+
+        var ipAddress;
+
+        if (req.header("x-forwarded-for")) {
+            ipAddress = req.header("x-forwarded-for").split("/")[0];
+        } else {
+            ipAddress = req.connection.remoteAddress;
+        }
+
+        AM.addNewAccount({
+            user:   req.param("signup-username"),
+            pass:   req.param("signup-password"),
+            email:  req.param("signup-email"),
+            registrationIp: ipAddress
+        }, function (err, result) {
+            if (result != null) {
+                res.send("OK", 200);
+            } else {
+                console.log(err);
+                if (err != "email-used" && err != "username-taken") {
+                    res.send("unable-to-create", 400);
+                } else {
+                    res.send(err, 400);
+                }
+            }
+        });
+    });
+
+    app.post("/home", function (req, res) {
+
+        if (req.param("logout") === "true") {
+            res.clearCookie("user");
+            res.clearCookie("pass");
+            req.session.destroy(function (err) {
+                if (err) {
+                    res.send(err, 400);
+                } else {
+                    res.send("OK", 200);
+                }
+            });
+        }
+    });
+
+    app.post("/update-profile", function (req, res) {
+
+        // Check to see if the e-mail is in use...
+        AM.getAccountsByEmail(req.param("update-email"), function (err, result) {
+
+            // If the email isn't used OR the e-mail is mine (unchanged)
+            if (!result || result.email === req.session.user.email) {
+
+                // Put data into an object and send it off 
+                // Use session username in case the user changed it maliciously
+                var data = {
+                    firstname: req.param("update-firstname"),
+                    lastname: req.param("update-lastname"),
+                    email: req.param("update-email"),
+                    user: req.session.user.user,
+                    pass: req.param("update-password")
+                };
+
+                AM.updateAccount(data, function (err, result) {
+                    if (result != null) {
+                        req.session.user = result;
+                        res.send("OK", 200);
+                    } else {
+                        res.send("unable-to-update", 400);
+                    }
+                });
+            } else {
+                res.send("email-used", 400);
+            }
+        });
+    });
+
+    app.post("/delete", function (req, res) {
+
+        // Get the ID from the session and the pass from the form
+        var userId = req.session.user._id,
+            pass = req.param("delete-password");
+
+        // Call deleteAccount, passing ID and pass
+        AM.deleteAccount(userId, pass, function (err, result) {
+
+            // If no error exists, destory the session and send ok. 
+            if (result != null) {
+                req.session.destroy(function (err) {
+                    if (err) {
+                        res.send(err, 400);
+                    } else {
+                        res.send("OK", 200);
+                    }
+                });
+
+            // Otherwise, log the error and send record not found.
+            } else {
+                res.send(err, 400);
+            }
+        });
+    });
+
+    app.get("*", function (req, res) {
+        res.render("404");
+    });
+
+    app.post("*", function (req, res) {
+        res.render("404");
+    });
 };

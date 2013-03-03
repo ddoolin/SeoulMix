@@ -1,20 +1,40 @@
 #profile_modal.modal.hide.fade
     .modal-header Account Profile
         button.close(data-dismiss="modal") x
-    div.modal-content
-        label.first-name
-            | First Name
-            input#update_firstname(type="text", name="update-firstname", title="First name", placeholder="first name", value= userdata.firstname)
-        label.last-name
-            | Last Name
-            input#update_lastname(type="text", name="update-lastname", title="Last name", placeholder="last name", value= userdata.lastname)
-        label.email
-            | E-mail
-            input#update_email(type="email", name="update-email", title="New e-mail address", placeholder="e-mail", value= userdata.email)
-        label.username
-            | Username
-            input#update_username(type="text", name="update-username", title="Cannot be changed", value= userdata.user, disabled="disabled")
-        label.password
-            | Password
-            input#update_password(type="password", name="update-password", pattern=".{6,}", title="6 character minimum", autocomplete="off", value="")
-    
+    form#update_form(method="post")
+        fieldset(name="update-profile")
+            .modal-content
+                label.first-name
+                    | First Name
+                    input#update_firstname(type="text", name="update-firstname", title="First name", placeholder="first name", value= userdata.firstname)
+                    .update-firstname-comment
+                    .clearfix
+                label.last-name
+                    | Last Name
+                    input#update_lastname(type="text", name="update-lastname", title="Last name", placeholder="last name", value= userdata.lastname)
+                    .update-lastname-comment
+                    .clearfix
+                label.email
+                    | E-mail
+                    input#update_email(type="email", name="update-email", title="New e-mail address", placeholder="e-mail", value= userdata.email)
+                    .update-email-comment
+                    .clearfix
+                label.username
+                    | Username
+                    input#update_username(type="text", name="update-username", title="Cannot be changed", value= userdata.user, disabled="disabled")
+                    .update-username-comment
+                    .clearfix
+                label.password
+                    | New Password
+                    input#update_password(type="password", name="update-password", pattern=".{6,}", title="6 character minimum", autocomplete="off", value="")
+                    .update-password-comment
+                    .clearfix
+                label.password
+                    | Confirm New Password
+                    input#update_password_confirm(type="password", name="update-password-confirm", pattern=".{6,}", title="Must be the same as the field above", autocomplete="off", value="")
+                    .update-password-confirm-comment
+                    .clearfix
+                #update_done.alert.alert-success.hide
+            .modal-footer
+                button#delete_account.btn.btn-danger Delete Account
+                input#update_submit(type="submit", value="Update").btn

@@ -15,7 +15,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "app.js"
   },
   "repository": {
     "type": "git",
@@ -24,5 +25,9 @@
   "author": "Devin Doolin",
   "license": "BSD",
   "readmeFilename": "README.md",
-  "gitHead": "b542e2727b4cec8d5b821b134d1a52889f3afcf6"
+  "gitHead": "b542e2727b4cec8d5b821b134d1a52889f3afcf6",
+  "engines": {
+    "node": "0.9.10-pre"
+  },
+  "subdomain": "ddoolin.seoulmix"
 }

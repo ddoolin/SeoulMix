@@ -8,7 +8,7 @@ block content
                 input#new_password(required="required", type="password", title="6 character minimum", name="new-password", placeholder="password", tabindex="1")
                 input#new_password_confirm(required="required", type="password", title="Must be the same as the field above", name="new-password-confirm", placeholder="confirm password", tabindex="2")
                 input#newpass_submit(type="submit", value="Submit").btn.btn-primary
-                div#newpass_error.alert.alert-error.hide
+                #newpass_error.alert.alert-error.hide
     
 block scripts
     script(src='https://maps.googleapis.com/maps/api/js?key=AIzaSyAG1ZYoDAzhL0uivXehR0_5tDLpCcLOaqQ&sensor=false')

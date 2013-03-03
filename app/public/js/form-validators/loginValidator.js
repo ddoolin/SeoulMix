@@ -8,7 +8,6 @@ function LoginValidator() {
 	});
 
 	this.showLoginError = function(title, msg) {
-		console.log(title, msg);
 		$("#loginerr_modal .modal-header h3").text(title);
 		$("#loginerr_modal .modal-body p").text(msg);
 		this.loginErrors.modal("show");

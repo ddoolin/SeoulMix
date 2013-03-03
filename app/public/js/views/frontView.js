@@ -3,12 +3,17 @@ $(document).ready(function() {
 
 	// Account creation
 
-	var av = new AccountValidator();
-	var fc = new FrontController();
+	var av = new AccountValidator(),
+		lv = new LoginValidator(),
+		ev = new EmailValidator(),
+		fc = new FrontController();
+
+	// Signup
 
 	$("#new_user_form").ajaxForm({
 		url: "/signup",
 		beforeSubmit: function(formData, jqForm, options) {
+			av.resetFields();
 			return av.validateForm();
 		},
 		success: function(responseText, status, xhr, $form) {
@@ -27,8 +32,6 @@ $(document).ready(function() {
 	});
 
 	// Login 
-
-	var lv = new LoginValidator();
 
 	$("#login_form").ajaxForm({
 		url: "/",
@@ -54,8 +57,6 @@ $(document).ready(function() {
 
 	// Lost password
 
-	var ev = new EmailValidator();
-
 	$("#lostpass_form").ajaxForm({
 		url: "/lost-password",
 		beforeSubmit: function(formData, jqForm, options) {
@@ -68,10 +69,16 @@ $(document).ready(function() {
 			}
 		},
 		success: function(responseText, status, xhr, $form) {
-			ev.showEmailSuccess("Check your e-mail on how to reset your password.");
+			if (status == "success") {
+				ev.showEmailSuccess("Check your e-mail on how to reset your password.");
+			}
 		},
 		error: function(err) {
-			ev.showEmailAlert("Sorry, there was a problem. Please try again later!");
+			if (err.responseText == "email-not-found") {
+				ev.showEmailAlert("<b>Oops!</b> There's no account associated with that e-mail. Please double check and try again.");
+			} else {
+				ev.showEmailAlert("Sorry, there was a problem. Please try again later!");
+			}
 		}
 	})
 });

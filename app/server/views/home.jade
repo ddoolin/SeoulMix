@@ -9,13 +9,14 @@ block content
       #banner_welcome
           h3#banner_welcome_title Hello, #{userdata.user}!
           p#banner_welcome_text Welcome to SeoulMix! Get started by adding details to your profile or creating a new event.
-      div.main-button-container
+      .main-button-container
         button#create_event(data-toggle="modal", href="#create_event_modal").btn
             | Create Event
         button#view_profile(data-toggle="modal", href="#profile_modal").btn
-            | Edit Profile
+            | Profile Settings
 
     include modals/profile
+    include modals/delete-account
     include modals/create-event
 
 block scripts
@@ -26,3 +27,5 @@ block scripts
     script(src="js/front.js")
     script(src="js/views/homeView.js")
     script(src="js/controllers/homeController.js")
+    script(src="js/form-validators/updateProfileValidator.js")
+    script(src="js/form-validators/deleteValidator.js")

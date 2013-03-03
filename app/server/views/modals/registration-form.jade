@@ -1,7 +1,7 @@
 #registration_modal.modal.hide.fade
   .modal-header Sign Up
     button.close(data-dismiss='modal') x
-  div.modal-content
+  .modal-content
     #signup.signup-container
       .modal-social-btn
         a(href='#')
@@ -14,7 +14,7 @@
         .middle-dotted
         .modal-signup-form
           .direct-signup
-            form(method="post")#new_user_form
+            form#new_user_form(method="post")
               fieldset(name="user-registration")
                 .signup-username-container
                   input#signup_username(required='required', type='text', pattern='^[A-Za-z0-9_]{4,30}$', title='4 character minimum. Must start with a number or letter. Alpha-numeric and underscores only.', name='signup-username', placeholder='username')

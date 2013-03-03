@@ -20,6 +20,9 @@ body {
 	height: 64px;
 	border-left: 1px solid #CCC;
 }
+.error {
+	color: #B94A48 !important;
+}
 #map_canvas {
 	height: 100%;
 }
@@ -211,11 +214,11 @@ body {
 		margin-bottom: 0px;
 		color: #808080;
 
-		.modal-body {
+		.modal-content {
 			overflow: hidden;
 			padding-bottom: 0px;
 
-			.alert {
+			#lostpass_error {
 				margin-bottom: 0px;
 			}
 		}
@@ -355,10 +358,6 @@ body {
 						width: 155px;
 						color: grey;
 						line-height: 18px;
-					}
-
-					.error {
-						color: #B94A48;
 					}
 				}
 			}

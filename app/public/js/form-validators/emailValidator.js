@@ -1,18 +1,20 @@
 function EmailValidator() {
-    
-    var that = this;
+
+  var that = this;
 
     that.retrievePassword = $("#lostpass_modal");
-    that.retrievePasswordAlert = $("#lostpass_modal .alert");
-    that.retrievePassword.on("show", function() {
+    that.retrievePasswordAlert = $("#lostpass_error");
+
+    that.retrievePassword.on("hide", function() {
         $("#lostpass_form").resetForm();
         that.retrievePasswordAlert.hide();
     });
 }
 
 EmailValidator.prototype.validateEmail = function(email) {
-  var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(email);
+  var regexp  = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  
+  return regexp.test(email);
 }
 
 EmailValidator.prototype.showEmailAlert = function(msg) {
