@@ -19,7 +19,7 @@ function AccountValidator() {
 
 		// Remove the error class (red text) and reset text to default
 		for (var i = 0; i < that.commentFields.length; i++) {
-			that.commentFields[i].removeClass("error");
+			that.commentFields[i].removeClass("text-error");
 		}
 
 		that.commentFields[0].text("Cannot be changed later.");
@@ -60,19 +60,19 @@ function AccountValidator() {
 	that.showErrors = function(type, msg) {
 		switch (type) {
 			case "username":
-				that.commentFields[0].addClass("error").text(msg);
+				that.commentFields[0].addClass("text-error").text(msg);
 				break;
 			case "password":
-				that.commentFields[1].addClass("error").text(msg);
+				that.commentFields[1].addClass("text-error").text(msg);
 				break;
 			case "confirm":
-				that.commentFields[2].addClass("error").text(msg);
+				that.commentFields[2].addClass("text-error").text(msg);
 				break;
 			case "email":
-				that.commentFields[3].addClass("error").text(msg);
+				that.commentFields[3].addClass("text-error").text(msg);
 				break;
 			default:
-				that.commentFields[4].addClass("error")
+				that.commentFields[4].addClass("text-error")
 					.text("An error occurred.Please try again.");
 				break;
 		}
@@ -80,12 +80,12 @@ function AccountValidator() {
 }
 
 AccountValidator.prototype.showInvalidUsername = function() {
-	this.commentFields[0].addClass("error");
+	this.commentFields[0].addClass("text-error");
 	this.showErrors("username", "Username unavailable.");
 }
 
 AccountValidator.prototype.showInvalidEmail = function() {
-	this.commentFields[3].addClass("error");
+	this.commentFields[3].addClass("text-error");
 	this.showErrors("email", "E-mail address already in use.");
 }
 
