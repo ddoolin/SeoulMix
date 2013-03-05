@@ -1,15 +1,14 @@
-var MongoDB = require("mongodb").Db;
-var Server = require("mongodb").Server;
-var moment = require("moment");
-var passHash = require("password-hash");
+var MongoDB = require("mongodb").Db,
+    Server = require("mongodb").Server,
+    moment = require("moment"),
+    passHash = require("password-hash"),
 
-var dbPort = 27017;
-var dbHost = "localhost";
-var dbName = "seoulmix";
+    dbPort = 27017,
+    dbHost = "localhost",
+    dbName = "seoulmix";
 
-// DB Connection
-
-var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}), {w: 1});
+    // DB Connection
+    db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}), {w: 1});
 
 db.open(function (err) {
     if (err) {
@@ -209,15 +208,48 @@ exports.updatePassword = function (email, pass, callback) {
         [["_id", "asc"]],
         { $set: { pass: newpass } },
         { new: true },
-        function(err, obj) {
+        function (err, obj) {
             if (err) {
-                callback(null, null);
-                console.log(err, null);
+                callback(err, null);
             } else {
                 callback(null, obj);
             }
         }
     );
+}
+
+exports.updateProfilePic = function (file, user, callback) {
+
+    // If the user didn't request to remove the picture, add it
+    if (file != null) {
+        users.update(
+            { user: user },
+            { $set: { profilePic: file } },
+            { safe: true },
+            function (err, obj) {
+                if (err) {
+                    callback(err, null);
+                } else {
+                    callback(null, obj);
+                }
+            }
+        );
+    } else {
+
+        // Else, remove it by setting the property to null
+        users.update(
+            { user: user },
+            { $set: { profilePic: null } },
+            { safe: true },
+            function (err, obj) {
+                if (err) {
+                    callback(err, null);
+                } else {
+                    callback(null, obj);
+                }
+            }
+        );
+    }
 }
 
 exports.deleteAccount = function (id, pass, callback) {

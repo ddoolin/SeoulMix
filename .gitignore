@@ -1,8 +1,9 @@
 # Don't include modules in the repository!
 node_modules
 
-# ...or SSH information
-ssh
-
-# ...or e-mail settings
+# or e-mail settings
 app/server/modules/email-settings.js
+
+# or uploads
+uploads
+app/public/img/profile_images

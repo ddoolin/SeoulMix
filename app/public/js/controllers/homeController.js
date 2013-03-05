@@ -9,7 +9,14 @@ function HomeController() {
         }
     });
 
-    // Need to use a JS trigger to prevent ajaxForm from submitting on click
+    // Remove profile picture
+    $("#delete_photo").click(function() {
+        if (window.confirm("Are you sure you want to remove your picture?")) {
+            that.removePhoto();
+        }
+    })
+
+    // Need to use a JS trigger to prevent this ajaxForm from submitting on click
     $("#delete_account").click(function(event) {
         event.preventDefault();
         $("#profile_modal").modal("hide");
@@ -35,17 +42,41 @@ function HomeController() {
         $(".update-username-comment").addClass("error").text("Username cannot be changed!");
     });
 
+    // Emulate a click on the hidden input field
+    $("#choose_existing_photo_link").click(function() {
+        $("#choose_existing_photo").click();
+    });
+
     // Do logout
     this.attemptLogout = function() {
         $.ajax({
             url: "/home",
             type: "POST",
-            data: {logout: true},
-            success: function(data) {
+            data: { logout: true },
+            success: function() {
                 window.location.href = "/";
             },
-            error: function(jqXHR) {
-                console.log(jqXHR.responseText + " :: " + jqXHR.statusText);
+            error: function(err) {
+                alert("Logout failed!");
+            }
+        });
+    }
+
+    // Remove profile photo
+    this.removePhoto = function() {
+        $.ajax({
+            url: "/update-profilepic",
+            type: "POST",
+            data: { remove: true },
+            success: function() {
+                $("#profile_picture").attr("src", "/img/default_profile.png");
+                $("#profile_picture_comment").addClass("text-success")
+                    .text("Photo successfully removed.");
+                $(".delete-photo").hide();
+            },
+            error: function(err) {
+                $("#profile_picture_comment").addClass("text-error")
+                    .text("Failed to remove. Please try again.");
             }
         });
     }

@@ -16,12 +16,15 @@ app.configure(function() {
 	app.set("view engine", "jade");
 	app.use(express.favicon(__dirname + "/app/public/img/favicon.ico"));
 	app.use(express.logger("dev"));
-	app.use(express.bodyParser());
+	app.use(express.bodyParser({
+        uploadDir: "./uploads",
+        keepExtensions: true
+    }));
 	app.use(express.cookieParser());
 	app.use(express.session({
         secret: "d4SPw4mz2",
         cookie: {
-            maxAge: 300000
+            expires: false
         }
     }));
 	app.use(express.methodOverride());
@@ -38,7 +41,8 @@ app.configure('production', function() {
   app.use(express.errorHandler()); 
 });
 
-require('./app/server/router')(app);
+
+require('./app/router')(app);
 
 http.createServer(app).listen(app.get('port'), function() {
 	console.log("HTTP server listening on port " + app.get('port'));

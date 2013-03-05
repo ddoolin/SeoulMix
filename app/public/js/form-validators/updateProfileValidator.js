@@ -6,11 +6,12 @@ function UpdateValidator() {
     that.updateProfileAlert = $("#update_done");
     that.formFields = [$("#update_firstname"), $("#update_lastname"),
         $("#update_email"), $("#update_password"),
-        $("#update_password_confirm")];
+        $("#update_password_confirm"), $("#profile-picture")];
 
     that.commentFields = [$(".update-firstname-comment"),
         $(".update-lastname-comment"), $(".update-email-comment"),
-        $(".update-password-comment"), $(".update-password-confirm-comment")];
+        $(".update-password-comment"), $(".update-password-confirm-comment"),
+        $(".profile-picture-comment")];
 
     // Clear form on hide, not show! 
     that.updateProfile.on("hide", function() {
@@ -23,10 +24,11 @@ function UpdateValidator() {
     that.resetFields = function() {
 
         for (var i = 0; i < that.commentFields.length; i++) {
-            that.commentFields[i].removeClass("error").text("");
+            that.commentFields[i].removeClass("text-error").text("");
         }
 
-        that.updateProfileAlert.removeClass("alert-success alert-error").text("").hide();
+        that.updateProfileAlert
+        .removeClass("alert-success alert-error text-error").text("").hide();
     }
 
     // 50 characters should be enough for each
@@ -54,34 +56,43 @@ function UpdateValidator() {
         return regexp.test(email);
     }
 
+    that.validatePictureSize = function(file) {
+        return file.size <= 716800;
+    }
+
+    that.validatePictureType = function(file) {
+        if (file.type == "image/jpeg" || file.type == "image/png") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     that.showErrors = function(type, msg) {
         switch (type) {
             case "firstname":
-                that.commentFields[0].addClass("error").text(msg);
+                that.commentFields[0].addClass("text-error").text(msg);
                 break;
             case "lastname":
-                that.commentFields[1].addClass("error").text(msg);
+                that.commentFields[1].addClass("text-error").text(msg);
                 break;
             case "email":
-                that.commentFields[2].addClass("error").text(msg);
+                that.commentFields[2].addClass("text-error").text(msg);
                 break;
             case "password":
-                that.commentFields[3].addClass("error").text(msg);
+                that.commentFields[3].addClass("text-error").text(msg);
                 break;
             case "confirm":
-                that.commentFields[4].addClass("error").text(msg);
+                that.commentFields[4].addClass("text-error").text(msg);
                 break;
+            case "picture":
+                that.commentFields[5].addClass("text-error").text(msg);
             default:
                 that.updateProfile.addClass("alert-error")
                     .text("An unknown error occured. Please try again later.");
                 break;
         }
     }
-}
-
-UpdateValidator.prototype.showInvalidEmail = function() {
-    this.commentFields[2].addClass("error");
-    this.showErrors("email", "That e-mail address is already in use.");
 }
 
 UpdateValidator.prototype.showUpdateAlert = function(classname, msg) {
@@ -109,9 +120,20 @@ UpdateValidator.prototype.validateForm = function() {
             return false;
         }
     }
-    if (this.validateConfirm(this.formFields[3].val(), this.formFields[4].val()) === false) {
+    if (this.validateConfirm(this.formFields[3].val(),
+                                this.formFields[4].val()) === false) {
         this.showErrors("confirm", "Passwords must match.");
         return false;
+    }
+    if (this.formFields[4].val() != null) {
+        if (this.validatePictureSize(this.formFields[4].val()) === false) {
+            this.showErrors("picture", "File too large.");
+            return false;        
+        }
+        if (this.validatePictureType(this.formFields[4].val()) === false) {
+            this.showErrors("picture", "File is not a .JPG or .PNG.");
+            return false;
+        }
     }
 
     return true;

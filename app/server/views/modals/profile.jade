@@ -1,39 +1,68 @@
 #profile_modal.modal.hide.fade
     .modal-header Account Profile
         button.close(data-dismiss="modal") x
-    form#update_form(method="post")
+    form#update_form(method="post", enctype="multitype/form-data").form-horizontal
         fieldset(name="update-profile")
             .modal-content
-                label.first-name
-                    | First Name
-                    input#update_firstname(type="text", name="update-firstname", title="First name", placeholder="first name", value= userdata.firstname)
-                    .update-firstname-comment
-                    .clearfix
-                label.last-name
-                    | Last Name
-                    input#update_lastname(type="text", name="update-lastname", title="Last name", placeholder="last name", value= userdata.lastname)
-                    .update-lastname-comment
-                    .clearfix
-                label.email
-                    | E-mail
-                    input#update_email(type="email", name="update-email", title="New e-mail address", placeholder="e-mail", value= userdata.email)
-                    .update-email-comment
-                    .clearfix
-                label.username
-                    | Username
-                    input#update_username(type="text", name="update-username", title="Cannot be changed", value= userdata.user, disabled="disabled")
-                    .update-username-comment
-                    .clearfix
-                label.password
-                    | New Password
-                    input#update_password(type="password", name="update-password", pattern=".{6,}", title="6 character minimum", autocomplete="off", value="")
-                    .update-password-comment
-                    .clearfix
-                label.password
-                    | Confirm New Password
-                    input#update_password_confirm(type="password", name="update-password-confirm", pattern=".{6,}", title="Must be the same as the field above", autocomplete="off", value="")
-                    .update-password-confirm-comment
-                    .clearfix
+                .profile-photo-controls.clearfix
+                    .profile-picture-uploader
+                        - if (userdata.profilePic)
+                            img#profile_picture(src="img/profile-images/" + userdata.user + "/" + userdata.profilePic).profile-picture
+                        - else    
+                            img#profile_picture(src="/img/default_profile.png").profile-picture
+                        .uploader-tools
+                            #photo_uploader
+                                #choose_photo.dropdown
+                                    button#profile_image_upload(type="button", data-toggle="dropdown").choose-photo.btn.dropdown-toggle
+                                        | Change Photo 
+                                        span.caret
+                                    p#profile_picture_comment.profile-picture-comment
+                                    ul.dropdown-menu
+                                        li.choose-exisiting-photo
+                                            a#choose_existing_photo_link Choose existing photo
+                                            input#choose_existing_photo(type="file", name="profile-picture")
+                                        li.delete-photo
+                                        - if (userdata.profilePic)
+                                            a#delete_photo Delete photo
+                                p.upload-rules (Max. size 700 KB, JPG/PNG)
+                            p This photo is public and can be seen by anyone viewing your activity on SeoulMix.
+                hr
+                #firstname_cg.control-group
+                    label.first-name.control-label
+                        | First Name
+                    .controls
+                        input#update_firstname(type="text", name="update-firstname", title="First name", placeholder="first name", value= userdata.firstname)
+                        p.update-firstname-comment.text-error
+                #lastname_cg.control-group
+                    label.last-name.control-label
+                        | Last Name
+                    .controls
+                        input#update_lastname(type="text", name="update-lastname", title="Last name", placeholder="last name", value= userdata.lastname)
+                        p.update-lastname-comment.text-error
+                #email_cg.control-group
+                    label.email.control-label
+                        | E-mail
+                    .controls
+                        input#update_email(type="email", name="update-email", title="New e-mail address", placeholder="e-mail", value= userdata.email)
+                        p.update-email-comment.text-error
+                #username_cg.control-group
+                    label.username.control-label
+                        | Username
+                    .controls
+                        input#update_username(type="text", name="update-username", title="Cannot be changed", value= userdata.user, disabled="disabled")
+                        p.update-username-comment.text-error
+                #password_cg.control-group
+                    label.password.control-label
+                        | New Password
+                    .controls
+                        input#update_password(type="password", name="update-password", pattern=".{6,}", title="6 character minimum", autocomplete="off", value="")
+                        p.update-password-comment.text-error
+                #password_confirm_cg.control-group
+                    label.password.control-label
+                        | Confirm
+                    .controls
+                        input#update_password_confirm(type="password", name="update-password-confirm", pattern=".{6,}", title="Must be the same as the field above", autocomplete="off", value="")
+                        p.update-password-confirm-comment.text-error
                 #update_done.alert.alert-success.hide
             .modal-footer
                 button#delete_account.btn.btn-danger Delete Account

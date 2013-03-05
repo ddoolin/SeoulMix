@@ -1,5 +1,6 @@
-var AM = require("./modules/account-manager");
-var ED = require("./modules/email-dispatcher");
+var AM = require("./server/modules/account-manager"),
+    ED = require("./server/modules/email-dispatcher");
+    fs = require("fs");
 
 module.exports = function (app) {
 
@@ -209,10 +210,98 @@ module.exports = function (app) {
                         res.send("unable-to-update", 400);
                     }
                 });
+
             } else {
                 res.send("email-used", 400);
             }
         });
+    });
+
+    app.post("/update-profilepic", function (req, res) {
+
+        // If remove, set pic to null and remove to true and remove from DB
+        if (req.param("remove") === "true" && req.session.user.profilePic != null) {
+            var username = req.session.user.user,
+                fileName = req.session.user.profilePic;
+
+            AM.updateProfilePic(null, username, function (err, result) {
+                if (result != null) {
+                    res.send("OK", 200);
+                } else {
+                    res.send("unable-to-remove", 400);
+                }
+            });
+
+            // Remove the actual file
+            fs.unlink(__dirname + "/public/img/profile-images/" + username + "/" + fileName, function (err) {
+                if (err) {
+                    throw err
+                }
+            });
+
+            // Update for this session
+            req.session.user.profilePic = null;
+        } else if (req.param("remove") != "true") {
+
+            // Get the image
+            var image = req.files.images[0];
+
+            // Verify only one image
+            if (Object.keys(req.files).length === 1) {
+
+                // Verify image size
+                if (image.size > 0 && image.size <= 716800) {
+
+                    // Verify image type
+                    if (image.type === "image/jpeg" || image.type === "image/png") {
+
+                        // Get the path, declare, reference to user
+                        var tempPath = image.path,
+                            targetPath,
+                            username = req.session.user.user;
+
+                        // If the directory exists, continue; If not, create it
+                        fs.exists(__dirname + "/public/img/profile-images/" + username, function (exists) {
+                            if (!exists) {
+                                fs.mkdir(__dirname + "/public/img/profile-images/" + username, function (err) {
+                                    if (err) {
+                                        throw err;
+                                    }
+                                });
+                            }
+                        });
+
+                        // Set the target path to the (perhaps new) directory
+                        targetPath = __dirname + "/public/img/profile-images/" + username + "/" + image.name;
+
+                        // Move the file (this removes from the temp path)
+                        fs.rename(tempPath, targetPath, function (err) {
+                            if (err) {
+                                throw err;
+                            }
+                        });
+
+                        // Update for this session
+                        req.session.user.profilePic = image.name;
+
+                        // Update profile pic file name in the DB
+                        AM.updateProfilePic(image.name, username, function (err, result) {
+                            if (result !== null) {
+                                res.send("OK", 200);
+                            } else {
+                                res.send("unable-to-update", 400);
+                            }
+                        });
+                    } else {
+                        res.send("image-type", 400);
+                    }
+                } else {
+                    res.send("image-size", 400);
+                }
+            } else {
+                res.send("image-count", 400);
+            }
+        }
     });
 
     app.post("/delete", function (req, res) {
