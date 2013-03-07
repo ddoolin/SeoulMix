@@ -26,8 +26,7 @@ function AccountValidator() {
 		that.commentFields[1].text("At least 6 characters.");
 		that.commentFields[2].text("");
 		that.commentFields[3].text("");
-		that.commentFields[4]
-			.text("By clicking, you agree to our terms and conditions.");
+		that.commentFields[4].text("");
 	}
 
 	that.validateUsername = function(username) {
@@ -87,6 +86,11 @@ AccountValidator.prototype.showInvalidUsername = function() {
 AccountValidator.prototype.showInvalidEmail = function() {
 	this.commentFields[3].addClass("text-error");
 	this.showErrors("email", "E-mail address already in use.");
+}
+
+AccountValidator.prototype.showCreateSuccess = function(msg) {
+	this.commentFields[4].addClass("text-success")
+						 .html(msg);
 }
 
 AccountValidator.prototype.validateForm = function() {

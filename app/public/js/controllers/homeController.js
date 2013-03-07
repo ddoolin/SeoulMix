@@ -14,7 +14,7 @@ function HomeController() {
         if (window.confirm("Are you sure you want to remove your picture?")) {
             that.removePhoto();
         }
-    })
+    });
 
     // Need to use a JS trigger to prevent this ajaxForm from submitting on click
     $("#delete_account").click(function(event) {
@@ -69,7 +69,7 @@ function HomeController() {
             type: "POST",
             data: { remove: true },
             success: function() {
-                $("#profile_picture").attr("src", "/img/default_profile.png");
+                $("#profile_picture").attr("src", "/img/default-profile.png");
                 $("#profile_picture_comment").addClass("text-success")
                     .text("Photo successfully removed.");
                 $(".delete-photo").hide();

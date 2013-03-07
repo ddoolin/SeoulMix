@@ -5,10 +5,14 @@
         fieldset(name="delete-acct")
             .modal-content
                 .alert
-                    p.text-warning <b>Warning:</b> This is final and CANNOT be undone!
+                    | <b>Warning:</b> This is final and CANNOT be undone!
+                    br
+                    | We value your privacy
+                    br
+                    | We completely remove all data related your account
                 input#delete_password(required="required", type="password", title="6 character minimum", name="delete-password", placeholder="password", tabindex="1")
                 input#delete_password_confirm(required="required", type="password", title="Must be the same as the field above", name="delete-password-confirm", placeholder="confirm password", tabindex="2")
                 #delete_error.alert.alert-error.hide
             .modal-footer
-                button#delete_cancel(data-dismiss="modal").btn Cancel
-                input#delete_confirm(type="submit", value="Delete").btn.btn-danger 
+                input#delete_confirm(type="submit", value="Delete").btn.btn-danger
+                button#delete_cancel(data-dismiss="modal").btn Cancel 

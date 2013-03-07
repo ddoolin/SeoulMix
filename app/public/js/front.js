@@ -64,5 +64,4 @@ $(document).ready(function() {
 	}, function() {
 		$("#caret").css("border-top-color", "#BBBBBB");
 	});
-
 });

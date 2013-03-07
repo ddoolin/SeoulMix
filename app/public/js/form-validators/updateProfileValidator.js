@@ -14,14 +14,14 @@ function UpdateValidator() {
         $(".profile-picture-comment")];
 
     // Clear form on hide, not show! 
-    that.updateProfile.on("hide", function() {
+    that.updateProfile.on("hide", function () {
 
         // Reset the form, clear the text, and remove the success if it exists
         $("#update_form").resetForm();
         that.resetFields();
     });
 
-    that.resetFields = function() {
+    that.resetFields = function () {
 
         for (var i = 0; i < that.commentFields.length; i++) {
             that.commentFields[i].removeClass("text-error").text("");
@@ -32,23 +32,23 @@ function UpdateValidator() {
     }
 
     // 50 characters should be enough for each
-    that.validateFirstname = function(firstname) {
+    that.validateFirstname = function (firstname) {
         return firstname.length <= 50;
     }
 
-    that.validateLastname = function(lastname) {
+    that.validateLastname = function (lastname) {
         return lastname.length <= 50;
     }
 
-    that.validatePassword = function(password) {
+    that.validatePassword = function (password) {
         return password.length >= 6;
     }
 
-    that.validateConfirm = function(password, confirm) {
+    that.validateConfirm = function (password, confirm) {
         return password === confirm;
     }
 
-    that.validateEmail = function(email) {
+    that.validateEmail = function (email) {
 
         // Basic example@example.com regular expression
         var regexp = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -56,11 +56,11 @@ function UpdateValidator() {
         return regexp.test(email);
     }
 
-    that.validatePictureSize = function(file) {
-        return file.size <= 716800;
+    that.validatePictureSize = function (file) {
+        return file.size > 0 && file.size <= 716800;
     }
 
-    that.validatePictureType = function(file) {
+    that.validatePictureType = function (file) {
         if (file.type == "image/jpeg" || file.type == "image/png") {
             return true;
         } else {
@@ -68,7 +68,7 @@ function UpdateValidator() {
         }
     }
 
-    that.showErrors = function(type, msg) {
+    that.showErrors = function (type, msg) {
         switch (type) {
             case "firstname":
                 that.commentFields[0].addClass("text-error").text(msg);
@@ -88,19 +88,19 @@ function UpdateValidator() {
             case "picture":
                 that.commentFields[5].addClass("text-error").text(msg);
             default:
-                that.updateProfile.addClass("alert-error")
-                    .text("An unknown error occured. Please try again later.");
+                that.updateProfileAlert.addClass("alert-error")
+                    .html("<b>Error:</b> An unknown error occured. Please try again later.");
                 break;
         }
     }
 }
 
-UpdateValidator.prototype.showUpdateAlert = function(classname, msg) {
+UpdateValidator.prototype.showUpdateAlert = function (classname, msg) {
     this.updateProfileAlert.addClass(classname).html(msg);
     this.updateProfileAlert.show();
 }
 
-UpdateValidator.prototype.validateForm = function() {
+UpdateValidator.prototype.validateForm = function () {
 
     if (this.validateFirstname(this.formFields[0].val()) === false) {
         this.showErrors("firstname", "Must be less than 50 characters.");
@@ -125,7 +125,7 @@ UpdateValidator.prototype.validateForm = function() {
         this.showErrors("confirm", "Passwords must match.");
         return false;
     }
-    if (this.formFields[4].val() != null) {
+    if (this.formFields[4].val() != "") {
         if (this.validatePictureSize(this.formFields[4].val()) === false) {
             this.showErrors("picture", "File too large.");
             return false;        

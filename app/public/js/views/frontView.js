@@ -17,16 +17,29 @@ $(document).ready(function() {
 			return av.validateForm();
 		},
 		success: function(responseText, status, xhr, $form) {
-			if (status == "success") {
-				window.alert("Your account has been created! Hooray! Now login and get started! :)");
-				$("#registration_modal").modal("hide");
+			if (status === "success") {
+				// window.alert("Your account has been created! Hooray! Now login and get started! :)");
+				// $("#registration_modal").modal("hide");
+
+				av.showCreateSuccess("<b>Success!</b> You're account was created! Now logging you in...");
+				setTimeout(function() {
+					window.location.href = "/";
+				}, 2000);
 			}
 		},
 		error: function(err) {
-			if (err.responseText == "username-taken") {
+			if (err.responseText === "username-taken") {
 				av.showInvalidUsername();
-			} else if (err.responseText == "email-used") {
+			} else if (err.responseText === "email-used") {
 				av.showInvalidEmail();
+			} else if (err.responseText === "invalid-username") {
+				av.showErrors("username", "Must be between 4 and 30 characters, numbers and letters only.");
+			} else if (err.responseText === "invalid-password") {
+				av.showErrors("password", "Must be at least 6 characters.");
+			} else if (err.responseText === "empty-field") {
+				av.showErrors("default", "You must complete all fields.");
+			} else {
+				av.showErrors("default", "An error occured. Please try again later.");
 			}
 		}
 	});

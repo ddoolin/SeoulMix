@@ -1,6 +1,5 @@
 var AM = require("./server/modules/account-manager"),
     ED = require("./server/modules/email-dispatcher");
-    fs = require("fs");
 
 module.exports = function (app) {
 
@@ -15,16 +14,9 @@ module.exports = function (app) {
         } else {
 
             var username = req.session.user.user,
-                password = req.session.user.pass,
-                ipAddress;
+                password = req.session.user.pass;
 
-            if (req.header("x-forwarded-for")) {
-                ipAddress = req.header("x-forwarded-for").split("/")[0];
-            } else {
-                ipAddress = req.connection.remoteAddress;
-            }
-
-            AM.autoLogin(username, password, ipAddress, function (err, result) {
+            AM.autoLogin(username, password, function (err, result) {
                 if (result != null) {
                     req.session.user = result;
                     res.redirect("/home");
@@ -80,6 +72,7 @@ module.exports = function (app) {
             password = req.param("login-password"),
             ipAddress;
 
+        // Get the direct IP or proxy-forwarded IP if it exists
         if (req.header("x-forwarded-for")) {
             ipAddress = req.header("x-forwarded-for").split("/")[0];
         } else {
@@ -157,13 +150,21 @@ module.exports = function (app) {
             registrationIp: ipAddress
         }, function (err, result) {
             if (result != null) {
+
+                // Mongo's insert returns results in an array
+                // To fit, pull it out into an object
+                result = result[0];
+                req.session.user = result;
+
                 res.send("OK", 200);
             } else {
-                console.log(err);
-                if (err != "email-used" && err != "username-taken") {
-                    res.send("unable-to-create", 400);
-                } else {
+                if (err === "empty-field" || err === "invalid-username"
+                    || err === "invalid-password" || err === "username-taken"
+                    || err === "email-used") {
+
                     res.send(err, 400);
+                } else {
+                    res.send("unable-to-create", 400);
                 }
             }
         });
@@ -186,33 +187,29 @@ module.exports = function (app) {
 
     app.post("/update-profile", function (req, res) {
 
-        // Check to see if the e-mail is in use...
-        AM.getAccountsByEmail(req.param("update-email"), function (err, result) {
+        // Put data into an object and send it off 
+        // Use session username in case the user changed it maliciously
+        var data = {
+            firstname: req.param("update-firstname"),
+            lastname: req.param("update-lastname"),
+            email: req.param("update-email"),
+            user: req.session.user.user,
+            pass: req.param("update-password")
+        };
 
-            // If the email isn't used OR the e-mail is mine (unchanged)
-            if (!result || result.email === req.session.user.email) {
-
-                // Put data into an object and send it off 
-                // Use session username in case the user changed it maliciously
-                var data = {
-                    firstname: req.param("update-firstname"),
-                    lastname: req.param("update-lastname"),
-                    email: req.param("update-email"),
-                    user: req.session.user.user,
-                    pass: req.param("update-password")
-                };
-
-                AM.updateAccount(data, function (err, result) {
-                    if (result != null) {
-                        req.session.user = result;
-                        res.send("OK", 200);
-                    } else {
-                        res.send("unable-to-update", 400);
-                    }
-                });
-
+        AM.updateAccount(data, function (err, result) {
+            if (result != null) {
+                req.session.user = result;
+                res.send("OK", 200);
             } else {
-                res.send("email-used", 400);
+                if (err === "invalid-password"
+                    || err === "invalid-email"
+                    || err === "invalid-name") {
+
+                    res.send(err, 400);
+                 } else {
+                    res.send("unable-to-update");
+                }
             }
         });
     });
@@ -221,10 +218,15 @@ module.exports = function (app) {
 
         // If remove, set pic to null and remove to true and remove from DB
         if (req.param("remove") === "true" && req.session.user.profilePic != null) {
-            var username = req.session.user.user,
-                fileName = req.session.user.profilePic;
 
-            AM.updateProfilePic(null, username, function (err, result) {
+            var username = req.session.user.user,
+                image = req.session.user.profilePic;
+
+            AM.updateProfilePic({
+                image: image,
+                user: username,
+                remove: true
+            }, function (err, result) {
                 if (result != null) {
                     res.send("OK", 200);
                 } else {
@@ -232,75 +234,34 @@ module.exports = function (app) {
                 }
             });
 
-            // Remove the actual file
-            fs.unlink(__dirname + "/public/img/profile-images/" + username + "/" + fileName, function (err) {
-                if (err) {
-                    throw err
-                }
-            });
-
             // Update for this session
             req.session.user.profilePic = null;
-        } else if (req.param("remove") != "true") {
+
+        } else if (req.param("remove") !== "true") {
 
             // Get the image
-            var image = req.files.images[0];
+            var image = req.files.images[0],
+                username = req.session.user.user;
 
-            // Verify only one image
-            if (Object.keys(req.files).length === 1) {
+            // Update profile pic file name in the DB
+            AM.updateProfilePic({
+                image: image,
+                user: username,
+                remove: false
+            }, function (err, result) {
+                if (result !== null) {
 
-                // Verify image size
-                if (image.size > 0 && image.size <= 716800) {
-
-                    // Verify image type
-                    if (image.type === "image/jpeg" || image.type === "image/png") {
-
-                        // Get the path, declare, reference to user
-                        var tempPath = image.path,
-                            targetPath,
-                            username = req.session.user.user;
-
-                        // If the directory exists, continue; If not, create it
-                        fs.exists(__dirname + "/public/img/profile-images/" + username, function (exists) {
-                            if (!exists) {
-                                fs.mkdir(__dirname + "/public/img/profile-images/" + username, function (err) {
-                                    if (err) {
-                                        throw err;
-                                    }
-                                });
-                            }
-                        });
-
-                        // Set the target path to the (perhaps new) directory
-                        targetPath = __dirname + "/public/img/profile-images/" + username + "/" + image.name;
-
-                        // Move the file (this removes from the temp path)
-                        fs.rename(tempPath, targetPath, function (err) {
-                            if (err) {
-                                throw err;
-                            }
-                        });
-
-                        // Update for this session
-                        req.session.user.profilePic = image.name;
-
-                        // Update profile pic file name in the DB
-                        AM.updateProfilePic(image.name, username, function (err, result) {
-                            if (result !== null) {
-                                res.send("OK", 200);
-                            } else {
-                                res.send("unable-to-update", 400);
-                            }
-                        });
-                    } else {
-                        res.send("image-type", 400);
-                    }
+                    // Update for this session
+                    req.session.user.profilePic = image.name;
+                    res.send("OK", 200);
                 } else {
-                    res.send("image-size", 400);
+                    if (err === "image-size" || err === "image-type") {
+                        res.send(err, 400);
+                    } else {
+                        res.send("unable-to-update", 400);
+                    }
                 }
-            } else {
-                res.send("image-count", 400);
-            }
+            });
         }
     });
 

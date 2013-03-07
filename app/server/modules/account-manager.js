@@ -1,5 +1,8 @@
 var MongoDB = require("mongodb").Db,
     Server = require("mongodb").Server,
+    path = require("path"),
+    fs = require("fs"),
+    async = require("async"),
     moment = require("moment"),
     passHash = require("password-hash"),
 
@@ -18,7 +21,8 @@ db.open(function (err) {
     }
 });
 
-var users = db.collection("users");
+var users = db.collection("users"),
+    that = this;
 
 // Login
 
@@ -30,30 +34,9 @@ exports.autoLogin = function (user, pass, callback) {
             callback(err, null);
         } else {
             if (result.pass === pass) {
-                
-                var date = moment().format("dddd, MMMM Do YYYY, h:mm:ss a"),
-                    data = {
-                        lastLoginIp: ipAddress,
-                        lastLoginDate: date
-                    };
-
-                users.findAndModify(
-                    { user: user },
-                    [["_id", "asc"]],
-                    { $inc: { numLogins: 1 },
-                      $set: data },
-                    { new: true },
-                    function (err, obj) {
-                        if (err) {
-                            callback(err, null);
-                        } else {
-                            callback(null, obj);
-                        }
-                    }
-                );
-
+                callback(null, result);
             } else {
-                callback("incorrect-pass", null);
+                callback("invalid-password", null);
             }
         }
     });
@@ -72,23 +55,25 @@ exports.manualLogin = function (user, pass, ipAddress, callback) {
             // Hash the password provided and callback invalid if no match
             if (passHash.verify(pass, result.pass)) {
 
+                // Collect the time at this second and IP
                 var date = moment().format("dddd, MMMM Do YYYY, h:mm:ss a"),
                     data = {
                         lastLoginIp: ipAddress,
                         lastLoginDate: date
                     };
 
+                // Pass in the date, IP, and increment the # of logins
                 users.findAndModify(
                     { user: user },
                     [["_id", "asc"]],
                     { $inc: { numLogins: 1 },
                       $set: data },
                     { new: true },
-                    function (err, obj) {
+                    function (err, result) {
                         if (err) {
                             callback(err, null);
                         } else {
-                            callback(null, obj);
+                            callback(null, result);
                         }
                     }
                 );
@@ -103,94 +88,144 @@ exports.manualLogin = function (user, pass, ipAddress, callback) {
 // Account creation
 
 exports.addNewAccount = function (data, callback) {
-    users.findOne({
-        user: data.user
-    }, function (err, result) {
-        if (result) {
-            callback("username-taken", null);
+    var user = data.user,
+        pass = data.pass,
+        email = data.email;
+
+    // Make sure all fields are accounted for
+    if (!user || !pass || !email) {
+        callback("empty-field", null);
+    } else {
+
+        // Alphanumeric only, between 4 and 40 characters
+        var regexp = /^[A-Za-z0-9_]{4,30}$/;
+
+        // Regexp the username and check the length (redundant)
+        if (user.length < 4 || user.length > 30 || !regexp.test(user)) {
+            callback("invalid-username", null);
         } else {
-            users.findOne({
-                email: data.email
-            }, function (err, result) {
-                if (result) {
-                    callback("email-used", null);
-                } else {
 
-                    // Hash the password
-                    data.pass = passHash.generate(data.pass, {
-                        algorithm: "sha512",
-                        saltLength: 16,
-                        iterations: 2
-                    });
+            // Check the password length
+            if (pass.length < 6) {
+                callback("invalid-password");
+            } else {
 
-                    // Set the registration date
-                    data.registrationDate = moment()
-                        .format("dddd, MMMM Do YYYY, h:mm:ss a");
+                // Look for the username in the DB
+                users.findOne({
+                    user: data.user
+                }, function (err, result) {
+                    if (result) {
+                        callback("username-taken", null);
+                    } else {
 
-                    // Set the number of logins to 0
-                    data.numLogins = 0;
+                        // Look for the email in the DB
+                        users.findOne({
+                            email: data.email
+                        }, function (err, result) {
+                            if (result) {
+                                callback("email-used", null);
+                            } else {
 
-                    // Inset the data
-                    users.insert(data, {safe: true}, function (err, result) {
-                        if (err) {
-                            callback(err, null);
-                        } else {
-                            callback(null, result);
-                        }
-                    });
-                }
-            });
+                                // Hash the password
+                                data.pass = passHash.generate(data.pass, {
+                                    algorithm: "sha512",
+                                    saltLength: 16,
+                                    iterations: 2
+                                });
+
+                                // Set the registration date
+                                data.registrationDate = moment()
+                                    .format("dddd, MMMM Do YYYY, h:mm:ss a");
+
+                                // Set the number of logins to 0
+                                data.numLogins = 0;
+
+                                // Inset the data
+                                users.insert(data, {safe: true}, function (err, result) {
+                                    if (err) {
+                                        callback(err, null);
+                                    } else {
+                                        callback(null, result);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
         }
-    });
+    }
 };
 
 exports.updateAccount = function (data, callback) {
 
-    // Separate in case of non-changed password
-    // Names CAN BE removed
-    var update = {
-        firstname: data.firstname,
-        lastname: data.lastname,
-        email: data.email
-    };
+    var firstname = data.firstname,
+        lastname = data.lastname,
+        email = data.email,
+        user = data.user,
+        pass = data.pass,
 
-    if (data.pass === "") {
-        users.findAndModify(
-            { user: data.user },
-            [["_id", "asc"]],
-            { $set: update },
-            { new: true },
-            function (err, obj) {
-                if (err) {
-                    callback(err, null);
+        // Separate in case of non-changed password
+        // Names CAN BE removed
+        update = {
+            firstname: firstname,
+            lastname: lastname,
+            email: email
+        };
+
+    // Check name lengths
+    if (firstname.length <= 50 && lastname.length <= 50) {
+
+        // Check if the email is already being used
+        that.getAccountsByEmail(email, function (err, result) {
+            if (!result || result.email === email) {
+                if (pass === "") {
+                        users.findAndModify(
+                            { user: user },
+                            [["_id", "asc"]],
+                            { $set: update },
+                            { new: true },
+                            function (err, result) {
+                                if (err) {
+                                    callback(err, null);
+                                } else {
+                                    callback(null, result);
+                                }
+                            }
+                        );
                 } else {
-                    callback(null, obj);
+                    if (pass.length >= 6) {
+
+                        // Save new password to update object
+                        update.pass = passHash.generate(data.pass, {
+                            algorithm: "sha512",
+                            saltLength: 16,
+                            iterations: 2
+                        });
+
+                        users.findAndModify(
+                            { user: data.user },
+                            [["_id", "asc"]],
+                            { $set: update },
+                            { new: true },
+                            function (err, result) {
+                                if (err) {
+                                    callback(err, null);
+                                } else {
+                                    callback(null, result);
+                                }
+                            }
+                        );
+                    } else {
+                        callback("invalid-password", null);
+                    }
                 }
+            } else {
+                callback("invalid-email")
             }
-        );
-
-    } else {
-
-        // Save new password to update object
-        update.pass = passHash.generate(data.pass, {
-            algorithm: "sha512",
-            saltLength: 16,
-            iterations: 2
         });
-
-        users.findAndModify(
-            { user: data.user },
-            [["_id", "asc"]],
-            { $set: update },
-            { new: true },
-            function (err, obj) {
-                if (err) {
-                    callback(err, null);
-                } else {
-                    callback(null, obj);
-                }
-            }
-        );
+    } else {
+        callback("invalid-name", null);
     }
 };
 
@@ -208,32 +243,99 @@ exports.updatePassword = function (email, pass, callback) {
         [["_id", "asc"]],
         { $set: { pass: newpass } },
         { new: true },
-        function (err, obj) {
+        function (err, result) {
             if (err) {
                 callback(err, null);
             } else {
-                callback(null, obj);
+                callback(null, result);
             }
         }
     );
 }
 
-exports.updateProfilePic = function (file, user, callback) {
+exports.updateProfilePic = function (data, callback) {
 
-    // If the user didn't request to remove the picture, add it
-    if (file != null) {
-        users.update(
-            { user: user },
-            { $set: { profilePic: file } },
-            { safe: true },
-            function (err, obj) {
-                if (err) {
-                    callback(err, null);
-                } else {
-                    callback(null, obj);
-                }
+    var image = data.image,
+        user = data.user,
+        remove = data.remove;
+
+    // If remove is false, check and add image
+    if (remove == false) {
+
+        // If the image size is within the limits
+        if (image.size > 0 && image.size < 716800) {
+
+            // If the image is a .JPG or .PNG
+            if (image.type === "image/jpeg" || image.type === "image/png") {
+
+                var tempPath = image.path,
+                    targetPath;
+
+                // If the directory exists, continue; If not, create it
+                fs.exists(path.normalize(__dirname
+                    + "/../../public/img/profile-images/"
+                    + user), function (exists) {
+
+                    if (!exists) {
+                        fs.mkdir(path.normalize(__dirname
+                            + "/../../public/img/profile-images/"
+                            + user), function (err) {
+
+                            if (err) {
+                                throw err;
+                            }
+                        });
+                    }
+                });
+
+                // Set the target path to the (perhaps new) directory
+                targetPath = 
+                    path.normalize(__dirname
+                    + "/../../public/img/profile-images/"
+                    + user + "/" + image.name);
+
+                // Keep trying to move the file until it's there w/ a 1 second
+                // interval
+                async.until(
+                    function () {
+                        // Move the file (this removes from the temp path)
+                        fs.rename(tempPath, targetPath, function (err) {
+                            if (err) {
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        });
+                    },
+                    function (callback) {
+                        setTimeout(callback, 1000);
+                    },
+                    function (err) {
+                        if (err) {
+                            console.log(err);
+                            throw err;
+                        }
+                    }
+                );
+
+                users.update(
+                    { user: user },
+                    { $set: { profilePic: image.name } },
+                    { safe: true },
+                    function (err, result) {
+                        if (err) {
+                            callback(err, null);
+                        } else {
+                            callback(null, result);
+                        }
+                    }
+                );
+            } else {
+                callback("image-count", null);
             }
-        );
+        } else {
+            callback("image-size", null);
+        }
     } else {
 
         // Else, remove it by setting the property to null
@@ -241,14 +343,31 @@ exports.updateProfilePic = function (file, user, callback) {
             { user: user },
             { $set: { profilePic: null } },
             { safe: true },
-            function (err, obj) {
+            function (err, result) {
                 if (err) {
                     callback(err, null);
                 } else {
-                    callback(null, obj);
+                    callback(null, result);
                 }
             }
         );
+
+        // Remove the actual file (if the user had one)
+        fs.exists(path.normalize(__dirname
+            + "/../../public/img/profile-images/"
+            + user + "/" + image), function (exists) {
+
+            if (exists) {
+                fs.unlink(path.normalize(__dirname
+                    + "/../../public/img/profile-images/"
+                    + user + "/" + image), function (err) {
+
+                    if (err) {
+                        throw err
+                    }
+                });
+            }
+        });
     }
 }
 
@@ -260,13 +379,31 @@ exports.deleteAccount = function (id, pass, callback) {
             callback("record-not-found", null);
         } else {
             if (passHash.verify(pass, result.pass)) {
-                users.remove({
-                    _id: getObjectId(id)
+
+                // Remove anything dependent on DB results before removing
+                var profilePic = result.profilePic,
+                    user = result.user;
+
+                that.updateProfilePic({
+                    image: profilePic,
+                    user: user,
+                    remove: true
                 }, function (err, result) {
                     if (err) {
                         callback(err, null);
                     } else {
-                        callback(null, result);
+
+                        // Lastly, remove from DB
+                        users.remove({
+                            _id: getObjectId(id)
+                        }, function (err, result) {
+                            if (err) {
+                                callback(err, null);
+                            } else {
+                                callback(null, result);
+                            }
+                        });
+
                     }
                 });
             } else {

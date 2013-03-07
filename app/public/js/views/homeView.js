@@ -20,6 +20,10 @@ $(document).ready(function() {
         error: function(err) {
             if (err.responseText === "email-used") {
                 uv.showErrors("email", "That e-mail address is already in use.");
+            } else if (err.responseText === "invalid-password") {
+                uv.showErrors("password", "Must be at least 6 characters.");
+            } else if (err.responseText === "invalid-name") {
+                uv.showErrors("firstname", "Personal names have a maximum limit of 50 characters.");
             } else {
                 uv.showUpdateAlert("alert-error", "<b>Error:</b> There was a pretty complicated error. Please try again later.");
             }
@@ -97,6 +101,14 @@ $(document).ready(function() {
             processData: false,
             success: function() {
                 profilePicText.addClass("text-success").text("Picture updated!");
+                $("<li class='delete-photo'>").appendTo("#profile_dropdown");
+                $("<a id='delete_photo'>Delete photo</a></li>").appendTo(".delete-photo");
+
+                $("#delete_photo").click(function() {
+                    if (window.confirm("Are you sure you want to remove your picture?")) {
+                        hc.removePhoto();
+                    }
+                });
             },
             error: function(err) {
                 // Stuff on error
