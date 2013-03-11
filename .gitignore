@@ -6,4 +6,7 @@ app/server/modules/email-settings.js
 
 # or uploads
 uploads
-app/public/img/profile_images
+app/public/img/*
+
+# Sublime project/workspace
+seoulmix.sublime-*
