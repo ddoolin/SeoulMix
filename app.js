@@ -11,7 +11,7 @@ var http = require("http");
 var app = express();
 
 app.configure(function() {
-	app.set("port", 80);
+	app.set("port", 8080);
 	app.set("views", __dirname + "/app/server/views");
 	app.set("view engine", "jade");
 	app.use(express.favicon(__dirname + "/app/public/img/favicon.ico"));
