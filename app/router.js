@@ -17,7 +17,7 @@ module.exports = function (app) {
                 password = req.session.user.pass;
 
             AM.autoLogin(username, password, function (err, result) {
-                if (result != null) {
+                if (result !== null) {
                     req.session.user = result;
                     res.redirect("/home");
                 } else {
@@ -50,7 +50,7 @@ module.exports = function (app) {
         }
 
         AM.validateResetLink(email, passhash, function (err, result) {
-            if (result != null) {
+            if (result !== null) {
                 req.session.reset = {
                     email: email,
                     passhash: passhash
@@ -80,7 +80,7 @@ module.exports = function (app) {
         }
 
         AM.manualLogin(username, password, ipAddress, function (err, result) {
-            if (result != null) {
+            if (result !== null) {
                 req.session.user = result;
 
                 if (req.param("remember-me") === "true") {
@@ -101,10 +101,10 @@ module.exports = function (app) {
         var i;
 
         AM.getAccountsByEmail(req.param("lostpass-email"), function (err, result) {
-            if (result != null) {
+            if (result !== null) {
                 res.send("OK", 200);
                 ED.dispatchPasswordResetLink(result, function (err, msg) {
-                    if (msg != null) {
+                    if (msg !== null) {
                         res.send("OK", 200);
                     } else {
                         res.send("email-server-error", 400);
@@ -125,7 +125,7 @@ module.exports = function (app) {
 
         req.session.destroy();
         AM.updatePassword(email, newpass, function (err, result) {
-            if (result != null) {
+            if (result !== null) {
                 res.send("OK", 200);
             } else {
                 res.send("unable-to-update", 400);
@@ -149,7 +149,7 @@ module.exports = function (app) {
             email:  req.param("signup-email"),
             registrationIp: ipAddress
         }, function (err, result) {
-            if (result != null) {
+            if (result !== null) {
 
                 // Mongo's insert returns results in an array
                 // To fit, pull it out into an object
@@ -198,9 +198,9 @@ module.exports = function (app) {
         };
 
         AM.updateAccount(data, function (err, result) {
-            if (result != null) {
+            if (result !== null) {
                 req.session.user = result;
-                res.send("OK", 200);
+                res.send(result, 200);
             } else {
                 if (err === "invalid-password"
                     || err === "invalid-email"
@@ -216,18 +216,21 @@ module.exports = function (app) {
 
     app.post("/update-profilepic", function (req, res) {
 
-        // If remove, set pic to null and remove to true and remove from DB
-        if (req.param("remove") === "true" && req.session.user.profilePic != null) {
+        var image,
+            username;
 
-            var username = req.session.user.user,
-                image = req.session.user.profilePic;
+        // If remove, set pic to null and remove to true and remove from DB
+        if (req.param("remove") === "true" && req.session.user.profilePic !== null) {
+
+            username = req.session.user.user,
+            image = req.session.user.profilePic;
 
             AM.updateProfilePic({
                 image: image,
                 user: username,
                 remove: true
             }, function (err, result) {
-                if (result != null) {
+                if (result !== null) {
                     res.send("OK", 200);
                 } else {
                     res.send("unable-to-remove", 400);
@@ -240,8 +243,8 @@ module.exports = function (app) {
         } else if (req.param("remove") !== "true") {
 
             // Get the image
-            var image = req.files.images[0],
-                username = req.session.user.user;
+            image = req.files.images[0],
+            username = req.session.user.user;
 
             // Update profile pic file name in the DB
             AM.updateProfilePic({
@@ -275,7 +278,7 @@ module.exports = function (app) {
         AM.deleteAccount(userId, pass, function (err, result) {
 
             // If no error exists, destory the session and send ok. 
-            if (result != null) {
+            if (result !== null) {
                 req.session.destroy(function (err) {
                     if (err) {
                         res.send(err, 400);

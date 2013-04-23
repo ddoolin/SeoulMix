@@ -15,6 +15,10 @@ $(document).ready(function() {
         success: function(responseText, status, xhr, $form) {
             if (status === "success") {
                 uv.showUpdateAlert("alert-success", "<b>Success:</b> Account updated!");
+
+                if (responseText.firstname !== "") {
+                    $("#banner_welcome_title").text("Hello, " + responseText.firstname);
+                }
             }
         },
         error: function(err) {
@@ -62,7 +66,8 @@ $(document).ready(function() {
         var profilePic = this.files[0],
             profilePicName = profilePic.name,
             profilePicSize = profilePic.size,
-            profilePicText = $("#profile_picture_comment");
+            profilePicText = $("#profile_picture_comment"),
+            formData = null;
 
         if (profilePicSize > 716800) {
             profilePicText.addClass("text-error").text("File too large!");
@@ -75,7 +80,7 @@ $(document).ready(function() {
         }
 
         if (window.FormData) {
-            var formData = new FormData();
+            formData = new FormData();
         }
 
         if (window.FileReader) {
@@ -83,7 +88,7 @@ $(document).ready(function() {
 
             reader.onload = function(file) {
                 $("#profile_picture").attr("src", file.target.result);
-            }
+            };
 
             reader.readAsDataURL(profilePic);
         }

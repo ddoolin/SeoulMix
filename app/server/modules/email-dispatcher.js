@@ -33,7 +33,7 @@ ED.composePasswordResetEmail = function (account) {
         html = "<html><body>";
 
     if (account.firstname) {
-        html += "Hi " + account.name + ",<br><br>";
+        html += "Hi " + account.firstname + ",<br><br>";
     } else {
         html += "Hello! <br><br>";
     }

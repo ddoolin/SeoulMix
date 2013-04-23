@@ -2,11 +2,14 @@
 node_modules
 
 # or e-mail settings
-app/server/modules/email-settings.js
+# app/server/modules/email-settings.js
 
 # or uploads
-uploads
-app/public/img/*
+# uploads
+# app/public/img/*
 
 # Sublime project/workspace
 seoulmix.sublime-*
+
+# Log files
+# *.log

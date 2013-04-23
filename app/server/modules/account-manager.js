@@ -189,6 +189,13 @@ exports.updateAccount = function (data, callback) {
                                 if (err) {
                                     callback(err, null);
                                 } else {
+                                    result = {
+                                        id: result._id,
+                                        user: result.user,
+                                        firstname: result.firstname,
+                                        lastname: result.lastname,
+                                        email: result.email
+                                    };
                                     callback(null, result);
                                 }
                             }
@@ -212,6 +219,13 @@ exports.updateAccount = function (data, callback) {
                                 if (err) {
                                     callback(err, null);
                                 } else {
+                                    result = {
+                                        id: result._id,
+                                        user: result.user,
+                                        firstname: result.firstname,
+                                        lastname: result.lastname,
+                                        email: result.email
+                                    };
                                     callback(null, result);
                                 }
                             }
@@ -221,7 +235,7 @@ exports.updateAccount = function (data, callback) {
                     }
                 }
             } else {
-                callback("invalid-email")
+                callback("invalid-email");
             }
         });
     } else {
@@ -251,7 +265,7 @@ exports.updatePassword = function (email, pass, callback) {
             }
         }
     );
-}
+};
 
 exports.updateProfilePic = function (data, callback) {
 
@@ -260,7 +274,7 @@ exports.updateProfilePic = function (data, callback) {
         remove = data.remove;
 
     // If remove is false, check and add image
-    if (remove == false) {
+    if (remove === false) {
 
         // If the image size is within the limits
         if (image.size > 0 && image.size < 716800) {
@@ -289,7 +303,7 @@ exports.updateProfilePic = function (data, callback) {
                 });
 
                 // Set the target path to the (perhaps new) directory
-                targetPath = 
+                targetPath =
                     path.normalize(__dirname
                     + "/../../public/img/profile-images/"
                     + user + "/" + image.name);
@@ -363,13 +377,13 @@ exports.updateProfilePic = function (data, callback) {
                     + user + "/" + image), function (err) {
 
                     if (err) {
-                        throw err
+                        throw err;
                     }
                 });
             }
         });
     }
-}
+};
 
 exports.deleteAccount = function (id, pass, callback) {
     users.findOne({
@@ -462,7 +476,7 @@ var findById = function (id, callback) {
     users.findOne({
         _id: getObjectId(id)
     }, function (err, result) {
-        if (err) { 
+        if (err) {
             callback(err, null);
         } else {
             callback(null, result);

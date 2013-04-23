@@ -1,0 +1,58 @@
+HTTP server listening on port 8080
+Connected to database :: seoulmix
+127.0.0.1 - - [Tue, 12 Mar 2013 06:32:56 GMT] "GET / HTTP/1.1" 304 - "-" "Mozilla/5.0 (X11; Linux i686; rv:19.0) Gecko/20100101 Firefox/19.0"
+[90mGET / [36m304 [90m58ms[0m
+[90mGET /vendor/bootstrap.min.css [36m304 [90m3ms[0m
+[90mGET /css/main.css [32m200 [90m2ms - 10.76kb[0m
+[90mGET /js/controllers/frontController.js [36m304 [90m5ms[0m
+[90mGET /js/views/frontView.js [36m304 [90m4ms[0m
+[90mGET /js/front.js [36m304 [90m5ms[0m
+[90mGET /vendor/bootstrap.js [36m304 [90m4ms[0m
+[90mGET /vendor/jquery.form.js [36m304 [90m4ms[0m
+[90mGET /js/form-validators/accountValidator.js [36m304 [90m2ms[0m
+[90mGET /js/form-validators/emailValidator.js [36m304 [90m2ms[0m
+[90mGET /js/form-validators/loginValidator.js [36m304 [90m2ms[0m
+HTTP server listening on port 8080
+Connected to database :: seoulmix
+203.86.8.235 - - [Tue, 12 Mar 2013 11:58:25 GMT] "HEAD / HTTP/1.0" 200 5382 "-" "-"
+[90mHEAD / [32m200 [90m62ms - 5.26kb[0m
+127.0.0.1 - - [Tue, 12 Mar 2013 21:07:05 GMT] "GET / HTTP/1.1" 304 - "-" "Mozilla/5.0 (X11; Linux i686; rv:19.0) Gecko/20100101 Firefox/19.0"
+[90mGET / [36m304 [90m23ms[0m
+[90mGET /vendor/bootstrap.min.css [36m304 [90m3ms[0m
+[90mGET /vendor/jquery.form.js [36m304 [90m6ms[0m
+[90mGET /css/main.css [36m304 [90m5ms[0m
+[90mGET /js/front.js [36m304 [90m5ms[0m
+[90mGET /js/controllers/frontController.js [36m304 [90m7ms[0m
+[90mGET /js/views/frontView.js [36m304 [90m8ms[0m
+[90mGET /vendor/bootstrap.js [36m304 [90m8ms[0m
+[90mGET /js/form-validators/accountValidator.js [36m304 [90m5ms[0m
+[90mGET /js/form-validators/emailValidator.js [36m304 [90m5ms[0m
+[90mGET /js/form-validators/loginValidator.js [36m304 [90m5ms[0m
+127.0.0.1 - - [Tue, 12 Mar 2013 21:07:15 GMT] "GET / HTTP/1.1" 304 - "-" "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.160 Safari/537.22"
+[90mGET / [36m304 [90m17ms[0m
+[90mGET /vendor/bootstrap.min.css [36m304 [90m1ms[0m
+[90mGET /css/main.css [36m304 [90m1ms[0m
+[90mGET /vendor/jquery.form.js [36m304 [90m1ms[0m
+[90mGET /vendor/bootstrap.js [36m304 [90m1ms[0m
+[90mGET /js/views/frontView.js [36m304 [90m1ms[0m
+[90mGET /js/front.js [36m304 [90m2ms[0m
+[90mGET /js/controllers/frontController.js [36m304 [90m1ms[0m
+[90mGET /js/form-validators/loginValidator.js [36m304 [90m1ms[0m
+[90mGET /js/form-validators/emailValidator.js [36m304 [90m0ms[0m
+[90mGET /js/form-validators/accountValidator.js [36m304 [90m0ms[0m
+211.154.142.174 - - [Wed, 13 Mar 2013 00:06:05 GMT] "HEAD /manager/html HTTP/1.0" 200 741 "-" "-"
+[90mHEAD /manager/html [32m200 [90m8ms - 741[0m
+HTTP server listening on port 8080
+[Error: failed to connect to [localhost:27017]]
+127.0.0.1 - - [Sun, 21 Apr 2013 13:16:04 GMT] "GET / HTTP/1.1" 200 5382 "-" "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.43 Safari/537.31"
+[90mGET / [32m200 [90m290ms - 5.26kb[0m
+[90mGET /vendor/bootstrap.min.css [32m200 [90m7ms - 123.46kb[0m
+[90mGET /css/main.css [32m200 [90m10ms - 10.76kb[0m
+[90mGET /vendor/jquery.form.js [32m200 [90m2ms - 38.47kb[0m
+[90mGET /vendor/bootstrap.js [32m200 [90m2ms - 60.32kb[0m
+[90mGET /js/front.js [32m200 [90m1ms - 1.81kb[0m
+[90mGET /js/views/frontView.js [32m200 [90m1ms - 2.72kb[0m
+[90mGET /js/controllers/frontController.js [32m200 [90m1ms - 565[0m
+[90mGET /js/form-validators/loginValidator.js [32m200 [90m1ms - 680[0m
+[90mGET /js/form-validators/emailValidator.js [32m200 [90m2ms - 1.05kb[0m
+[90mGET /js/form-validators/accountValidator.js [32m200 [90m1ms - 3.32kb[0m
