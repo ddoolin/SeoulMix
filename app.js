@@ -1,12 +1,5 @@
 var express = require("express");
 var http = require("http");
-// var https = require("https");
-// var fs = require("fs");
-
-// var options = {
-//     key: fs.readFileSync("key.pem"),
-//     cert: fs.readFileSync("cert.pem")
-// };
 
 var app = express();
 
@@ -41,13 +34,8 @@ app.configure('production', function() {
   app.use(express.errorHandler());
 });
 
-
 require('./app/router')(app);
 
 http.createServer(app).listen(app.get('port'), function() {
 	console.log("HTTP server listening on port " + app.get('port'));
 });
-
-// https.createServer(options, app).listen(443, function() {
-//     console.log("HTTPS server listening on port 443");
-// });

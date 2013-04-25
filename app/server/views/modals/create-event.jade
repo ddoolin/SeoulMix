@@ -1,3 +1,8 @@
 #create_event_modal.modal.hide.fade
     .modal-header Create New Event
-    .modal-content Stuff will go here eventually
+        button.close(data-dismiss='modal') x
+    .modal-content
+        form#new_event_form(method="post")
+            fieldset(name="event-creation")
+                input.event_name(required="required", type="text", title="Event name", name="event-name", placeholder="event name")
+                input.event-submit(type="submit", value="Create Event!")

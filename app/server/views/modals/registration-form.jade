@@ -1,29 +1,29 @@
 #registration_modal.modal.hide.fade
-  .modal-header Sign Up
-    button.close(data-dismiss='modal') x
-  .modal-content
-    #signup.signup-container
-      .modal-signup-body
-        .modal-signup-form
-          .direct-signup
-            form#new_user_form(method="post")
-              fieldset(name="user-registration")
-                .signup-username-container
-                  input#signup_username(required='required', type='text', pattern='^[A-Za-z0-9_]{4,30}$', title='4 character minimum. Must start with a number or letter. Alpha-numeric and underscores only.', name='signup-username', placeholder='username')
-                  .signup-username-comment Cannot be changed later.
-                  .clearfix
-                .signup-password-container
-                  input#signup_password(required='required', type='password', pattern='.{6,}', title='6 character minimum', name='signup-password', placeholder='password')
-                  .signup-password-comment At least 6 characters.
-                  .clearfix
-                  input#signup_password_confirm(required='required', type='password', pattern='.{6,}', title='Must be the same as the field above', name='signup-password-confirm', placeholder='confirm password')
-                  .signup-password-confirm-comment
-                  .clearfix
-                .signup-email-container
-                  input#signup_email(required='required', type='email', name='signup-email', placeholder='e-mail address')
-                  .signup-email-comment A valid e-mail is required.
-                  .clearfix
-                .signup-submit-container
-                  input#signup_submit(type='submit', value='Create Account!')
-                  .signup-submit-comment
-                  .clearfix
+    .modal-header Sign Up
+        button.close(data-dismiss='modal') x
+    .modal-content
+        #signup.signup-container
+            .modal-signup-body
+                .modal-signup-form
+                    .direct-signup
+                        form#new_user_form(method="post")
+                            fieldset(name="user-registration")
+                                .signup-username-container
+                                    input#signup_username(required='required', type='text', pattern='^[A-Za-z0-9_]{4,30}$', title='4 character minimum. Must start with a number or letter. Alpha-numeric and underscores only.', name='signup-username', placeholder='username')
+                                    .signup-username-comment Cannot be changed later.
+                                    .clearfix
+                                .signup-password-container
+                                    input#signup_password(required='required', type='password', pattern='.{6,}', title='6 character minimum', name='signup-password', placeholder='password')
+                                    .signup-password-comment At least 6 characters.
+                                    .clearfix
+                                    input#signup_password_confirm(required='required', type='password', pattern='.{6,}', title='Must be the same as the field above', name='signup-password-confirm', placeholder='confirm password')
+                                    .signup-password-confirm-comment
+                                    .clearfix
+                                .signup-email-container
+                                    input#signup_email(required='required', type='email', name='signup-email', placeholder='e-mail address')
+                                    .signup-email-comment A valid e-mail is required.
+                                    .clearfix
+                                .signup-submit-container
+                                    input#signup_submit(type='submit', value='Create Account!')
+                                    .signup-submit-comment
+                                    .clearfix
