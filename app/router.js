@@ -1,4 +1,5 @@
 var AM = require("./server/modules/account-manager"),
+    EM = require("./server/modules/event-manager"),
     ED = require("./server/modules/email-dispatcher");
 
 module.exports = function (app) {

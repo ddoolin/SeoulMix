@@ -1,0 +1,339 @@
+#map_canvas {
+	height: 100%;
+}
+#banner_main {
+	position: absolute;
+	bottom: 90px;
+	z-index: 10;
+	height: 85px;
+	width: 100%;
+	background: rgba(0, 0, 0, .85);
+	border-top: 1px solid white;
+	border-bottom: 1px solid white;
+
+	#banner_logo {
+		display: inline;
+		float: left;
+		line-height: 1.2em;
+		margin: 0em 0.8em 0em 0.3em;
+		text-decoration: none;
+		color: white;
+		font-family: 'Lobster', cursive;
+		font-size: 70px;
+	}
+
+	.divider {
+		position: absolute;
+		left: 25em;
+		top: 0.8em;
+		height: 5em;
+		border-left: 1px solid #CCC;
+	}
+
+	#banner_welcome {
+		display: inline;
+		float: left;
+		margin-left: 2em;
+		color: white;
+
+			@media only screen and (max-width: 1500px) {
+				display: none;
+			}
+
+		#banner_welcome_title {
+			margin: 10px 0px 0px 0px;
+			line-height: 30px;
+		}
+
+		#banner_welcome_text {
+			font-family: 'Arvo', serif;
+			font-size: 18px;
+			margin-top: 8px;
+			line-height: 35px;
+		}
+	}
+
+	#registration_container {
+		display: inline;
+		float: right;
+		margin: 0.7em;
+		height: 5.1em;
+		padding: 0.1em 2.6em 0em 0em;
+		border-right: 1px solid #CCC;
+
+		#new_signup_text {
+			position: relative;
+			left: 37px;
+			margin: 1px 0 10px 0;
+			color: white;
+			font-size: 24px;
+			font-family: serif;
+		}
+
+		#register_btn {
+			width: 100px;
+			text-decoration: none;
+		}
+	}
+
+	#login_container {
+		float: right;
+		display: inline;
+		margin: 0.8em 1em 0em 1.8em;
+
+		form {
+			margin: 0px;
+
+			#login_username {
+				height: 17.5px;
+				width: 212px;
+				font-size: 13px;
+			}
+
+			.remember-me {
+				position: relative;
+				padding-left: 15px;
+				display: inline;
+				font-size: 12px;
+				color: white;
+
+				input {
+					vertical-align: middle;
+					margin: 0px 0px 0px 5px;
+				}
+			}
+
+			#login_password {
+				margin-bottom: 0px;
+				height: 17.5px;
+				width: 150px;
+				font-size: 13px;
+			}
+
+			#login_submit {
+				margin-left: 9px;
+			}
+
+			#lost_password {
+				padding-left: 10px;
+				color: white;
+				font-size: 12px;
+			}
+		}
+	}
+	.main-button-container {
+		float: right;
+		padding: 2.1em 0em;
+
+		.banner-btn {
+			margin-right: 1em;
+		}
+	}
+}
+#loginerr_modal {
+	color: #333;
+	width: 26em;
+	left: 56%;
+
+	.modal-footer {
+		padding: 10px;
+	}
+}
+#lostpass_modal {
+
+	h3 {
+		font-family: "Lobster", cursive;
+		color: #444;
+	}
+
+	#lostpass_form {
+		.text-shadow(-1px 1px 0 #FFF);
+		margin-bottom: 0px;
+		color: #808080;
+
+		.modal-content {
+			overflow: hidden;
+			padding-bottom: 0px;
+
+			.main-form {
+				margin: 20px 25px;
+			}
+
+			#lostpass_error {
+				margin-bottom: 0px;
+			}
+		}
+
+		.modal-footer {
+			height: 20px;
+
+			#lostpass_cancel {
+				float: right;
+				margin: 0em 0.5em 1em 0em;
+			}
+
+			#lostpass_submit {
+				float: right;
+				margin: 0em 0em 1em 0em;
+			}
+		}
+	}
+}
+#registration_modal {
+	.rounded-corners;
+	background: #FFF;
+	border: 1px solid #B2B2B2;
+	width: 620px;
+
+	.modal-header {
+		.rounded-corners;
+		padding: 9px 0px 9px 0px;
+		color: #56AAEA;
+		background-color: #FFF;
+		text-align: center;
+		font-size: 35px;
+		font-family: "Lobster", cursive;
+		line-height: 40px;
+
+		.close {
+			position: absolute;
+			top: 15px;
+			right: 15px;
+		}
+	}
+
+	.modal-social-btn {
+		border: 0px;
+		margin: 30px 50px;
+
+		a {
+			text-decoration: none;
+
+			.fb-sign-up, .tw-sign-up {
+				.rounded-corners;
+				font-weight: bold;
+				cursor: pointer;
+				float: left;
+				width: 198px;
+				height: 16px;
+				color: #FFF;
+				font-size: 18px;
+				font-family: serif;
+				text-align: center;
+				line-height: 16px;
+				padding: 15px 22px;
+			}
+
+			.fb-sign-up {
+				margin-right: 36px;
+				background-color: #3B5998;
+			}
+
+			.tw-sign-up {
+				background-color: #90DAF6;
+			}
+		}
+	}
+
+	.modal-signup-body {
+		position: relative;
+		border: 0px;
+		padding-top: 2em;
+
+		.middle-text {
+			width: 36px;
+			left: 292px;
+			top: -25px;
+			display: block;
+			position: absolute;
+			background: #fff;
+			text-align: center;
+			line-height: 50px;
+			font-size: 16px;
+			color: #999;
+		}
+
+		.middle-dotted {
+			margin:30px 50px;
+			border-bottom: 1px dotted #b3b3b3;
+		}
+
+		.modal-signup-form {
+			margin: 0px 50px;
+
+			.direct-signup {
+				width: 100%;
+				padding-bottom: 20px;
+
+				#new_user_form {
+					margin: 0px;
+
+					#signup_username, #signup_email, #signup_password,
+					#signup_password_confirm, #signup_submit {
+						.box-shadow(1px, 1px, 1px, 0.1, inset);
+						float: left;
+						width: 340px;
+						height: 20px;
+						margin-bottom: 10px;
+						padding: 15px 4px;
+						font-size: 15px;
+					}
+
+					#signup_submit {
+						.rounded-corners;
+						width: 350px;
+						height: 55px;
+						border: 1px solid #B2B2B2;
+						font-size: 22px;
+						background-color: #EDEDED;
+						background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), color-stop(50%, #f5f5f5), to(#f5f5f5));
+						background-image: -webkit-linear-gradient(#fff, #f5f5f5 50%, #f5f5f5);
+						font-family: 'Lobster', cursive;
+						color: #56AAEA;
+					}
+
+					.signup-username-comment, .signup-email-comment,
+					.signup-password-comment, .signup-password-confirm-comment,
+					.signup-submit-comment {
+						float: left;
+						margin-left: 15px;
+						padding-top: 12px;
+						width: 155px;
+						color: grey;
+						line-height: 18px;
+					}
+
+					.signup-submit-comment {
+						padding-top: 0em;
+					}
+				}
+			}
+		}
+	}
+}
+#newpass_main {
+	.rounded-corners;
+	position: absolute;
+	width: 230px;
+	z-index: 10;
+	background: rgba(0, 0, 0, 0.65);
+	top: 40%;
+	left: 45%;
+	padding: 10px;
+
+	#newpass_form {
+		margin: 5px;
+
+		input {
+			display: block;
+		}
+
+		#newpass_submit {
+			width: 100%;
+		}
+	}
+
+	#newpass_error {
+		margin: 10px 0px 0px 0px;
+	}
+}
