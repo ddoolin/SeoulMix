@@ -26,28 +26,36 @@ $(document).ready(function() {
     var uv = new UpdateValidator();
 
     $("#update_form").ajaxForm({
-        url: "/update-profile",
+        url: "/api/users/" + $("#user_id").val(),
         beforeSubmit: function (formData, jqForm, options) {
             uv.resetFields();
             return uv.validateForm();
         },
         success: function (responseText, status, xhr, $form) {
-            if (status === "success") {
+            if (!responseText.error) {
                 uv.showUpdateAlert("alert-success", "<b>Success:</b> Account updated!");
 
                 $("#banner_welcome_title").text("Hello, " + responseText.firstname);
+            } else {
+                switch (responseText.error) {
+                    case "First name too long":
+                    case "Last name too long":
+                        uv.showErrors("firstname", "Personal names have a maximum limit of 50 characters.");
+                        break;
+                    case "E-mail in use":
+                        uv.showErrors("email", "That e-mail address is already in use.");
+                        break;
+                    case "Invalid password":
+                        uv.showErrors("password", "Must be at least 6 characters.");
+                        break;
+                    default:
+                        uv.showUpdateAlert("alert-error", "<b>Error:</b> There was a pretty complicated error. Please try again later.");
+                        break;
+                }
             }
         },
         error: function (err) {
-            if (err.responseText === "email-used") {
-                uv.showErrors("email", "That e-mail address is already in use.");
-            } else if (err.responseText === "invalid-password") {
-                uv.showErrors("password", "Must be at least 6 characters.");
-            } else if (err.responseText === "invalid-name") {
-                uv.showErrors("firstname", "Personal names have a maximum limit of 50 characters.");
-            } else {
-                uv.showUpdateAlert("alert-error", "<b>Error:</b> There was a pretty complicated error. Please try again later.");
-            }
+            uv.showUpdateAlert("alert-error", "<b>Error:</b> There was a pretty complicated error. Please try again later.");
         }
     });
 

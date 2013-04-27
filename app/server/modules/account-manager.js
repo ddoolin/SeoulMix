@@ -69,164 +69,6 @@ exports.manualLogin = function (user, pass, ipAddress, callback) {
     });
 };
 
-// Account creation
-
-exports.addNewAccount = function (data, callback) {
-    var user = data.user,
-        pass = data.pass,
-        email = data.email;
-
-    // Make sure all fields are accounted for
-    if (!user || !pass || !email) {
-        callback("empty-field", null);
-    } else {
-
-        // Alphanumeric only, between 4 and 40 characters
-        var regexp = /^[A-Za-z0-9_]{4,30}$/;
-
-        // Regexp the username and check the length (redundant)
-        if (user.length < 4 || user.length > 30 || !regexp.test(user)) {
-            callback("invalid-username", null);
-        } else {
-
-            // Check the password length
-            if (pass.length < 6) {
-                callback("invalid-password");
-            } else {
-
-                // Look for the username in the DB
-                users.findOne({
-                    user: data.user
-                }, function (err, result) {
-                    if (result) {
-                        callback("username-taken", null);
-                    } else {
-
-                        // Look for the email in the DB
-                        users.findOne({
-                            email: data.email
-                        }, function (err, result) {
-                            if (result) {
-                                callback("email-used", null);
-                            } else {
-
-                                // Hash the password
-                                data.pass = passHash.generate(data.pass, {
-                                    algorithm: "sha512",
-                                    saltLength: 16,
-                                    iterations: 2
-                                });
-
-                                // Set the registration date
-                                data.registrationDate = moment()
-                                    .format("dddd, MMMM Do YYYY, h:mm:ss a");
-
-                                // Set the number of logins to 0
-                                data.numLogins = 0;
-
-                                // Inset the data
-                                users.insert(data, {safe: true}, function (err, result) {
-                                    if (err) {
-                                        callback(err, null);
-                                    } else {
-                                        callback(null, result[0]);
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-            }
-        }
-    }
-};
-
-exports.updateAccount = function (data, callback) {
-
-    var firstname = data.firstname,
-        lastname = data.lastname,
-        email = data.email,
-        user = data.user,
-        pass = data.pass,
-
-        // Separate in case of non-changed password
-        // Names CAN BE removed
-        update = {
-            firstname: firstname,
-            lastname: lastname,
-            email: email
-        };
-
-    // Check name lengths
-    if (firstname.length <= 50 && lastname.length <= 50) {
-
-        // Check if the email is already being used
-        that.getAccountsByEmail(email, function (err, result) {
-            if (!result || result.email === email) {
-                if (pass === "") {
-                        users.findAndModify(
-                            { user: user },
-                            [["_id", "asc"]],
-                            { $set: update },
-                            { new: true },
-                            function (err, result) {
-                                if (err) {
-                                    callback(err, null);
-                                } else {
-                                    result = {
-                                        _id: result._id,
-                                        user: result.user,
-                                        firstname: result.firstname,
-                                        lastname: result.lastname,
-                                        email: result.email
-                                    };
-                                    callback(null, result);
-                                }
-                            }
-                        );
-                } else {
-                    if (pass.length >= 6) {
-
-                        // Save new password to update object
-                        update.pass = passHash.generate(data.pass, {
-                            algorithm: "sha512",
-                            saltLength: 16,
-                            iterations: 2
-                        });
-
-                        users.findAndModify(
-                            { user: data.user },
-                            [["_id", "asc"]],
-                            { $set: update },
-                            { new: true },
-                            function (err, result) {
-                                if (err) {
-                                    callback(err, null);
-                                } else {
-                                    result = {
-                                        id: result._id,
-                                        user: result.user,
-                                        firstname: result.firstname,
-                                        lastname: result.lastname,
-                                        email: result.email
-                                    };
-                                    callback(null, result);
-                                }
-                            }
-                        );
-                    } else {
-                        callback("invalid-password", null);
-                    }
-                }
-            } else {
-                callback("invalid-email");
-            }
-        });
-    } else {
-        callback("invalid-name", null);
-    }
-};
-
 exports.updatePassword = function (email, pass, callback) {
 
     // Pass the new password to be hashed
@@ -413,7 +255,180 @@ exports.deleteAccount = function (id, pass, callback) {
 
 // Account lookup
 
-exports.getAccountsByEmail = function (email, callback) {
+exports.getUsers = function (req, res) {
+    users.find({}, { pass: 0 }).toArray(function (err, result) {
+        res.send(result);
+    });
+};
+
+exports.getUser = function (req, res) {
+    users.findOne(
+        { user: req.param("id") },
+        { pass: 0 },
+    function (err, result) {
+        res.send(result);
+    });
+};
+
+exports.addUser = function (req, res) {
+    var data = {},
+        user = req.param("signup-username"),
+        pass = req.param("signup-password"),
+        email = req.param("signup-email"),
+        registrationIp;
+
+    // Make sure all fields are accounted for
+    if (!user || !pass || !email) {
+        res.send({"error": "Field cannot be empty"});
+    } else {
+
+        // Alphanumeric only, between 4 and 40 characters
+        var regexp = /^[A-Za-z0-9_]{4,30}$/;
+
+        // Regexp the username and check the length (redundant)
+        if (user.length < 4 || user.length > 30 || !regexp.test(user)) {
+            res.send({"error": "Invalid username"});
+        } else {
+
+            // Check the password length
+            if (pass.length < 6) {
+                res.send({"error": "Invalid password"});
+            } else {
+
+                // Look for the username in the DB
+                users.findOne({
+                    user: user
+                }, function (err, result) {
+                    if (result) {
+                        res.send({"error": "Username taken"});
+                    } else {
+
+                        // Look for the email in the DB
+                        users.findOne({
+                            email: email
+                        }, function (err, result) {
+                            if (result) {
+                                res.send({"error": "E-mail in use"});
+                            } else {
+
+                                // Hash the password
+                                data.pass = passHash.generate(pass, {
+                                    algorithm: "sha512",
+                                    saltLength: 16,
+                                    iterations: 2
+                                });
+
+                                // Set the registration date
+                                data.registrationDate = moment()
+                                    .format("dddd, MMMM Do YYYY, h:mm:ss a");
+
+                                // Set the number of logins to 0
+                                data.numLogins = 0;
+
+                                // Get the IP from the header
+                                if (req.header("x-forwarded-for")) {
+                                    data.registrationIp = req.header("x-forwarded-for").split("/")[0];
+                                } else {
+                                    data.registrationIp = req.connection.remoteAddress;
+                                }
+
+                                // Set the rest of the data
+                                data.user = user;
+                                data.email = email;
+
+                                // Insert the data
+                                users.insert(data, {safe: true}, function (err, result) {
+                                    if (err) {
+                                        console.log(err);
+                                        res.send({"error": "An error has occured"});
+                                    } else {
+                                        req.session.user = result[0];
+                                        res.send(result[0]);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    }
+};
+
+exports.updateUser = function (req, res) {
+
+    var data = {},
+        self,
+        firstname = req.param("update-firstname"),
+        lastname = req.param("update-lastname"),
+        email = req.param("update-email"),
+        user = req.param("id"),
+        pass = req.param("update-password");
+
+    users.findOne({
+        user: user
+    }, function (err, result) {
+        if (err) {
+            res.send({"error": "An error has occured"});
+        } else {
+            self = result;
+
+            if (firstname && firstname.length > 50) {
+                res.send({"error": "First name too long"});
+            } else {
+                data.firstname = firstname;
+            }
+
+            if (lastname && lastname.length > 50) {
+                res.send({"error": "Last name too long"});
+            } else {
+                data.lastname = lastname;
+            }
+
+            if (email) {
+                that.findByEmail(email, function (err, result) {
+                    if (result && result.email !== self.email) {
+                        res.send({"error": "E-mail in use"});
+                    }
+                });
+            } else {
+                data.email = email;
+            }
+
+            if (pass) {
+                if (pass.length < 6) {
+                    res.send({"error": "Invalid password"});
+                } else {
+                    data.pass = passHash.generate(pass, {
+                        algorithm: "sha512",
+                        saltLength: 16,
+                        iterations: 2
+                    });
+                }
+            } else {
+                data.pass = self.pass;
+            }
+
+            users.findAndModify(
+                { user: user },
+                [["_id", "asc"]],
+                { $set: data },
+                { new: true },
+                { "pass": 0 },
+                function (err, result) {
+                    if (err) {
+                        res.send({"error": "An error has occured"});
+                    } else {
+                        req.session.user = result;
+                        res.send(result);
+                    }
+                }
+            );
+        }
+    });
+};
+
+exports.findByEmail = function (email, callback) {
     users.findOne({
         email: email
     }, function (err, result) {
@@ -423,7 +438,7 @@ exports.getAccountsByEmail = function (email, callback) {
             callback(null, result);
         }
     });
-},
+};
 
 exports.validateResetLink = function (email, passhash, callback) {
     users.find({
@@ -438,45 +453,10 @@ exports.validateResetLink = function (email, passhash, callback) {
             callback(null, result);
         }
     });
-},
-
-exports.getUsers = function (callback) {
-    users.find().toArray(function (err, result) {
-        if (err) {
-            callback(err, null);
-        } else {
-            callback(null, result);
-        }
-    });
 };
 
 // Aux. methods
 
 var getObjectId = function (id) {
     return users.db.bson_serializer.ObjectID.createFromHexString(id);
-};
-
-var findById = function (id, callback) {
-    users.findOne({
-        _id: getObjectId(id)
-    }, function (err, result) {
-        if (err) {
-            callback(err, null);
-        } else {
-            callback(null, result);
-        }
-    });
-};
-
-var findByMultipleFields = function (arr, callback) {
-    users.find({
-        $or: arr
-    }).toArray(
-        function (err, results) {
-            if (err) {
-                callback(err, null);
-            } else {
-                callback(null, result);
-            }
-        });
 };

@@ -10,53 +10,10 @@ module.exports = function (app) {
 
     // Users
 
-    app.get("/api/users", function (req, res) {
-        if (req.session.user === undefined) {
-            res.render("front");
-        } else {
-            AM.getUsers(function (err, result) {
-                if (result !== null) {
-                    res.send(result, 200);
-                } else {
-                    res.send("unable-to-fetch", 400);
-                }
-            });
-        }
-    });
-
-    app.post("/api/users", function (req, res) {
-        var ipAddress;
-
-        if (req.header("x-forwarded-for")) {
-            ipAddress = req.header("x-forwarded-for").split("/")[0];
-        } else {
-            ipAddress = req.connection.remoteAddress;
-        }
-
-        AM.addNewAccount({
-            user:   req.param("signup-username"),
-            pass:   req.param("signup-password"),
-            email:  req.param("signup-email"),
-            registrationIp: ipAddress
-        }, function (err, result) {
-            if (result !== null) {
-
-                req.session.user = result;
-
-                res.send(result, 200);
-            } else {
-                if (err === "empty-field" || err === "invalid-username"
-                    || err === "invalid-password" || err === "username-taken"
-                    || err === "email-used") {
-
-                    res.send(err, 400);
-                } else {
-                    console.log(err);
-                    res.send("unable-to-create", 400);
-                }
-            }
-        });
-    });
+    app.get("/api/users", AM.getUsers);
+    app.get("/api/users/:id", AM.getUser);
+    app.post("/api/users", AM.addUser);
+    app.post("/api/users/:id", AM.updateUser);
 
     // Events
 
@@ -189,7 +146,7 @@ module.exports = function (app) {
 
         var i;
 
-        AM.getAccountsByEmail(req.param("lostpass-email"), function (err, result) {
+        AM.findByEmail(req.param("lostpass-email"), function (err, result) {
             if (result !== null) {
                 res.send("OK", 200);
                 ED.dispatchPasswordResetLink(result, function (err, msg) {
@@ -235,35 +192,6 @@ module.exports = function (app) {
                 }
             });
         }
-    });
-
-    app.post("/update-profile", function (req, res) {
-
-        // Put data into an object and send it off 
-        // Use session username in case the user changed it maliciously
-        var data = {
-            firstname: req.param("update-firstname"),
-            lastname: req.param("update-lastname"),
-            email: req.param("update-email"),
-            user: req.session.user.user,
-            pass: req.param("update-password")
-        };
-
-        AM.updateAccount(data, function (err, result) {
-            if (result !== null) {
-                req.session.user = result;
-                res.send(result, 200);
-            } else {
-                if (err === "invalid-password"
-                    || err === "invalid-email"
-                    || err === "invalid-name") {
-
-                    res.send(err, 400);
-                 } else {
-                    res.send("unable-to-update");
-                }
-            }
-        });
     });
 
     app.post("/update-profilepic", function (req, res) {

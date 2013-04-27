@@ -17,28 +17,38 @@ $(document).ready(function() {
 			return av.validateForm();
 		},
 		success: function(responseText, status, xhr, $form) {
-			if (status === "success") {
+			if (!responseText.error) {
 
 				av.showCreateSuccess("<b>Success!</b> You're account was created! Now logging you in...");
+
 				setTimeout(function() {
 					window.location.href = "/";
 				}, 2000);
+			} else {
+				switch (responseText.error) {
+					case "Username taken":
+						av.showInvalidUsername();
+						break;
+					case "E-mail in use":
+						av.showInvalidEmail();
+						break;
+					case "Invalid username":
+						av.showErrors("username", "Must be between 4 and 30 characters, numbers and letters only.");
+						break;
+					case "Invalid password":
+						av.showErrors("password", "Must be at least 6 characters.");
+						break;
+					case "Field cannot be empty":
+						av.showErrors("default", "You must complete all fields.");
+						break;
+					default:
+						av.showErrors("default", "An error occured. Please try again later.");
+						break;
+				}
 			}
 		},
 		error: function(err) {
-			if (err.responseText === "username-taken") {
-				av.showInvalidUsername();
-			} else if (err.responseText === "email-used") {
-				av.showInvalidEmail();
-			} else if (err.responseText === "invalid-username") {
-				av.showErrors("username", "Must be between 4 and 30 characters, numbers and letters only.");
-			} else if (err.responseText === "invalid-password") {
-				av.showErrors("password", "Must be at least 6 characters.");
-			} else if (err.responseText === "empty-field") {
-				av.showErrors("default", "You must complete all fields.");
-			} else {
-				av.showErrors("default", "An error occured. Please try again later.");
-			}
+			av.showErrors("default", "An error occured. Please try again later.");
 		}
 	});
 

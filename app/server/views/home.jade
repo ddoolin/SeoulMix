@@ -16,6 +16,7 @@ block content
             | Create Event
         button#view_profile(data-toggle="modal", href="#profile_modal").btn.banner-btn
             | Profile Settings
+    input#user_id(type="hidden", value= userdata.user)
 
     include modals/profile
     include modals/delete-account
