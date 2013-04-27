@@ -11,15 +11,13 @@ $(document).ready(function() {
 	// Signup
 
 	$("#new_user_form").ajaxForm({
-		url: "/signup",
+		url: "/api/users",
 		beforeSubmit: function(formData, jqForm, options) {
 			av.resetFields();
 			return av.validateForm();
 		},
 		success: function(responseText, status, xhr, $form) {
 			if (status === "success") {
-				// window.alert("Your account has been created! Hooray! Now login and get started! :)");
-				// $("#registration_modal").modal("hide");
 
 				av.showCreateSuccess("<b>Success!</b> You're account was created! Now logging you in...");
 				setTimeout(function() {

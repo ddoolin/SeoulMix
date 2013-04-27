@@ -122,7 +122,7 @@ label {
 }
 #banner_main #registration_container #new_signup_text {
   position: relative;
-  left: 37px;
+  left: 1.2em;
   margin: 1px 0 10px 0;
   color: white;
   font-size: 24px;

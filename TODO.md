@@ -5,3 +5,5 @@
 * Remove uploaded image after processing finished
 * Remove user image folder after account deleted
 * Third-party image processing? Cloudinary?
+* Correct HTTP status codes
+* Proper error return system

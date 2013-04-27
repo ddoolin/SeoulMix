@@ -2,26 +2,43 @@ $(document).ready(function() {
 
     var hc = new HomeController();
 
+    // Create event
+
+    var ev = new EventValidator();
+
+    $("#new_event_form").ajaxForm({
+        url: "/api/events",
+        beforeSubmit: function(formData, jqForm, options) {
+            return ev.validateForm();
+        },
+        success: function (responseText, status, xhr, $form) {
+            if (status === "success") {
+                console.log("Event created!");
+            }
+        },
+        error: function (err) {
+            console.log(err.responseText);
+        }
+    })
+
     // Update profile
 
     var uv = new UpdateValidator();
 
     $("#update_form").ajaxForm({
         url: "/update-profile",
-        beforeSubmit: function(formData, jqForm, options) {
+        beforeSubmit: function (formData, jqForm, options) {
             uv.resetFields();
             return uv.validateForm();
         },
-        success: function(responseText, status, xhr, $form) {
+        success: function (responseText, status, xhr, $form) {
             if (status === "success") {
                 uv.showUpdateAlert("alert-success", "<b>Success:</b> Account updated!");
 
-                if (responseText.firstname !== "") {
-                    $("#banner_welcome_title").text("Hello, " + responseText.firstname);
-                }
+                $("#banner_welcome_title").text("Hello, " + responseText.firstname);
             }
         },
-        error: function(err) {
+        error: function (err) {
             if (err.responseText === "email-used") {
                 uv.showErrors("email", "That e-mail address is already in use.");
             } else if (err.responseText === "invalid-password") {
@@ -40,10 +57,10 @@ $(document).ready(function() {
 
     $("#deleteacct_form").ajaxForm({
         url: "/delete",
-        beforeSubmit: function(formData, jqForm, options) {
+        beforeSubmit: function (formData, jqForm, options) {
             return dv.validateForm();
         },
-        success: function(responseText, status, xhr, $form) {
+        success: function (responseText, status, xhr, $form) {
             if (status === "success") {
                 dv.showDeleteSuccess("<b>Success:</b> Account deleted. Redirecting to front page...");
                 setTimeout(function() {
@@ -51,7 +68,7 @@ $(document).ready(function() {
                 }, 2500);
             }
         },
-        error: function(err) {
+        error: function (err) {
             if (err.responseText === "invalid-password") {
                 dv.showInvalidPassword("<b>Error:</b> Invalid password. Please try again.");
             } else {
@@ -62,7 +79,7 @@ $(document).ready(function() {
 
     // Update profile picture
 
-    $("#choose_existing_photo").on("change", function() {
+    $("#choose_existing_photo").on("change", function () {
         var profilePic = this.files[0],
             profilePicName = profilePic.name,
             profilePicSize = profilePic.size,
@@ -86,7 +103,7 @@ $(document).ready(function() {
         if (window.FileReader) {
             var reader = new FileReader();
 
-            reader.onload = function(file) {
+            reader.onload = function (file) {
                 $("#profile_picture").attr("src", file.target.result);
             };
 
@@ -104,18 +121,18 @@ $(document).ready(function() {
             cache: false,
             contentType: false,
             processData: false,
-            success: function() {
+            success: function () {
                 profilePicText.addClass("text-success").text("Picture updated!");
                 $("<li class='delete-photo'>").appendTo("#profile_dropdown");
                 $("<a id='delete_photo'>Delete photo</a></li>").appendTo(".delete-photo");
 
-                $("#delete_photo").click(function() {
+                $("#delete_photo").click(function () {
                     if (window.confirm("Are you sure you want to remove your picture?")) {
                         hc.removePhoto();
                     }
                 });
             },
-            error: function(err) {
+            error: function (err) {
                 // Stuff on error
                 console.log(err);
             }

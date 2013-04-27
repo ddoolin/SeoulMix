@@ -129,7 +129,7 @@ exports.addNewAccount = function (data, callback) {
                                     if (err) {
                                         callback(err, null);
                                     } else {
-                                        callback(null, result);
+                                        callback(null, result[0]);
                                     }
                                 });
                             }
@@ -174,7 +174,7 @@ exports.updateAccount = function (data, callback) {
                                     callback(err, null);
                                 } else {
                                     result = {
-                                        id: result._id,
+                                        _id: result._id,
                                         user: result.user,
                                         firstname: result.firstname,
                                         lastname: result.lastname,
@@ -440,7 +440,7 @@ exports.validateResetLink = function (email, passhash, callback) {
     });
 },
 
-exports.getAllRecords = function (callback) {
+exports.getUsers = function (callback) {
     users.find().toArray(function (err, result) {
         if (err) {
             callback(err, null);

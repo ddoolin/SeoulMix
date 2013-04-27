@@ -6,6 +6,94 @@ module.exports = function (app) {
 
     "use strict";
 
+    // API
+
+    // Users
+
+    app.get("/api/users", function (req, res) {
+        if (req.session.user === undefined) {
+            res.render("front");
+        } else {
+            AM.getUsers(function (err, result) {
+                if (result !== null) {
+                    res.send(result, 200);
+                } else {
+                    res.send("unable-to-fetch", 400);
+                }
+            });
+        }
+    });
+
+    app.post("/api/users", function (req, res) {
+        var ipAddress;
+
+        if (req.header("x-forwarded-for")) {
+            ipAddress = req.header("x-forwarded-for").split("/")[0];
+        } else {
+            ipAddress = req.connection.remoteAddress;
+        }
+
+        AM.addNewAccount({
+            user:   req.param("signup-username"),
+            pass:   req.param("signup-password"),
+            email:  req.param("signup-email"),
+            registrationIp: ipAddress
+        }, function (err, result) {
+            if (result !== null) {
+
+                req.session.user = result;
+
+                res.send(result, 200);
+            } else {
+                if (err === "empty-field" || err === "invalid-username"
+                    || err === "invalid-password" || err === "username-taken"
+                    || err === "email-used") {
+
+                    res.send(err, 400);
+                } else {
+                    console.log(err);
+                    res.send("unable-to-create", 400);
+                }
+            }
+        });
+    });
+
+    // Events
+
+    app.get("/api/events", function (req, res) {
+        if (req.session.user === undefined) {
+            res.render("front");
+        } else {
+            EM.getEvents(function (err, result) {
+                if (result !== null) {
+                    res.send(result, 200);
+                } else {
+                    res.send("unable-to-fetch", 400);
+                }
+            });
+        }
+    });
+
+    app.post("/api/events", function (req, res) {
+        if (req.session.user === undefined) {
+            res.render("front");
+        } else {
+            var data = {
+                user: req.session.user._id,
+                name: req.param("event-name"),
+                description: req.param("event-description")
+            };
+
+            EM.addEvent(data, function (err, result) {
+                if (result !== null) {
+                    res.send(result, 201);
+                } else {
+                    res.send("unable-to-create", 400);
+                }
+            });
+        }
+    });
+
     // GET
 
     // Front page
@@ -130,43 +218,6 @@ module.exports = function (app) {
                 res.send("OK", 200);
             } else {
                 res.send("unable-to-update", 400);
-            }
-        });
-    });
-
-    app.post("/signup", function (req, res) {
-
-        var ipAddress;
-
-        if (req.header("x-forwarded-for")) {
-            ipAddress = req.header("x-forwarded-for").split("/")[0];
-        } else {
-            ipAddress = req.connection.remoteAddress;
-        }
-
-        AM.addNewAccount({
-            user:   req.param("signup-username"),
-            pass:   req.param("signup-password"),
-            email:  req.param("signup-email"),
-            registrationIp: ipAddress
-        }, function (err, result) {
-            if (result !== null) {
-
-                // Mongo's insert returns results in an array
-                // To fit, pull it out into an object
-                result = result[0];
-                req.session.user = result;
-
-                res.send("OK", 200);
-            } else {
-                if (err === "empty-field" || err === "invalid-username"
-                    || err === "invalid-password" || err === "username-taken"
-                    || err === "email-used") {
-
-                    res.send(err, 400);
-                } else {
-                    res.send("unable-to-create", 400);
-                }
             }
         });
     });
