@@ -6,7 +6,7 @@ function UpdateValidator() {
     that.updateProfileAlert = $("#update_done");
     that.formFields = [$("#update_firstname"), $("#update_lastname"),
         $("#update_email"), $("#update_password"),
-        $("#update_password_confirm"), $("#profile-picture")];
+        $("#update_password_confirm"), $("#profile_picture")];
 
     that.commentFields = [$(".update-firstname-comment"),
         $(".update-lastname-comment"), $(".update-email-comment"),
@@ -49,10 +49,6 @@ function UpdateValidator() {
     }
 
     that.validateEmail = function (email) {
-
-        if (email === "") {
-            return true;
-        }
 
         // Basic example@example.com regular expression
         var regexp = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -129,12 +125,12 @@ UpdateValidator.prototype.validateForm = function () {
         this.showErrors("confirm", "Passwords must match.");
         return false;
     }
-    if (this.formFields[4].val() != "") {
-        if (this.validatePictureSize(this.formFields[4].val()) === false) {
+    if (this.formFields[5].val() != "") {
+        if (this.validatePictureSize(this.formFields[5].val()) === false) {
             this.showErrors("picture", "File too large.");
             return false;        
         }
-        if (this.validatePictureType(this.formFields[4].val()) === false) {
+        if (this.validatePictureType(this.formFields[5].val()) === false) {
             this.showErrors("picture", "File is not a .JPG or .PNG.");
             return false;
         }

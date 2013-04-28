@@ -13,7 +13,8 @@ module.exports = function (app) {
     app.get("/api/users", AM.getUsers);
     app.get("/api/users/:id", AM.getUser);
     app.post("/api/users", AM.addUser);
-    app.post("/api/users/:id", AM.updateUser);
+    app.put("/api/users/:id", AM.updateUser);
+    app.del("/api/users/:id", AM.deleteUser);
 
     // Events
 
@@ -246,32 +247,6 @@ module.exports = function (app) {
                 }
             });
         }
-    });
-
-    app.post("/delete", function (req, res) {
-
-        // Get the ID from the session and the pass from the form
-        var userId = req.session.user._id,
-            pass = req.param("delete-password");
-
-        // Call deleteAccount, passing ID and pass
-        AM.deleteAccount(userId, pass, function (err, result) {
-
-            // If no error exists, destory the session and send ok. 
-            if (result !== null) {
-                req.session.destroy(function (err) {
-                    if (err) {
-                        res.send(err, 400);
-                    } else {
-                        res.send("OK", 200);
-                    }
-                });
-
-            // Otherwise, log the error and send record not found.
-            } else {
-                res.send(err, 400);
-            }
-        });
     });
 
     app.get("*", function (req, res) {

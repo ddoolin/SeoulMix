@@ -211,48 +211,6 @@ exports.updateProfilePic = function (data, callback) {
     }
 };
 
-exports.deleteAccount = function (id, pass, callback) {
-    users.findOne({
-        _id: getObjectId(id)
-    }, function (err, result) {
-        if (err) {
-            callback("record-not-found", null);
-        } else {
-            if (passHash.verify(pass, result.pass)) {
-
-                // Remove anything dependent on DB results before removing
-                var profilePic = result.profilePic,
-                    user = result.user;
-
-                that.updateProfilePic({
-                    image: profilePic,
-                    user: user,
-                    remove: true
-                }, function (err, result) {
-                    if (err) {
-                        callback(err, null);
-                    } else {
-
-                        // Lastly, remove from DB
-                        users.remove({
-                            _id: getObjectId(id)
-                        }, function (err, result) {
-                            if (err) {
-                                callback(err, null);
-                            } else {
-                                callback(null, result);
-                            }
-                        });
-
-                    }
-                });
-            } else {
-                callback("invalid-password", null);
-            }
-        }
-    });
-};
-
 // Account lookup
 
 exports.getUsers = function (req, res) {
@@ -359,11 +317,11 @@ exports.updateUser = function (req, res) {
 
     var data = {},
         self,
-        firstname = req.param("update-firstname"),
-        lastname = req.param("update-lastname"),
-        email = req.param("update-email"),
+        firstname = req.param("firstname"),
+        lastname = req.param("lastname"),
+        email = req.param("email"),
         user = req.param("id"),
-        pass = req.param("update-password");
+        pass = req.param("pass");
 
     users.findOne({
         user: user
@@ -386,25 +344,31 @@ exports.updateUser = function (req, res) {
             }
 
             if (email) {
-                that.findByEmail(email, function (err, result) {
-                    if (result && result.email !== self.email) {
-                        res.send({"error": "E-mail in use"});
-                    }
-                });
+                if (email !== self.email) {
+                    that.findByEmail(email, function (err, result) {
+                        if (result) {
+                            res.send({"error": "E-mail in use"});
+                        } else {
+                            data.email = email;
+                        }
+                    });
+                } else {
+                    data.email = self.email;
+                }
             } else {
-                data.email = email;
+                res.send({"error": "Invalid e-mail"});
             }
 
             if (pass) {
                 if (pass.length < 6) {
                     res.send({"error": "Invalid password"});
-                } else {
-                    data.pass = passHash.generate(pass, {
-                        algorithm: "sha512",
-                        saltLength: 16,
-                        iterations: 2
-                    });
                 }
+
+                data.pass = passHash.generate(pass, {
+                    algorithm: "sha512",
+                    saltLength: 16,
+                    iterations: 2
+                });
             } else {
                 data.pass = self.pass;
             }
@@ -414,7 +378,6 @@ exports.updateUser = function (req, res) {
                 [["_id", "asc"]],
                 { $set: data },
                 { new: true },
-                { "pass": 0 },
                 function (err, result) {
                     if (err) {
                         res.send({"error": "An error has occured"});
@@ -424,6 +387,30 @@ exports.updateUser = function (req, res) {
                     }
                 }
             );
+        }
+    });
+};
+
+exports.deleteUser = function (req, res) {
+    users.findOne({
+        user: req.param("id")
+    }, function (err, result) {
+        if (result) {
+            if (passHash.verify(req.param("pass"), result.pass)) {
+                users.remove({
+                    _id: result._id
+                }, function (err, result) {
+                    if (err) {
+                        res.send({"error": "An error has occured"});
+                    } else {
+                        res.send({"status": "success");
+
+                        req.session.destroy();
+                    }
+                });
+            } else {
+                res.send({"error": "Invalid password"});
+            };
         }
     });
 };

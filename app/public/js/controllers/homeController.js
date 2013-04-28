@@ -19,6 +19,7 @@ function HomeController() {
     // Need to use a JS trigger to prevent this ajaxForm from submitting on click
     $("#delete_account").click(function(event) {
         event.preventDefault();
+
         $("#profile_modal").modal("hide");
         $("#deleteacct_modal").modal("show");
     });
