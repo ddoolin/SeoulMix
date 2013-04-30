@@ -214,7 +214,7 @@ exports.updateProfilePic = function (data, callback) {
 // Account lookup
 
 exports.getUsers = function (req, res) {
-    users.find({}, { pass: 0 }).toArray(function (err, result) {
+    users.find({}, { pass: 0, _id: 0 }).toArray(function (err, result) {
         res.send(result);
     });
 };
@@ -222,7 +222,7 @@ exports.getUsers = function (req, res) {
 exports.getUser = function (req, res) {
     users.findOne(
         { user: req.param("id") },
-        { pass: 0 },
+        { pass: 0, _id: 0 },
     function (err, result) {
         res.send(result);
     });
@@ -403,7 +403,7 @@ exports.deleteUser = function (req, res) {
                     if (err) {
                         res.send({"error": "An error has occured"});
                     } else {
-                        res.send({"status": "success");
+                        res.send({"status": "success"});
 
                         req.session.destroy();
                     }

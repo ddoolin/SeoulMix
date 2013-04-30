@@ -14,6 +14,7 @@ module.exports = function (app) {
     app.get("/api/users/:id", AM.getUser);
     app.post("/api/users", AM.addUser);
     app.put("/api/users/:id", AM.updateUser);
+    app.pit("/api/users/:id/upload", AM.updateProfilePic);
     app.del("/api/users/:id", AM.deleteUser);
 
     // Events
