@@ -1,6 +1,7 @@
 var AM = require("./server/modules/account-manager"),
     EM = require("./server/modules/event-manager"),
-    ED = require("./server/modules/email-dispatcher");
+    ED = require("./server/modules/email-dispatcher"),
+    constants = require("./server/modules/constants");
 
 module.exports = function (app) {
 
@@ -14,7 +15,8 @@ module.exports = function (app) {
     app.get("/api/users/:id", AM.getUser);
     app.post("/api/users", AM.addUser);
     app.put("/api/users/:id", AM.updateUser);
-    app.pit("/api/users/:id/upload", AM.updateProfilePic);
+    app.put("/api/users/:id/upload", AM.updateProfileImage);
+    app.del("/api/users/:id/upload", AM.deleteProfileImage);
     app.del("/api/users/:id", AM.deleteUser);
 
     // Events

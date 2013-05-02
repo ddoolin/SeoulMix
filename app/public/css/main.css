@@ -412,7 +412,12 @@ label {
   margin-left: 8em;
 }
 #profile_modal #update_form .modal-content .profile-photo-controls .uploader-tools .dropdown .profile-picture-comment {
-  display: inline;
+  position: absolute;
+  display: inline-block;
+  width: 15em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
   margin-left: 1em;
 }
 #profile_modal #update_form .modal-content .profile-photo-controls .uploader-tools .dropdown #choose_existing_photo {

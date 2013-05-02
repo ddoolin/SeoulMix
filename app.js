@@ -1,4 +1,5 @@
-var express = require("express");
+var express = require("express"),
+    cloudinary = require("cloudinary");
 
 var app = express();
 
@@ -21,6 +22,7 @@ app.configure(function() {
     }));
 	app.use(express.methodOverride());
 	app.use(express.static(__dirname + '/app/public'));
+  cloudinary.config({ cloud_name: "seoulmix", api_key: "389689266184749", api_secret: "KTTzUc77y2DACiZpYrlqKH9ZAi8" });
 });
 
 app.configure('development', function() {
@@ -32,6 +34,9 @@ app.configure('production', function() {
   app.use(express.logger());
   app.use(express.errorHandler());
 });
+
+app.locals.cloudinary_api_key = cloudinary.config().api_key;
+app.locals.cloudinary_cloud_name = cloudinary.config().cloud_name;
 
 require('./app/router')(app);
 

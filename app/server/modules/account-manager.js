@@ -4,6 +4,8 @@ var database = require("../../database"),
     async = require("async"),
     moment = require("moment"),
     passHash = require("password-hash"),
+    cloudinary = require("cloudinary"),
+    constants = require("./constants"),
 
     users = db.collection("users"),
     that = this;
@@ -93,124 +95,6 @@ exports.updatePassword = function (email, pass, callback) {
     );
 };
 
-exports.updateProfilePic = function (data, callback) {
-
-    var image = data.image,
-        user = data.user,
-        remove = data.remove;
-
-    // If remove is false, check and add image
-    if (remove === false) {
-
-        // If the image size is within the limits
-        if (image.size > 0 && image.size < 716800) {
-
-            // If the image is a .JPG or .PNG
-            if (image.type === "image/jpeg" || image.type === "image/png") {
-
-                var tempPath = image.path,
-                    targetPath;
-
-                // If the directory exists, continue; If not, create it
-                fs.exists(path.normalize(__dirname
-                    + "/../../public/img/profile-images/"
-                    + user), function (exists) {
-
-                    if (!exists) {
-                        fs.mkdir(path.normalize(__dirname
-                            + "/../../public/img/profile-images/"
-                            + user), function (err) {
-
-                            if (err) {
-                                throw err;
-                            }
-                        });
-                    }
-                });
-
-                // Set the target path to the (perhaps new) directory
-                targetPath =
-                    path.normalize(__dirname
-                    + "/../../public/img/profile-images/"
-                    + user + "/" + image.name);
-
-                // Keep trying to move the file until it's there w/ a 1 second
-                // interval
-                async.until(
-                    function () {
-                        // Move the file (this removes from the temp path)
-                        fs.rename(tempPath, targetPath, function (err) {
-                            if (err) {
-                                return false;
-                            } else {
-                                return true;
-                            }
-                        });
-                    },
-                    function (callback) {
-                        setTimeout(callback, 1000);
-                    },
-                    function (err) {
-                        if (err) {
-                            console.log(err);
-                            throw err;
-                        }
-                    }
-                );
-
-                users.update(
-                    { user: user },
-                    { $set: { profilePic: image.name } },
-                    { safe: true },
-                    function (err, result) {
-                        if (err) {
-                            callback(err, null);
-                        } else {
-                            callback(null, result);
-                        }
-                    }
-                );
-            } else {
-                callback("image-count", null);
-            }
-        } else {
-            callback("image-size", null);
-        }
-    } else {
-
-        // Else, remove it by setting the property to null
-        users.update(
-            { user: user },
-            { $set: { profilePic: null } },
-            { safe: true },
-            function (err, result) {
-                if (err) {
-                    callback(err, null);
-                } else {
-                    callback(null, result);
-                }
-            }
-        );
-
-        // Remove the actual file (if the user had one)
-        fs.exists(path.normalize(__dirname
-            + "/../../public/img/profile-images/"
-            + user + "/" + image), function (exists) {
-
-            if (exists) {
-                fs.unlink(path.normalize(__dirname
-                    + "/../../public/img/profile-images/"
-                    + user + "/" + image), function (err) {
-
-                    if (err) {
-                        throw err;
-                    }
-                });
-            }
-        });
-    }
-};
-
 // Account lookup
 
 exports.getUsers = function (req, res) {
@@ -282,6 +166,12 @@ exports.addUser = function (req, res) {
 
                                 // Set the number of logins to 0
                                 data.numLogins = 0;
+
+                                // Set profile image url to default
+                                data.profileImage = {
+                                    url: cloudinary.url(constants.DEFAULT_PROFILE_IMAGE),
+                                    default_image: true
+                                }
 
                                 // Get the IP from the header
                                 if (req.header("x-forwarded-for")) {
@@ -390,6 +280,19 @@ exports.updateUser = function (req, res) {
         }
     });
 };
+
+exports.updateProfileImage = function (req, res) {
+    // Validate image
+    // Upload image to cloudinary
+    // save url to user.profileImage.url
+    // Set user.profileImage.default_image to false
+    var image = req.files.images[0];
+    console.log(image);
+}
+
+exports.deleteProfileImage = function (req, res) {
+    console.log("AM#deleteProfileImage");
+}
 
 exports.deleteUser = function (req, res) {
     users.findOne({

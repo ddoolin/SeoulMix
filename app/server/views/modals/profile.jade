@@ -7,29 +7,26 @@
                 .profile-photo-controls.clearfix
                     .profile-picture-uploader
                         .picture-wrapper
-                            - if (userdata.profilePic)
-                                img#profile_picture(src="img/profile-images/" + userdata.user + "/" + userdata.profilePic).profile-picture
-                            - else    
-                                img#profile_picture(src="/img/default-profile.png").profile-picture
+                            img#profile_picture(src= userdata.profileImage.url).profile-picture
                         .uploader-tools
                             #photo_uploader
                                 #choose_photo.dropdown
                                     button#profile_image_upload(type="button", data-toggle="dropdown").choose-photo.btn.dropdown-toggle
-                                        | Change Photos 
+                                        | Change Photo 
                                         span.caret
                                     p#profile_picture_comment.profile-picture-comment
-                                    - if (userdata.profilePic)
+                                    - if (userdata.profileImage.default_image)
+                                        ul#profile_dropdown.dropdown-menu
+                                            li.choose-exisiting-photo
+                                                a#choose_existing_photo_link Choose existing photo
+                                                input#choose_existing_photo(type="file", name="profile-picture")
+                                    - else
                                         ul#profile_dropdown.dropdown-menu
                                             li.choose-exisiting-photo
                                                 a#choose_existing_photo_link Choose existing photo
                                                 input#choose_existing_photo(type="file", name="profile-picture")
                                             li.delete-photo
                                                 a#delete_photo Delete photo
-                                    - else
-                                        ul#profile_dropdown.dropdown-menu
-                                            li.choose-exisiting-photo
-                                                a#choose_existing_photo_link Choose existing photo
-                                                input#choose_existing_photo(type="file", name="profile-picture")
                                 p.upload-rules (Max. size 700 KB, JPG/PNG)
                             p This photo is public and can be seen by anyone viewing your profile or activity on SeoulMix.
                 hr
