@@ -1,8 +1,9 @@
 # Todo
 
+* Remove unused images from cloudinary
 * Fix asset loading
 * New indexes (username for users, events?)
-* Merge updateProfilePic & resetPassword into POST /api/users/:id
+* Merge updateProfilePic & resetPassword into /api/users/:id
 * Remove id and pass from JSON responses (WIP: POST /api/users/:id)
 * Swap nested IDs for CSS classes in existing views
 * Grunt concat JS

@@ -218,66 +218,66 @@ exports.updateUser = function (req, res) {
     }, function (err, result) {
         if (err) {
             res.send({"error": "An error has occured"});
+        }
+
+        self = result;
+
+        if (firstname && firstname.length > 50) {
+            res.send({"error": "First name too long"});
         } else {
-            self = result;
+            data.firstname = firstname;
+        }
 
-            if (firstname && firstname.length > 50) {
-                res.send({"error": "First name too long"});
-            } else {
-                data.firstname = firstname;
-            }
+        if (lastname && lastname.length > 50) {
+            res.send({"error": "Last name too long"});
+        } else {
+            data.lastname = lastname;
+        }
 
-            if (lastname && lastname.length > 50) {
-                res.send({"error": "Last name too long"});
-            } else {
-                data.lastname = lastname;
-            }
-
-            if (email) {
-                if (email !== self.email) {
-                    that.findByEmail(email, function (err, result) {
-                        if (result) {
-                            res.send({"error": "E-mail in use"});
-                        } else {
-                            data.email = email;
-                        }
-                    });
-                } else {
-                    data.email = self.email;
-                }
-            } else {
-                res.send({"error": "Invalid e-mail"});
-            }
-
-            if (pass) {
-                if (pass.length < 6) {
-                    res.send({"error": "Invalid password"});
-                }
-
-                data.pass = passHash.generate(pass, {
-                    algorithm: "sha512",
-                    saltLength: 16,
-                    iterations: 2
+        if (email) {
+            if (email !== self.email) {
+                that.findByEmail(email, function (err, result) {
+                    if (result) {
+                        res.send({"error": "E-mail in use"});
+                    } else {
+                        data.email = email;
+                    }
                 });
             } else {
-                data.pass = self.pass;
+                data.email = self.email;
+            }
+        } else {
+            res.send({"error": "Invalid e-mail"});
+        }
+
+        if (pass) {
+            if (pass.length < 6) {
+                res.send({"error": "Invalid password"});
             }
 
-            users.findAndModify(
-                { user: user },
-                [["_id", "asc"]],
-                { $set: data },
-                { new: true },
-                function (err, result) {
-                    if (err) {
-                        res.send({"error": "An error has occured"});
-                    } else {
-                        req.session.user = result;
-                        res.send(result);
-                    }
-                }
-            );
+            data.pass = passHash.generate(pass, {
+                algorithm: "sha512",
+                saltLength: 16,
+                iterations: 2
+            });
+        } else {
+            data.pass = self.pass;
         }
+
+        users.findAndModify(
+            { user: user },
+            [["_id", "asc"]],
+            { $set: data },
+            { new: true },
+            function (err, result) {
+                if (err) {
+                    res.send({"error": "An error has occured"});
+                } else {
+                    req.session.user = result;
+                    res.send(result);
+                }
+            }
+        );
     });
 };
 
@@ -286,13 +286,43 @@ exports.updateProfileImage = function (req, res) {
     // Upload image to cloudinary
     // save url to user.profileImage.url
     // Set user.profileImage.default_image to false
-    var image = req.files.images[0];
-    console.log(image);
-}
+
+    var image = req.files.images[0],
+        cloudinaryStream,
+        fileReader,
+        newImageId;
+
+    if (image.size > 716800) {
+        res.send({"error": "Image too large"});
+    }
+
+    if (image.type !== "image/jpeg" || image.type !== "image/png") {
+        res.send({"error": "Incorrect image format"});
+    }
+
+    users.findOne({
+        user: req.param("id")
+    }, function (err, result) {
+        if (result) {
+
+            console.log(req.files.images[0]);
+
+            // Prepare the uploader
+            cloudinaryStream = cloudinary.uploader.upload_stream(function (result) {
+                newImageId = result.public_id;
+            });
+
+            // Begin streaming to the uploader
+            fileReader = fs.createReadStream(req.files.images[0].path, { encoding: "binary" })
+                           .on("data", cloudinaryStream.write)
+                           .on("end", cloudinaryStream.end);
+        }
+    });
+};
 
 exports.deleteProfileImage = function (req, res) {
     console.log("AM#deleteProfileImage");
-}
+};
 
 exports.deleteUser = function (req, res) {
     users.findOne({
