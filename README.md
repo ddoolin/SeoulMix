@@ -1,1 +1,83 @@
-# This is my README
+# SeoulMix Setup Readme
+
+## Nginx configuration file 
+
+
+	#user html;
+	worker_processes  1;
+
+	#error_log  logs/error.log;
+	#error_log  logs/error.log  notice;
+	#error_log  logs/error.log  info;
+
+	#pid        logs/nginx.pid;
+
+
+	events {
+	    worker_connections  1024;
+	}
+
+	user devin users;
+
+	http {
+	    # proxy_cache_path  /var/cache/nginx levels=1:2 keys_zone=one:8m max_size=3000m inactive=600m;
+	    # proxy_temp_path /var/tmp;
+	    include       mime.types;
+	    default_type  application/octet-stream;
+	    sendfile        on;
+	    keepalive_timeout  65;
+
+	    gzip on;
+	    gzip_comp_level 6;
+	    gzip_vary on;
+	    gzip_min_length  1000;
+	    gzip_proxied any;
+	    gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
+	    gzip_buffers 16 8k;
+	 
+	    # ssl_certificate /some/location/sillyfacesociety.com.bundle.crt;
+	    # ssl_certificate_key /some/location/sillyfacesociety.com.key;
+	    # ssl_protocols        SSLv3 TLSv1;
+	    # ssl_ciphers HIGH:!aNULL:!MD5;
+
+	    upstream seoulmix_upstream {
+	      server 127.0.0.1:8081;
+	      keepalive 64;
+	    }
+
+	    server {
+	        listen 0.0.0.0:80;
+	        # listen 443 ssl;
+
+	        server_name localhost;
+
+	        error_page 502  /errors/502.html;
+
+	    	location ~* ^.+\.(jpg|jpeg|gif|png|ico|css|zip|tgz|gz|rar|bz2|pdf|txt|tar|wav|bmp|rtf|js|flv|swf)$ {
+	          root   /home/devin/NodeSites/seoulmix/app/public;
+	          access_log off;
+	          expires max;
+	    	}
+
+	        location /errors {
+	          internal;
+	          alias /home/devin/NodeSites/seoulmix/app/public/errors;
+	        }
+
+	        location / {
+	          proxy_redirect off;
+	          proxy_set_header   X-Real-IP            $remote_addr;
+	          proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+	          proxy_set_header   X-Forwarded-Proto $scheme;
+	          proxy_set_header   Host                   $http_host;
+	          proxy_set_header   X-NginX-Proxy    true;
+	          proxy_set_header   Connection "";
+	          proxy_http_version 1.1;
+	          # proxy_cache one;
+	          # proxy_cache_key sfs$request_uri$scheme;
+		  proxy_next_upstream error timeout http_502;
+	          proxy_pass         http://seoulmix_upstream;
+	        }
+	    }
+	}
+

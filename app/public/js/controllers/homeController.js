@@ -66,18 +66,21 @@ function HomeController() {
     // Remove profile photo
     this.removePhoto = function() {
         $.ajax({
-            url: "/update-profilepic",
-            type: "POST",
-            data: { remove: true },
+            url: "/api/users/:id/upload",
+            type: "DELETE",
             success: function() {
-                $("#profile_picture").attr("src", "/img/default-profile.png");
-                $("#profile_picture_comment").addClass("text-success")
-                    .text("Photo successfully removed.");
-                $(".delete-photo").hide();
+                if (!data.error) {
+                    $("#profile_picture_comment").addClass("text-success")
+                        .text("Photo successfully removed.");
+                    $(".delete-photo").hide();
+                } else {
+                    $("#profile_picture_comment").addClass("text-error")
+                        .text("Failed to remove.");
+                }
             },
             error: function(err) {
                 $("#profile_picture_comment").addClass("text-error")
-                    .text("Failed to remove. Please try again.");
+                    .text("Failed to remove.");
             }
         });
     }

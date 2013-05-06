@@ -7,7 +7,7 @@
                 .profile-photo-controls.clearfix
                     .profile-picture-uploader
                         .picture-wrapper
-                            img#profile_picture(src= userdata.profileImage.url).profile-picture
+                            img#profile_picture(src= cloudinary.url(userdata.profileImage.id + "." + userdata.profileImage.format)).profile-picture
                         .uploader-tools
                             #photo_uploader
                                 #choose_photo.dropdown

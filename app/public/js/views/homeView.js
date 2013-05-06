@@ -89,7 +89,6 @@ $(document).ready(function() {
                 return dv.validateForm();
             },
             success: function (data, textStatus, jqXHR) {
-                debugger;
                 if (!data.error) {
                     dv.showDeleteSuccess("<b>Success:</b> Account deleted. Redirecting to front page...");
 
@@ -155,8 +154,17 @@ $(document).ready(function() {
             contentType: false,
             processData: false,
             success: function (data, textStatus, jqXHR) {
-                // See git changes for success actions
-                console.log(data, textStatus, jqXHR);
+                if (!data.error) {
+                    profileImageText.addClass("text-success").text("Picture updated!");
+                    $("<li class='delete-photo'>").appendTo("#profile_dropdown");
+                    $("<a id='delete_photo'>Delete photo</a></li>").appendTo(".delete-photo");
+
+                    $("#delete_photo").click(function () {
+                        if (window.confirm("Are you sure you want to remove your picture?")) {
+                            hc.removePhoto();
+                        }
+                    });
+                }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 // Stuff on error

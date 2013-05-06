@@ -6,47 +6,68 @@ var database = require("../../database"),
     passHash = require("password-hash"),
     cloudinary = require("cloudinary"),
     constants = require("./constants"),
+    email = require("./email-dispatcher"),
 
     users = db.collection("users"),
     that = this;
 
 // Login
 
-exports.autoLogin = function (user, pass, callback) {
+exports.autoLogin = function (req, res) {
+    var user = req.session.user.user,
+        pass = req.session.user.pass;
+
     users.findOne({
         user: user
     }, function (err, result) {
         if (err) {
-            callback(err, null);
+            req.session = null;
+            res.redirect("/");
+        }
+
+        if (result.pass === pass) {
+            res.redirect("/home");
         } else {
-            if (result.pass === pass) {
-                callback(null, result);
-            } else {
-                callback("invalid-password", null);
-            }
+            req.session = null;
+            res.redirect("/");
         }
     });
 };
 
-exports.manualLogin = function (user, pass, ipAddress, callback) {
+exports.manualLogin = function (req, res) {
+    var user = req.param("user"),
+        pass = req.param("pass");
+
     users.findOne({
         user: user
     }, function (err, result) {
-        if (result === null) {
-
-            // First callback is an error
-            callback("user-not-found", null);
+        if (err) {
+            res.send({"error":"Incorrect login"});
         } else {
 
             // Hash the password provided and callback invalid if no match
-            if (passHash.verify(pass, result.pass)) {
+            if (!passHash.verify(pass, result.pass)) {
+                res.send({"error": "Incorrect login"});
+            } else {
 
-                // Collect the time at this second and IP
-                var date = moment().format("dddd, MMMM Do YYYY, h:mm:ss a"),
-                    data = {
-                        lastLoginIp: ipAddress,
-                        lastLoginDate: date
-                    };
+                var ipAddress,
+                    date,
+                    data = {};
+
+                // Get the direct IP or proxy-forwarded IP if it exists
+                if (req.header("x-forwarded-for")) {
+                    ipAddress = req.header("x-forwarded-for").split("/")[0];
+                } else {
+                    ipAddress = req.connection.remoteAddress;
+                }
+
+                // Collect the time at this second
+                date = moment().format("dddd, MMMM Do YYYY, h:mm:ss a"),
+
+                data = {
+                    lastLoginIp: ipAddress,
+                    lastLoginDate: date
+                };
 
                 // Pass in the date, IP, and increment the # of logins
                 users.findAndModify(
@@ -57,42 +78,30 @@ exports.manualLogin = function (user, pass, ipAddress, callback) {
                     { new: true },
                     function (err, result) {
                         if (err) {
-                            callback(err, null);
-                        } else {
-                            callback(null, result);
+                            res.send({"error": "An error has occured"});
                         }
+
+                        req.session.user = result;
+
+                        if (req.param("remember-me")) {
+                            // 24 hours
+                            req.session.cookie.maxAge = 86400000;
+                        }
+
+                        res.redirect("/home");
                     }
                 );
-
-            } else {
-                callback("invalid-password", null);
             }
         }
     });
 };
 
-exports.updatePassword = function (email, pass, callback) {
-
-    // Pass the new password to be hashed
-    var newpass = passHash.generate(pass, {
-        algorithm: "sha512",
-        saltLength: 16,
-        iterations: 2
-    });
-
-    users.findAndModify(
-        { email: email },
-        [["_id", "asc"]],
-        { $set: { pass: newpass } },
-        { new: true },
-        function (err, result) {
-            if (err) {
-                callback(err, null);
-            } else {
-                callback(null, result);
-            }
-        }
-    );
+exports.getFront = function (req, res) {
+    if (req.session.user === undefined) {
+        res.render("front");
+    } else {
+        that.autoLogin(req, res);
+    }
 };
 
 // Account lookup
@@ -117,99 +126,91 @@ exports.addUser = function (req, res) {
         user = req.param("signup-username"),
         pass = req.param("signup-password"),
         email = req.param("signup-email"),
-        registrationIp;
+        regExp = /^[A-Za-z0-9_]{4,30}$/,
+        regIp;
 
     // Make sure all fields are accounted for
     if (!user || !pass || !email) {
         res.send({"error": "Field cannot be empty"});
-    } else {
-
-        // Alphanumeric only, between 4 and 40 characters
-        var regexp = /^[A-Za-z0-9_]{4,30}$/;
-
-        // Regexp the username and check the length (redundant)
-        if (user.length < 4 || user.length > 30 || !regexp.test(user)) {
-            res.send({"error": "Invalid username"});
-        } else {
-
-            // Check the password length
-            if (pass.length < 6) {
-                res.send({"error": "Invalid password"});
-            } else {
-
-                // Look for the username in the DB
-                users.findOne({
-                    user: user
-                }, function (err, result) {
-                    if (result) {
-                        res.send({"error": "Username taken"});
-                    } else {
-
-                        // Look for the email in the DB
-                        users.findOne({
-                            email: email
-                        }, function (err, result) {
-                            if (result) {
-                                res.send({"error": "E-mail in use"});
-                            } else {
-
-                                // Hash the password
-                                data.pass = passHash.generate(pass, {
-                                    algorithm: "sha512",
-                                    saltLength: 16,
-                                    iterations: 2
-                                });
-
-                                // Set the registration date
-                                data.registrationDate = moment()
-                                    .format("dddd, MMMM Do YYYY, h:mm:ss a");
-
-                                // Set the number of logins to 0
-                                data.numLogins = 0;
-
-                                // Set profile image url to default
-                                data.profileImage = {
-                                    url: cloudinary.url(constants.DEFAULT_PROFILE_IMAGE),
-                                    default_image: true
-                                }
-
-                                // Get the IP from the header
-                                if (req.header("x-forwarded-for")) {
-                                    data.registrationIp = req.header("x-forwarded-for").split("/")[0];
-                                } else {
-                                    data.registrationIp = req.connection.remoteAddress;
-                                }
-
-                                // Set the rest of the data
-                                data.user = user;
-                                data.email = email;
-
-                                // Insert the data
-                                users.insert(data, {safe: true}, function (err, result) {
-                                    if (err) {
-                                        console.log(err);
-                                        res.send({"error": "An error has occured"});
-                                    } else {
-                                        req.session.user = result[0];
-                                        res.send(result[0]);
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-            }
-        }
     }
+
+    // Regexp the username and check the length (redundant)
+    if (user.length < 4 || user.length > 30 || !regExp.test(user)) {
+        res.send({"error": "Invalid username"});
+    }
+
+    // Check the password length
+    if (pass.length < 6) {
+        res.send({"error": "Invalid password"});
+    }
+
+    // Look for the username in the DB
+    users.findOne({
+        user: user
+    }, function (err, result) {
+        if (result) {
+            res.send({"error": "Username taken"});
+        }
+
+        // Look for the email in the DB
+        users.findOne({
+            email: email
+        }, function (err, result) {
+            if (result) {
+                res.send({"error": "E-mail in use"});
+            }
+
+            // Hash the password
+            data.pass = generatePassword(pass);
+
+            // Set the registration date
+            data.registrationDate = moment()
+                .format("dddd, MMMM Do YYYY, h:mm:ss a");
+
+            // Set the number of logins to 0
+            data.numLogins = 0;
+
+            // Set profile image url to default
+            data.profileImage = {
+                id: constants.DEFAULT_PROFILE_IMAGE_ID,
+                format: "jpg",
+                default_image: true
+            }
+
+            // Get the IP from the header
+            if (req.header("x-forwarded-for")) {
+                data.regIp = req.header("x-forwarded-for").split("/")[0];
+            } else {
+                data.regIp = req.connection.remoteAddress;
+            }
+
+            // Set the rest of the data
+            data.user = user;
+            data.email = email;
+
+            // Insert the data
+            users.insert(data, {safe: true}, function (err, result) {
+                if (err) {
+                    res.send({"error": "An error has occured"});
+                }
+
+                req.session.user = result[0];
+                res.send(result[0]);
+            });
+        });
+    });
 };
 
 exports.updateUser = function (req, res) {
 
-    var data = {},
-        self,
-        firstname = req.param("firstname"),
-        lastname = req.param("lastname"),
-        email = req.param("email"),
+    if (!req.param("reset")) {
+        var firstname = req.param("firstname"),
+            lastname = req.param("lastname"),
+            email = req.param("email");
+    }
+
+    var self,
+        data = {},
         user = req.param("id"),
         pass = req.param("pass");
 
@@ -222,13 +223,13 @@ exports.updateUser = function (req, res) {
 
         self = result;
 
-        if (firstname && firstname.length > 50) {
+        if (firstname.length > 50) {
             res.send({"error": "First name too long"});
         } else {
             data.firstname = firstname;
         }
 
-        if (lastname && lastname.length > 50) {
+        if (lastname.length > 50) {
             res.send({"error": "Last name too long"});
         } else {
             data.lastname = lastname;
@@ -236,7 +237,7 @@ exports.updateUser = function (req, res) {
 
         if (email) {
             if (email !== self.email) {
-                that.findByEmail(email, function (err, result) {
+                findByEmail(email, function (err, result) {
                     if (result) {
                         res.send({"error": "E-mail in use"});
                     } else {
@@ -255,11 +256,7 @@ exports.updateUser = function (req, res) {
                 res.send({"error": "Invalid password"});
             }
 
-            data.pass = passHash.generate(pass, {
-                algorithm: "sha512",
-                saltLength: 16,
-                iterations: 2
-            });
+            data.pass = generatePassword(pass);
         } else {
             data.pass = self.pass;
         }
@@ -272,95 +269,139 @@ exports.updateUser = function (req, res) {
             function (err, result) {
                 if (err) {
                     res.send({"error": "An error has occured"});
-                } else {
-                    req.session.user = result;
-                    res.send(result);
                 }
+
+                req.session.user = result;
+                res.send(result);
             }
         );
     });
 };
 
 exports.updateProfileImage = function (req, res) {
-    // Validate image
-    // Upload image to cloudinary
-    // save url to user.profileImage.url
-    // Set user.profileImage.default_image to false
+    if (req.method == "DELETE") {
+        var data = {};
 
-    var image = req.files.images[0],
-        cloudinaryStream,
-        fileReader,
-        newImageId;
+        cloudinary.api.delete_resources(
+            [req.session.user.profileImage.id],
+            function (result) {}
+        );
 
-    if (image.size > 716800) {
-        res.send({"error": "Image too large"});
-    }
+        data.profileImage = {
+            id: constants.DEFAULT_PROFILE_IMAGE_ID,
+            format: "jpg",
+            default_image: true
+        };
 
-    if (image.type !== "image/jpeg" || image.type !== "image/png") {
-        res.send({"error": "Incorrect image format"});
-    }
+        users.findAndModify(
+            { user: req.param("id") },
+            [["_id", "asc"]],
+            { $set: data },
+            { new: true },
+            function (err, result) {
+                if (err) {
+                    res.send({"error": "An error has occured"});
+                }
 
-    users.findOne({
-        user: req.param("id")
-    }, function (err, result) {
-        if (result) {
+                req.session.user = result;
+                res.send(result);
+            }
+        );
+    } else {
+        var image = req.files.images[0],
+            cloudinaryStream,
+            fileReader;
 
-            console.log(req.files.images[0]);
+        if (image.size > 716800) {
+            res.send({"error": "Image too large"});
+        }
+
+        if (image.type !== "image/jpeg" && image.type !== "image/png") {
+            res.send({"error": "Incorrect image format"});
+        }
+
+        users.findOne({
+            user: req.param("id")
+        }, function (err, result) {
+            if (err) {
+                res.send({"error": "An error has occured"});
+            }
 
             // Prepare the uploader
             cloudinaryStream = cloudinary.uploader.upload_stream(function (result) {
-                newImageId = result.public_id;
+                var data = {};
+
+                data.profileImage = { 
+                    id: result.public_id,
+                    format: result.format,
+                    default_image: false
+                };
+
+                users.findAndModify(
+                    { user: req.param("id") },
+                    [["_id", "asc"]],
+                    { $set: data },
+                    { new: true },
+                    function (err, result) {
+                        if (err) {
+                            res.send({"error": "An error has occured"});
+                        }
+
+                        req.session.user = result;
+                        res.send(result);
+                    }
+                );
             });
 
             // Begin streaming to the uploader
-            fileReader = fs.createReadStream(req.files.images[0].path, { encoding: "binary" })
-                           .on("data", cloudinaryStream.write)
-                           .on("end", cloudinaryStream.end);
-        }
-    });
-};
-
-exports.deleteProfileImage = function (req, res) {
-    console.log("AM#deleteProfileImage");
+            fileReader = fs.createReadStream(
+                req.files.images[0].path,
+                { encoding: "binary" })
+            .on("data", cloudinaryStream.write)
+            .on("end", cloudinaryStream.end);
+        });
+    }
 };
 
 exports.deleteUser = function (req, res) {
     users.findOne({
         user: req.param("id")
     }, function (err, result) {
-        if (result) {
-            if (passHash.verify(req.param("pass"), result.pass)) {
-                users.remove({
-                    _id: result._id
-                }, function (err, result) {
-                    if (err) {
-                        res.send({"error": "An error has occured"});
-                    } else {
-                        res.send({"status": "success"});
-
-                        req.session.destroy();
-                    }
-                });
-            } else {
-                res.send({"error": "Invalid password"});
-            };
-        }
-    });
-};
-
-exports.findByEmail = function (email, callback) {
-    users.findOne({
-        email: email
-    }, function (err, result) {
         if (err) {
-            callback(err, null);
-        } else {
-            callback(null, result);
+            res.send({"error": "An error has occured"});
         }
+
+        if (passHash.verify(req.param("pass"), result.pass)) {
+            cloudinary.api.delete_resources(
+                [result.profileImage.id],
+                function (result) {}
+            );
+
+            users.remove({
+                _id: result._id
+            }, function (err, result) {
+                if (err) {
+                    res.send({"error": "An error has occured"});
+                } else {
+                    res.send({"status": "success"});
+
+                    req.session.destroy();
+                }
+            });
+        } else {
+            res.send({"error": "Invalid password"});
+        };
     });
 };
 
-exports.validateResetLink = function (email, passhash, callback) {
+exports.getReset = function (req, res) {
+    var email = req.query.e,
+        passhash = req.query.p;
+
+    if (!email || !passhash) {
+        res.redirect("/");
+    }
+
     users.find({
         $and: [{
             email: email,
@@ -368,14 +409,54 @@ exports.validateResetLink = function (email, passhash, callback) {
         }]
     }, function (err, result) {
         if (err) {
-            callback(err, null);
-        } else {
-            callback(null, result);
+            res.redirect("/");
         }
+
+        res.render("reset", {
+            user: result.user
+        });
+    });
+};
+
+exports.postReset = function (req, res) {
+    findByEmail(req.param("email"), function (err, result) {
+        if (err) {
+            res.send({"error": "Invalid e-mail"});
+        }
+
+        email.dispatchPasswordResetLink(result, function (err, msg) {
+            if (err) {
+                res.send({"error": "An error has occured"});
+            }
+
+            res.send({"status": "success"});
+        });
     });
 };
 
 // Aux. methods
+
+var generatePassword = function (pass) {
+    hash = passHash.generate(pass, {
+        algorithm: "sha512",
+        saltLength: 16,
+        iterations: 2
+    });
+
+    return hash;
+};
+
+var findByEmail = function (email, callback) {
+    users.findOne({
+        email: email
+    }, function (err, result) {
+        if (err) {
+            callback(err, null);
+        }
+
+        callback(null, result);
+    });
+};
 
 var getObjectId = function (id) {
     return users.db.bson_serializer.ObjectID.createFromHexString(id);

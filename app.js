@@ -1,4 +1,5 @@
 var express = require("express"),
+    path = require("path"),
     cloudinary = require("cloudinary");
 
 var app = express();
@@ -7,7 +8,6 @@ app.configure(function() {
 	app.set("port", 8081);
 	app.set("views", __dirname + "/app/server/views");
 	app.set("view engine", "jade");
-	app.use(express.favicon(__dirname + "/app/public/img/favicon.ico"));
 	app.use(express.logger("dev"));
 	app.use(express.bodyParser({
         uploadDir: "./uploads",
@@ -21,7 +21,7 @@ app.configure(function() {
         }
     }));
 	app.use(express.methodOverride());
-	app.use(express.static(__dirname + '/app/public'));
+  app.use(express.static(path.join(__dirname + '/app/public')));
   cloudinary.config({ cloud_name: "seoulmix", api_key: "389689266184749", api_secret: "KTTzUc77y2DACiZpYrlqKH9ZAi8" });
 });
 

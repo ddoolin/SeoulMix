@@ -22,14 +22,14 @@ ED.dispatchPasswordResetLink = function (account, callback) {
     }, function (err, msg) {
         if (err) {
             callback(err, null);
-        } else {
-            callback(null, msg);
         }
+
+        callback(null, msg);
     });
 };
 
 ED.composePasswordResetEmail = function (account) {
-    var link = "http://localhost/reset-password?e=" + account.email + "&p=" + account.pass,
+    var link = "http://127.0.0.1/users/reset?e=" + account.email + "&p=" + account.pass,
         html = "<html><body>";
 
     if (account.firstname) {

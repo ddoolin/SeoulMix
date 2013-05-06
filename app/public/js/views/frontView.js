@@ -52,54 +52,75 @@ $(document).ready(function() {
 		}
 	});
 
-	// Login 
+	// Login
 
-	$("#login_form").ajaxForm({
-		url: "/",
-		beforeSubmit: function(formData, jqForm, options) {
-			if (lv.validateForm() == false) {
-				return false;
-			} else {
-				formData.push({
-					name: "remember-me",
-					value: $("#remember_me").is(":checked")
-				});
+	$("#login_submit").click(function (event) {
+		event.preventDefault();
+
+		var data = {
+			user: $("#login_username").val(),
+			pass: $("#login_password").val()
+		};
+
+		$.ajax({
+			url: "/login",
+			type: "POST",
+			data: data,
+			beforeSend: function (jqXHR, settings) {
+				if (lv.validateForm() == false) {
+					return false;
+				} else {
+					data.remember_me = $("#remember_me").is(":checked")
+				}
+			},
+			success: function (data, textStatus, jqXHR) {
+				if (!data.error) {
+					window.location = "/home";
+				} else if (data.error === "Incorrect login") {
+					lv.showLoginError("Login Failure", "Please check your usename/password and try again.");
+				} else {
+					lv.showLoginError("Login Failure", "There was an error logging you in. Please try again later.");
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				lv.showLoginError("Login Failure", "There was an error logging you in. Please try again later.");
 			}
-		},
-		success: function(responseText, status, xhr, $form) {
-			if (status == "success") {
-				window.location.href = "/home";
-			}
-		},
-		error: function(err) {
-			lv.showLoginError("Login Failure", "Please check your usename/password and try again.");
-		}
+		});
 	});
 
 	// Lost password
+	$("#lostpass_submit").click(function (event) {
+		event.preventDefault();
 
-	$("#lostpass_form").ajaxForm({
-		url: "/lost-password",
-		beforeSubmit: function(formData, jqForm, options) {
-			if (ev.validateEmail($("#lostpass_email").val())) {
-				ev.hideEmailAlert();
-				return true;
-			} else {
-				ev.showEmailAlert("<b>Error:</b> Please enter a valid e-mail address!")
-				return false;
+		var data = {
+			email: $("#lostpass_email").val()
+		};
+
+		$.ajax({
+			url: "/users/reset",
+			type: "POST",
+			data: data,
+			beforeSend: function (jqXHR, settings) {
+				if (ev.validateEmail($("#lostpass_email").val())) {
+					ev.hideEmailAlert();
+					return true;
+				} else {
+					ev.showEmailAlert("<b>Error:</b> Please enter a valid e-mail address!")
+					return false;
+				}
+			},
+			success: function (data, textStatus, jqXHR) {
+				if (!data.error) {
+					ev.showEmailSuccess("Check your e-mail on how to reset your password.");
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				if (err.responseText == "email-not-found") {
+					ev.showEmailAlert("<b>Oops!</b> There's no account associated with that e-mail. Please double check and try again.");
+				} else {
+					ev.showEmailAlert("Sorry, there was a problem. Please try again later!");
+				}
 			}
-		},
-		success: function(responseText, status, xhr, $form) {
-			if (status == "success") {
-				ev.showEmailSuccess("Check your e-mail on how to reset your password.");
-			}
-		},
-		error: function(err) {
-			if (err.responseText == "email-not-found") {
-				ev.showEmailAlert("<b>Oops!</b> There's no account associated with that e-mail. Please double check and try again.");
-			} else {
-				ev.showEmailAlert("Sorry, there was a problem. Please try again later!");
-			}
-		}
-	})
+		});
+	});
 });

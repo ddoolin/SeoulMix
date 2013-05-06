@@ -25,20 +25,9 @@ block content
       #registration_container
         p#new_signup_text
           b New?
+          a(href="http://127.0.0.1/users/reset?e=doolin.nc@gmail.com&p=sha512$70dbeb23f44e0925$2$2602405453f53bf4dacb625d9480df31a479f8d50b42272eb0f051f0fe58a0388542e5f51ef961d6159a09d8223fe89661a7cf0a8a3aad46126239ac52d1740a") Click Me!
         a#register_btn.btn(data-toggle='modal', href='#registration_modal') Sign Up
 
     include modals/login-error
     include modals/lost-password
     include modals/registration-form
-
-block scripts
-    script(src='https://maps.googleapis.com/maps/api/js?key=AIzaSyAG1ZYoDAzhL0uivXehR0_5tDLpCcLOaqQ&sensor=false')
-    script(src='//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js')
-    script(src="vendor/jquery.form.js")
-    script(src='vendor/bootstrap.js')
-    script(src="js/front.js")
-    script(src='js/views/frontView.js')
-    script(src="js/controllers/frontController.js")
-    script(src="js/form-validators/loginValidator.js")
-    script(src="js/form-validators/emailValidator.js")
-    script(src="js/form-validators/accountValidator.js")
