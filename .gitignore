@@ -5,8 +5,7 @@ node_modules
 # app/server/modules/email-settings.js
 
 # or uploads
-# uploads
-# app/public/img/*
+uploads
 
 # Sublime project/workspace
 seoulmix.sublime-*
