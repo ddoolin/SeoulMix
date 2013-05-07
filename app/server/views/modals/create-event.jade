@@ -4,6 +4,6 @@
     .modal-content
         form#new_event_form(method="post")
             fieldset(name="event-creation")
-                input.event-name(required="required", type="text", title="Event name", name="event-name", placeholder="event name")
-                textarea.event-description(title="Event description", name="event-description", placeholder="event description")
-                input.event-submit(type="submit", value="Create Event!")
+                input#event_name.event-name(required="required", type="text", title="Event name", name="event-name", placeholder="event name")
+                textarea#event_description.event-description(title="Event description", name="event-description", placeholder="event description")
+                input#event_submit.event-submit(type="submit", value="Create Event!")

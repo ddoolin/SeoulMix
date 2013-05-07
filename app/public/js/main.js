@@ -57,11 +57,4 @@ $(document).ready(function() {
 		});
 	}
 	// ! End marker testing!
-
-	// This became a bit more strenuous with CSS...there's a lot of styles for the caret for some reason.
-	$("#language_dropdown").hover(function() {
-		$("#caret").css("border-top-color", "white");
-	}, function() {
-		$("#caret").css("border-top-color", "#BBBBBB");
-	});
 });

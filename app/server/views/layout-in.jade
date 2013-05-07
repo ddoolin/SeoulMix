@@ -5,20 +5,20 @@ html(lang='en')
         title SeoulMix
         link(rel='stylesheet', href='seoulmix.css')
     body
-        #navbar_main.navbar.navbar-fixed-top
+        .navbar-main.navbar.navbar-fixed-top
             .navbar-inner
                 .container
-                    a#nav_logo(href="/").brand SM
-                    ul#language_dropdown.nav.pull-right.language-dropdown
+                    a.nav-logo(href="/").brand SM
+                    ul.language-dropdown.nav.pull-right.language-dropdown
                         li.dropdown
                             a(href="#", data-toggle="dropdown").dropdown-toggle.dropdown-title Language/언어
-                                b#caret.caret
+                                b.caret
                             ul.dropdown-menu
                                 li
                                     a English
                                 li
                                     a 한국어
-                    button#navbar_logout.btn-small.btn-primary
+                    button#navbar_logout.btn-small.btn-primary.navbar-logout
                         i.icon-lock.icon-white
                         | Sign out
                     form#navbar_search(method="post").navbar-search.pull-right

@@ -2,19 +2,19 @@ extends layout-in
 
 block content
     #map_canvas(style='width: 100%; height: 100%;')
-    #banner_main
-      a#banner_logo(href='') SeoulMix
+    .banner-main
+      a.banner-logo(href='') SeoulMix
       span.divider
-      #banner_welcome
+      .banner-welcome
         - if (userdata.firstname)
-          h3#banner_welcome_title Hello, #{userdata.firstname}!
+          h3.banner-welcome-title Hello, #{userdata.firstname}!
         - else
-          h3#banner_welcome_title Hello, #{userdata.user}!
-        p#banner_welcome_text Welcome to SeoulMix! Get started by adding details to your profile or creating a new event.
+          h3.banner-welcome-title Hello, #{userdata.user}!
+        p.banner-welcome-text Welcome to SeoulMix! Get started by adding details to your profile or creating a new event.
       .main-button-container
-        button#create_event(data-toggle="modal", href="#create_event_modal").btn.banner-btn
+        button#create_event(data-toggle="modal", href="#create_event_modal").btn.banner-btn.create-event
             | Create Event
-        button#view_profile(data-toggle="modal", href="#profile_modal").btn.banner-btn
+        button#view_profile(data-toggle="modal", href="#profile_modal").btn.banner-btn.view-profile
             | Profile Settings
     input#user_id(type="hidden", value= userdata.user)
 

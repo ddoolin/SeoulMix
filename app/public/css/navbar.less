@@ -1,11 +1,11 @@
-#navbar_main {
+.navbar-main {
 	.navbar-inner {
 		.gradient(top, #333, #222);
 
 		.container {
 			width: 100%;
 
-			#nav_logo {
+			.nav-logo {
 				float: left;
 				margin-left: 3em;
 				text-decoration: none;
@@ -14,7 +14,7 @@
 				color: white;
 			}
 
-			#event_search {
+			.event-search {
 				.border-radius(0.9em);
 				margin: 0.15em 0.5em 0em 0em;
 				height: 1.1em;
@@ -26,7 +26,7 @@
 				top: 0.3em;
 			}
 
-			#navbar_logout {
+			.navbar-logout {
 				float: right;
 				margin: 0.5em 0.6em 0em 1.5em;
 
@@ -40,11 +40,12 @@
 
 				.dropdown-title {
 					padding-top: 0.7em;
-					color: #BBBBBB;
+					color: lightgrey;
 					text-shadow: none;
 
-					&:hover {
-						color: white;
+					.caret {
+						border-top-color: lightgrey;
+						border-bottom-color: lightgrey;
 					}
 				}
 			}

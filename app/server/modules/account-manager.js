@@ -123,9 +123,9 @@ exports.getUser = function (req, res) {
 
 exports.addUser = function (req, res) {
     var data = {},
-        user = req.param("signup-username"),
-        pass = req.param("signup-password"),
-        email = req.param("signup-email"),
+        user = req.param("user"),
+        pass = req.param("pass"),
+        email = req.param("email"),
         regExp = /^[A-Za-z0-9_]{4,30}$/,
         regIp;
 

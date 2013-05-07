@@ -1,7 +1,7 @@
 #map_canvas {
 	height: 100%;
 }
-#banner_main {
+.banner-main {
 	position: absolute;
 	bottom: 90px;
 	z-index: 10;
@@ -11,7 +11,7 @@
 	border-top: 1px solid white;
 	border-bottom: 1px solid white;
 
-	#banner_logo {
+	.banner-logo {
 		display: inline;
 		float: left;
 		line-height: 1.2em;
@@ -30,7 +30,7 @@
 		border-left: 1px solid #CCC;
 	}
 
-	#banner_welcome {
+	.banner-welcome {
 		display: inline;
 		float: left;
 		margin-left: 2em;
@@ -40,12 +40,12 @@
 				display: none;
 			}
 
-		#banner_welcome_title {
+		.banner-welcome-title {
 			margin: 10px 0px 0px 0px;
 			line-height: 30px;
 		}
 
-		#banner_welcome_text {
+		.banner-welcome-text {
 			font-family: 'Arvo', serif;
 			font-size: 18px;
 			margin-top: 8px;
@@ -53,7 +53,7 @@
 		}
 	}
 
-	#registration_container {
+	.registration-container {
 		display: inline;
 		float: right;
 		margin: 0.7em;
@@ -61,7 +61,7 @@
 		padding: 0.1em 2.6em 0em 0em;
 		border-right: 1px solid #CCC;
 
-		#new_signup_text {
+		.new-signup-text {
 			position: relative;
 			left: 1.2em;
 			margin: 1px 0 10px 0;
@@ -70,13 +70,13 @@
 			font-family: serif;
 		}
 
-		#register_btn {
+		.register-btn {
 			width: 100px;
 			text-decoration: none;
 		}
 	}
 
-	#login_container {
+	.login-container {
 		float: right;
 		display: inline;
 		margin: 0.8em 1em 0em 1.8em;
@@ -84,7 +84,7 @@
 		form {
 			margin: 0px;
 
-			#login_username {
+			.login-username {
 				height: 17.5px;
 				width: 212px;
 				font-size: 13px;
@@ -103,18 +103,18 @@
 				}
 			}
 
-			#login_password {
+			.login-password {
 				margin-bottom: 0px;
 				height: 17.5px;
 				width: 150px;
 				font-size: 13px;
 			}
 
-			#login_submit {
+			.login-submit {
 				margin-left: 9px;
 			}
 
-			#lost_password {
+			.lost-password {
 				padding-left: 10px;
 				color: white;
 				font-size: 12px;
@@ -146,7 +146,7 @@
 		color: #444;
 	}
 
-	#lostpass_form {
+	.lostpass-form {
 		.text-shadow(-1px 1px 0 #FFF);
 		margin-bottom: 0px;
 		color: #808080;
@@ -159,7 +159,7 @@
 				margin: 20px 25px;
 			}
 
-			#lostpass_error {
+			.lostpass-error {
 				margin-bottom: 0px;
 			}
 		}
@@ -167,12 +167,12 @@
 		.modal-footer {
 			height: 20px;
 
-			#lostpass_cancel {
+			.lostpass-cancel {
 				float: right;
 				margin: 0em 0.5em 1em 0em;
 			}
 
-			#lostpass_submit {
+			.lostpass-submit {
 				float: right;
 				margin: 0em 0em 1em 0em;
 			}
@@ -268,8 +268,8 @@
 				#new_user_form {
 					margin: 0px;
 
-					#signup_username, #signup_email, #signup_password,
-					#signup_password_confirm, #signup_submit {
+					.signup-username, .signup-email, .signup-password,
+					.signup-password-confirm, .signup-submit {
 						.box-shadow(1px, 1px, 1px, 0.1, inset);
 						float: left;
 						width: 340px;
@@ -279,7 +279,7 @@
 						font-size: 15px;
 					}
 
-					#signup_submit {
+					.signup-submit {
 						.rounded-corners;
 						width: 350px;
 						height: 55px;
@@ -311,7 +311,7 @@
 		}
 	}
 }
-#newpass_main {
+.newpass_main {
 	.rounded-corners;
 	position: absolute;
 	width: 230px;
@@ -321,19 +321,19 @@
 	left: 45%;
 	padding: 10px;
 
-	#newpass_form {
+	.newpass_form {
 		margin: 5px;
 
 		input {
 			display: block;
 		}
 
-		#newpass_submit {
+		.newpass_submit {
 			width: 100%;
 		}
 	}
 
-	#newpass_error {
+	.newpass_error {
 		margin: 10px 0px 0px 0px;
 	}
 }

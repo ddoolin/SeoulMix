@@ -584,13 +584,6 @@ $(document).ready(function() {
 		});
 	}
 	// ! End marker testing!
-
-	// This became a bit more strenuous with CSS...there's a lot of styles for the caret for some reason.
-	$("#language_dropdown").hover(function() {
-		$("#caret").css("border-top-color", "white");
-	}, function() {
-		$("#caret").css("border-top-color", "#BBBBBB");
-	});
 });
 
 /**
@@ -1739,46 +1732,58 @@ $(document).ready(function() {
 
 	// Signup
 
-	$("#new_user_form").ajaxForm({
-		url: "/api/users",
-		beforeSubmit: function(formData, jqForm, options) {
-			av.resetFields();
-			return av.validateForm();
-		},
-		success: function(responseText, status, xhr, $form) {
-			if (!responseText.error) {
+	$("#signup_submit").click(function (event) {
+		event.preventDefault();
 
-				av.showCreateSuccess("<b>Success!</b> You're account was created! Now logging you in...");
+		var data = {
+			user: $("#signup_username").val(),
+			pass: $("#signup_password").val(),
+			email: $("#signup_email").val()
+		};
 
-				setTimeout(function() {
-					window.location.href = "/";
-				}, 2000);
-			} else {
-				switch (responseText.error) {
-					case "Username taken":
-						av.showInvalidUsername();
-						break;
-					case "E-mail in use":
-						av.showInvalidEmail();
-						break;
-					case "Invalid username":
-						av.showErrors("username", "Must be between 4 and 30 characters, numbers and letters only.");
-						break;
-					case "Invalid password":
-						av.showErrors("password", "Must be at least 6 characters.");
-						break;
-					case "Field cannot be empty":
-						av.showErrors("default", "You must complete all fields.");
-						break;
-					default:
-						av.showErrors("default", "An error occured. Please try again later.");
-						break;
+		$.ajax({
+			url: "/api/users",
+			type: "POST",
+			data: data,
+			beforeSend: function (jqXHR, settings) {
+				av.resetFields();
+				return av.validateForm();
+			},
+			success: function (data, textStatus, jqXHR) {
+				if (!data.error) {
+
+					av.showCreateSuccess("<b>Success!</b> You're account was created! Now logging you in...");
+
+					setTimeout(function() {
+						window.location.href = "/";
+					}, 2000);
+				} else {
+					switch (data.error) {
+						case "Username taken":
+							av.showInvalidUsername();
+							break;
+						case "E-mail in use":
+							av.showInvalidEmail();
+							break;
+						case "Invalid username":
+							av.showErrors("username", "Must be between 4 and 30 characters, numbers and letters only.");
+							break;
+						case "Invalid password":
+							av.showErrors("password", "Must be at least 6 characters.");
+							break;
+						case "Field cannot be empty":
+							av.showErrors("default", "You must complete all fields.");
+							break;
+						default:
+							av.showErrors("default", "An error occured. Please try again later.");
+							break;
+					}
 				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				av.showErrors("default", "An error occured. Please try again later.");
 			}
-		},
-		error: function(err) {
-			av.showErrors("default", "An error occured. Please try again later.");
-		}
+		});
 	});
 
 	// Login
@@ -1861,20 +1866,31 @@ $(document).ready(function() {
 
     var ev = new EventValidator();
 
-    $("#new_event_form").ajaxForm({
-        url: "/api/events",
-        beforeSubmit: function(formData, jqForm, options) {
-            return ev.validateForm();
-        },
-        success: function (responseText, status, xhr, $form) {
-            if (status === "success") {
-                console.log("Event created!");
+    $("#event_submit").click(function (event) {
+        event.preventDefault();
+
+        var data = {
+            name: $("#event_name").val(),
+            description: $("#event_description").val()
+        };
+
+        $.ajax({
+            url: "/api/events",
+            type: "POST",
+            data: data,
+            beforeSend: function (jqXHR, settings) {
+                return ev.validateForm();
+            },
+            success: function (data, textStatus, jqXHR) {
+                if (!data.error) {
+                    console.log("Event created!");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log("Error: " + textStatus + errorThrown);
             }
-        },
-        error: function (err) {
-            console.log(err.responseText);
-        }
-    })
+        });
+    });
 
     // Update profile
 

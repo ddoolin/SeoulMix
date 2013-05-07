@@ -6,20 +6,31 @@ $(document).ready(function() {
 
     var ev = new EventValidator();
 
-    $("#new_event_form").ajaxForm({
-        url: "/api/events",
-        beforeSubmit: function(formData, jqForm, options) {
-            return ev.validateForm();
-        },
-        success: function (responseText, status, xhr, $form) {
-            if (status === "success") {
-                console.log("Event created!");
+    $("#event_submit").click(function (event) {
+        event.preventDefault();
+
+        var data = {
+            name: $("#event_name").val(),
+            description: $("#event_description").val()
+        };
+
+        $.ajax({
+            url: "/api/events",
+            type: "POST",
+            data: data,
+            beforeSend: function (jqXHR, settings) {
+                return ev.validateForm();
+            },
+            success: function (data, textStatus, jqXHR) {
+                if (!data.error) {
+                    console.log("Event created!");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log("Error: " + textStatus + errorThrown);
             }
-        },
-        error: function (err) {
-            console.log(err.responseText);
-        }
-    })
+        });
+    });
 
     // Update profile
 

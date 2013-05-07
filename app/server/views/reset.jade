@@ -2,11 +2,11 @@ extends layout-out
 
 block content
     #map_canvas(style='width: 100%; height: 100%;')
-    #newpass_main
-        form#newpass_form(method="post")
+    .newpass-main
+        form#newpass_form(method="post").newpass-form
             fieldset(name="reset-password")
                 input#new_password(required="required", type="password", title="6 character minimum", name="new-password", placeholder="new password", tabindex="1")
                 input#new_password_confirm(required="required", type="password", title="Must be the same as the field above", name="new-password-confirm", placeholder="confirm password", tabindex="2")
-                input#newpass_submit(type="submit", value="Submit").btn.btn-primary
-                #newpass_error.alert.alert-error.hide
+                input#newpass_submit(type="submit", value="Submit").btn.btn-primary.newpass-submit
+                #newpass_error.alert.alert-error.hide.newpass-error
     input#user_id(type="hidden", value= user)

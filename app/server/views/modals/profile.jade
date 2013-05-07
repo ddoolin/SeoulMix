@@ -1,7 +1,7 @@
 #profile_modal.modal.hide.fade
     .modal-header Account Profile
         button.close(data-dismiss="modal") x
-    form#update_form(method="post", enctype="multitype/form-data").form-horizontal
+    form#update_form.form-horizontal.update-form(method="post", enctype="multitype/form-data")
         fieldset(name="update-profile")
             .modal-content
                 .profile-photo-controls.clearfix
@@ -19,12 +19,12 @@
                                         ul#profile_dropdown.dropdown-menu
                                             li.choose-exisiting-photo
                                                 a#choose_existing_photo_link Choose existing photo
-                                                input#choose_existing_photo(type="file", name="profile-picture")
+                                                input#choose_existing_photo.choose-exisiting-photo(type="file", name="profile-picture")
                                     - else
                                         ul#profile_dropdown.dropdown-menu
                                             li.choose-exisiting-photo
                                                 a#choose_existing_photo_link Choose existing photo
-                                                input#choose_existing_photo(type="file", name="profile-picture")
+                                                input#choose_existing_photo.choose-exisiting-photo(type="file", name="profile-picture")
                                             li.delete-photo
                                                 a#delete_photo Delete photo
                                 p.upload-rules (Max. size 700 KB, JPG/PNG)
@@ -66,7 +66,7 @@
                     .controls
                         input#update_password_confirm(type="password", name="update-password-confirm", pattern=".{6,}", title="Must be the same as the field above", autocomplete="off", value="")
                         p.update-password-confirm-comment.text-error
-                #update_done.alert.alert-success.hide
+                #update_done.alert.alert-success.hide.update-done
             .modal-footer
                 input#update_submit(type="submit", value="Update").btn
-                button#delete_account.btn.btn-danger Delete Account
+                button#delete_account.btn.btn-danger.delete-account Delete Account
