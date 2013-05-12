@@ -35,27 +35,27 @@ $(document).ready(function() {
 					setTimeout(function() {
 						window.location.href = "/";
 					}, 2000);
-				} else {
-					switch (data.error) {
-						case "Username taken":
-							av.showInvalidUsername();
-							break;
-						case "E-mail in use":
-							av.showInvalidEmail();
-							break;
-						case "Invalid username":
-							av.showErrors("username", "Must be between 4 and 30 characters, numbers and letters only.");
-							break;
-						case "Invalid password":
-							av.showErrors("password", "Must be at least 6 characters.");
-							break;
-						case "Field cannot be empty":
-							av.showErrors("default", "You must complete all fields.");
-							break;
-						default:
-							av.showErrors("default", "An error occured. Please try again later.");
-							break;
-					}
+				}
+
+				switch (data.error) {
+					case "Username taken":
+						av.showInvalidUsername();
+						break;
+					case "E-mail in use":
+						av.showInvalidEmail();
+						break;
+					case "Invalid username":
+						av.showErrors("username", "Must be between 4 and 30 characters, numbers and letters only.");
+						break;
+					case "Invalid password":
+						av.showErrors("password", "Must be at least 6 characters.");
+						break;
+					case "Field cannot be empty":
+						av.showErrors("default", "You must complete all fields.");
+						break;
+					default:
+						av.showErrors("default", "An error occured. Please try again later.");
+						break;
 				}
 			},
 			error: function (jqXHR, textStatus, errorThrown) {
@@ -124,14 +124,12 @@ $(document).ready(function() {
 			success: function (data, textStatus, jqXHR) {
 				if (!data.error) {
 					ev.showEmailSuccess("Check your e-mail on how to reset your password.");
+				} else if (data.error === "Invalid e-mail") {
+					ev.showEmailAlert("<b>Oops!</b> There's no account associated with that e-mail. Please double check and try again.");
 				}
 			},
 			error: function (jqXHR, textStatus, errorThrown) {
-				if (err.responseText == "email-not-found") {
-					ev.showEmailAlert("<b>Oops!</b> There's no account associated with that e-mail. Please double check and try again.");
-				} else {
-					ev.showEmailAlert("Sorry, there was a problem. Please try again later!");
-				}
+				ev.showEmailAlert("Sorry, there was a problem. Please try again later!");
 			}
 		});
 	});

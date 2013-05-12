@@ -11,7 +11,7 @@ var database = require("../../database"),
     users = db.collection("users"),
     that = this;
 
-// Login
+// Login/Logout
 
 exports.autoLogin = function (req, res) {
     var user = req.session.user.user,
@@ -43,71 +43,99 @@ exports.manualLogin = function (req, res) {
     }, function (err, result) {
         if (err) {
             res.send({"error":"Incorrect login"});
+        }
+
+        // Hash the password provided and callback invalid if no match
+        if (!passHash.verify(pass, result.pass)) {
+            res.send({"error": "Incorrect login"});
         } else {
 
-            // Hash the password provided and callback invalid if no match
-            if (!passHash.verify(pass, result.pass)) {
-                res.send({"error": "Incorrect login"});
+            var ipAddress,
+                date,
+                data = {};
+
+            // Get the direct IP or proxy-forwarded IP if it exists
+            if (req.header("x-forwarded-for")) {
+                ipAddress = req.header("x-forwarded-for").split("/")[0];
             } else {
-
-                var ipAddress,
-                    date,
-                    data = {};
-
-                // Get the direct IP or proxy-forwarded IP if it exists
-                if (req.header("x-forwarded-for")) {
-                    ipAddress = req.header("x-forwarded-for").split("/")[0];
-                } else {
-                    ipAddress = req.connection.remoteAddress;
-                }
-
-                // Collect the time at this second
-                date = moment().format("dddd, MMMM Do YYYY, h:mm:ss a"),
-
-                data = {
-                    lastLoginIp: ipAddress,
-                    lastLoginDate: date
-                };
-
-                // Pass in the date, IP, and increment the # of logins
-                users.findAndModify(
-                    { user: user },
-                    [["_id", "asc"]],
-                    { $inc: { numLogins: 1 },
-                      $set: data },
-                    { new: true },
-                    function (err, result) {
-                        if (err) {
-                            res.send({"error": "An error has occured"});
-                        }
-
-                        req.session.user = result;
-
-                        if (req.param("remember-me")) {
-                            // 24 hours
-                            req.session.cookie.maxAge = 86400000;
-                        }
-
-                        res.redirect("/home");
-                    }
-                );
+                ipAddress = req.connection.remoteAddress;
             }
+
+            // Collect the time at this second
+            date = moment().format("dddd, MMMM Do YYYY, h:mm:ss a"),
+
+            data = {
+                lastLoginIp: ipAddress,
+                lastLoginDate: date
+            };
+
+            // Pass in the date, IP, and increment the # of logins
+            users.findAndModify(
+                { user: user },
+                [["_id", "asc"]],
+                { $inc: { numLogins: 1 },
+                  $set: data },
+                { new: true },
+                function (err, result) {
+                    if (err) {
+                        res.send({"error": "An error has occured"});
+                    }
+
+                    req.session.user = result;
+
+                    if (req.param("remember-me")) {
+                        // 24 hours
+                        req.session.cookie.maxAge = 86400000;
+                    }
+
+                    res.redirect("/home");
+                }
+            );
         }
+    });
+};
+
+exports.logout = function (req, res) {
+    req.session.destroy(function (err) {
+        if (err) {
+            res.send({"error": "An error has occured"});
+        }
+
+        res.send({"status": "success"});
     });
 };
 
 exports.getFront = function (req, res) {
     if (req.session.user === undefined) {
         res.render("front");
-    } else {
-        that.autoLogin(req, res);
+        return false;
     }
+
+    that.autoLogin(req, res);
+};
+
+exports.getHome = function (req, res) {
+    if (req.session.user === undefined) {
+        res.redirect("/");
+        return false;
+    }
+
+    // Render the home page and send the session data with it
+    // Also send the cloudinary object for use in the views
+    res.render("home", {
+        userdata: req.session.user,
+        cloudinary: cloudinary
+    });
 };
 
 // Account lookup
 
 exports.getUsers = function (req, res) {
     users.find({}, { pass: 0, _id: 0 }).toArray(function (err, result) {
+        if (err) {
+            res.send({"error": "An error has occured"});
+        }
+
         res.send(result);
     });
 };
@@ -117,6 +145,10 @@ exports.getUser = function (req, res) {
         { user: req.param("id") },
         { pass: 0, _id: 0 },
     function (err, result) {
+        if (err) {
+            res.send({"error": "An error has occured"});
+        }
+
         res.send(result);
     });
 };
@@ -456,8 +488,4 @@ var findByEmail = function (email, callback) {
 
         callback(null, result);
     });
-};
-
-var getObjectId = function (id) {
-    return users.db.bson_serializer.ObjectID.createFromHexString(id);
 };

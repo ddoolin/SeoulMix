@@ -1,5 +1,13 @@
 # Todo
 
+
+Deploy Time:
+* Edit allowed referers for G. Maps API Key
+
+* Remove console logs, breakpoints, etc
+* Shim, graceful degradation, etc
+* Swap bootstrap w/ custom/other styles
+* Enable SSL w/ Nginx
 * Mobile layout
 * Loading indication -- reset email, login?, picture update, etc.
 * Password reset token w/ expiration

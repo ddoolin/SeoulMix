@@ -1,9 +1,31 @@
 #create_event_modal.modal.hide.fade
-    .modal-header Create New Event
-        button.close(data-dismiss='modal') x
-    .modal-content
-        form#new_event_form(method="post")
-            fieldset(name="event-creation")
-                input#event_name.event-name(required="required", type="text", title="Event name", name="event-name", placeholder="event name")
-                textarea#event_description.event-description(title="Event description", name="event-description", placeholder="event description")
-                input#event_submit.event-submit(type="submit", value="Create Event!")
+	.modal-header New Event
+		button.close(data-dismiss='modal') x
+	form#new_event_form.form-horizontal.create-event-form(method="post")
+		fieldset(name="event-creation")
+			.modal-content
+				.control-group
+					label.name.control-label
+						| Event Name
+					.controls
+						input#event_name.event-name(required="required", type="text", title="Event name", name="event-name", placeholder="event name")
+						p.event-name-comment.text-error
+				.control-group
+					label.description.control-label
+						| Event Description
+					.controls
+						textarea#event_description.event-description(title="Event description", name="event-description", placeholder="event description")
+						p.event-description-comment.text-error
+				.control-group
+					label.location.control-label
+						| Location
+					.controls
+						input#event_location.event-location(required="required", type="text", title="Event location", name="event-location", placeholder="event location")
+						p - or -
+						button#find_location Find on map
+						p.event-location-comment.text-error
+				.event-alert.alert.alert-success.hide.fade.in
+					button.close &times;
+					p.event-submit-comment
+			.modal-footer
+				input#event_submit.btn.btn-primary.event-submit(type="submit", value="Create Event!")

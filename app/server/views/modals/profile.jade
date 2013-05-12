@@ -30,37 +30,37 @@
                                 p.upload-rules (Max. size 700 KB, JPG/PNG)
                             p This photo is public and can be seen by anyone viewing your profile or activity on SeoulMix.
                 hr
-                #firstname_cg.control-group
+                .control-group
                     label.first-name.control-label
                         | First Name
                     .controls
                         input#update_firstname(type="text", name="update-firstname", title="First name", placeholder="first name", value= userdata.firstname)
                         p.update-firstname-comment.text-error
-                #lastname_cg.control-group
+                .control-group
                     label.last-name.control-label
                         | Last Name
                     .controls
                         input#update_lastname(type="text", name="update-lastname", title="Last name", placeholder="last name", value= userdata.lastname)
                         p.update-lastname-comment.text-error
-                #email_cg.control-group
+                .control-group
                     label.email.control-label
                         | E-mail
                     .controls
                         input#update_email(type="email", name="update-email", title="New e-mail address", placeholder="e-mail", value= userdata.email)
                         p.update-email-comment.text-error
-                #username_cg.control-group
+                .control-group
                     label.username.control-label
                         | Username
                     .controls
                         input#update_username(type="text", name="update-username", title="Cannot be changed", value= userdata.user, disabled="disabled")
                         p.update-username-comment.text-error
-                #password_cg.control-group
+                .control-group
                     label.password.control-label
                         | New Password
                     .controls
                         input#update_password(type="password", name="update-password", pattern=".{6,}", title="6 character minimum", autocomplete="off", value="")
                         p.update-password-comment.text-error
-                #password_confirm_cg.control-group
+                .control-group
                     label.password.control-label
                         | Confirm
                     .controls

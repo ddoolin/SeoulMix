@@ -11,7 +11,8 @@ $(document).ready(function() {
 
         var data = {
             name: $("#event_name").val(),
-            description: $("#event_description").val()
+            description: $("#event_description").val(),
+            location: $("#event_location").val()
         };
 
         $.ajax({
@@ -19,11 +20,13 @@ $(document).ready(function() {
             type: "POST",
             data: data,
             beforeSend: function (jqXHR, settings) {
+                ev.resetCommentFields();
                 return ev.validateForm();
             },
             success: function (data, textStatus, jqXHR) {
                 if (!data.error) {
-                    console.log("Event created!");
+                    $("#new_event_form").resetForm();
+                    ev.showCreateSuccess("<b>Success!</b> Event successfully created!");
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {

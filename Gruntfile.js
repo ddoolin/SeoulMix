@@ -23,6 +23,7 @@ module.exports = function (grunt) {
         uglify: {
             seoulmix: {
                 options: {
+                    beautify: false,
                     mangle: { toplevel: true },
                     squeeze: { dead_code: false },
                     codegen: { quote_keys: true },

@@ -89,28 +89,27 @@ AccountValidator.prototype.showInvalidEmail = function() {
 }
 
 AccountValidator.prototype.showCreateSuccess = function(msg) {
-	this.commentFields[4].addClass("text-success")
-						 .html(msg);
+	this.commentFields[4].addClass("text-success").html(msg);
 }
 
 AccountValidator.prototype.validateForm = function() {
 
-		if (this.validateUsername(this.formFields[0].val()) === false) {
-			this.showErrors("username", "Must be between 4 and 30 characters.");
-			return false;
-		}
-		if (this.validatePassword(this.formFields[1].val()) === false) {
-			this.showErrors("password", "Must be at least 6 characters.");
-			return false;
-		}
-		if (this.validateConfirm(this.formFields[1].val(), this.formFields[2].val()) === false) {
-			this.showErrors("confirm", "Passwords don't match.");
-			return false;
-		}
-		if (this.validateEmail(this.formFields[3].val()) === false) {
-			this.showErrors("email", "Please enter a valid e-mail address.");
-			return false;
-		}
+	if (this.validateUsername(this.formFields[0].val()) === false) {
+		this.showErrors("username", "Must be between 4 and 30 characters.");
+		return false;
+	}
+	if (this.validatePassword(this.formFields[1].val()) === false) {
+		this.showErrors("password", "Must be at least 6 characters.");
+		return false;
+	}
+	if (this.validateConfirm(this.formFields[1].val(), this.formFields[2].val()) === false) {
+		this.showErrors("confirm", "Passwords don't match.");
+		return false;
+	}
+	if (this.validateEmail(this.formFields[3].val()) === false) {
+		this.showErrors("email", "Please enter a valid e-mail address.");
+		return false;
+	}
 
-		return true;
+	return true;
 }

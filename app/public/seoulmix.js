@@ -27,22 +27,30 @@ function HomeController() {
     
     var that = this;
 
+    $(".event-alert").alert();
+
     // Logout confirmation
-    $("#navbar_logout").click(function() {
+    $("#navbar_logout").click(function () {
         if (window.confirm("Are you sure you want to log out?")) {
             that.attemptLogout();
         }
     });
 
+    $(".event-alert .close").click(function (event) {
+        event.preventDefault();
+
+        $(".event-alert").alert("close");
+    });
+
     // Remove profile picture
-    $("#delete_photo").click(function() {
+    $("#delete_photo").click(function () {
         if (window.confirm("Are you sure you want to remove your picture?")) {
             that.removePhoto();
         }
     });
 
     // Need to use a JS trigger to prevent this ajaxForm from submitting on click
-    $("#delete_account").click(function(event) {
+    $("#delete_account").click(function (event) {
         event.preventDefault();
 
         $("#profile_modal").modal("hide");
@@ -50,50 +58,57 @@ function HomeController() {
     });
 
     // Field focusing
-    $("#profile_modal").on("shown", function() {
+    $("#create_event_modal").on("shown", function () {
+        $("#event_name").focus();
+    }).on("hidden", function () {
+        $("#event_name").blur();
+    });
+
+    $("#profile_modal").on("shown", function () {
         $("#update_firstname").focus();
-    }).on("hidden", function() {
+    }).on("hidden", function () {
         $("#update_firstname").blur();
     });
 
-    $("#deleteacct_modal").on("shown", function() {
+    $("#deleteacct_modal").on("shown", function () {
         $("#delete_password").focus();
-    }).on("hidden", function() {
+    }).on("hidden", function () {
         $("#delete_password").blur();
     });
 
     // If the user changes profile username field, they edited
     // the HTML node. Append a warning even though it's not processed.
-    $("#update_username").change(function() {
+    $("#update_username").change(function () {
         $(".update-username-comment").addClass("error").text("Username cannot be changed!");
     });
 
     // Emulate a click on the hidden input field
-    $("#choose_existing_photo_link").click(function() {
+    $("#choose_existing_photo_link").click(function () {
         $("#choose_existing_photo").click();
     });
 
     // Do logout
-    this.attemptLogout = function() {
+    this.attemptLogout = function () {
         $.ajax({
-            url: "/home",
+            url: "/logout",
             type: "POST",
-            data: { logout: true },
-            success: function() {
-                window.location.href = "/";
+            success: function (data, textStatus, jqXHR) {
+                if (!data.error) {
+                    window.location.href = "/";
+                }
             },
-            error: function(err) {
+            error: function (jqXHR, textStatus, errorThrown) {
                 alert("Logout failed!");
             }
         });
     }
 
     // Remove profile photo
-    this.removePhoto = function() {
+    this.removePhoto = function () {
         $.ajax({
             url: "/api/users/:id/upload",
             type: "DELETE",
-            success: function() {
+            success: function () {
                 if (!data.error) {
                     $("#profile_picture_comment").addClass("text-success")
                         .text("Photo successfully removed.");
@@ -103,7 +118,7 @@ function HomeController() {
                         .text("Failed to remove.");
                 }
             },
-            error: function(err) {
+            error: function (err) {
                 $("#profile_picture_comment").addClass("text-error")
                     .text("Failed to remove.");
             }
@@ -201,30 +216,29 @@ AccountValidator.prototype.showInvalidEmail = function() {
 }
 
 AccountValidator.prototype.showCreateSuccess = function(msg) {
-	this.commentFields[4].addClass("text-success")
-						 .html(msg);
+	this.commentFields[4].addClass("text-success").html(msg);
 }
 
 AccountValidator.prototype.validateForm = function() {
 
-		if (this.validateUsername(this.formFields[0].val()) === false) {
-			this.showErrors("username", "Must be between 4 and 30 characters.");
-			return false;
-		}
-		if (this.validatePassword(this.formFields[1].val()) === false) {
-			this.showErrors("password", "Must be at least 6 characters.");
-			return false;
-		}
-		if (this.validateConfirm(this.formFields[1].val(), this.formFields[2].val()) === false) {
-			this.showErrors("confirm", "Passwords don't match.");
-			return false;
-		}
-		if (this.validateEmail(this.formFields[3].val()) === false) {
-			this.showErrors("email", "Please enter a valid e-mail address.");
-			return false;
-		}
+	if (this.validateUsername(this.formFields[0].val()) === false) {
+		this.showErrors("username", "Must be between 4 and 30 characters.");
+		return false;
+	}
+	if (this.validatePassword(this.formFields[1].val()) === false) {
+		this.showErrors("password", "Must be at least 6 characters.");
+		return false;
+	}
+	if (this.validateConfirm(this.formFields[1].val(), this.formFields[2].val()) === false) {
+		this.showErrors("confirm", "Passwords don't match.");
+		return false;
+	}
+	if (this.validateEmail(this.formFields[3].val()) === false) {
+		this.showErrors("email", "Please enter a valid e-mail address.");
+		return false;
+	}
 
-		return true;
+	return true;
 }
 function DeleteValidator() {
 
@@ -303,17 +317,58 @@ function EventValidator() {
 
 	var that = this;
 
-	that.createEvent = $("#create_event_model");
-	that.formFields = [$(".event-name"), $(".event-description")]
+	that.createEvent = $("#create_event_modal");
+	that.createEventAlert = $(".event-alert");
+	that.formFields = [$("#event_name"), $("#event_description"),
+		$("#event_location")];
+
+	that.commentFields = [$(".event-name-comment"),
+		$(".event-description-comment"), $(".event-location-comment")];
+
+    that.resetCommentFields = function () {
+
+        for (var i = 0; i < that.commentFields.length; i++) {
+            that.commentFields[i].removeClass("text-error").text("");
+        }
+    }
 
 	that.validateName = function (name) {
-		return name.length >= 0
+		return name.length > 0
+	}
+
+	that.validateLocation = function (location) {
+		return location.length > 0
+	}
+
+	that.showErrors = function (type, msg) {
+		switch (type) {
+			case "name":
+				that.commentFields[0].addClass("text-error").text(msg);
+				break;
+			case "description":
+				that.commentFields[1].addClass("text-error").text(msg);
+				break;
+			case "location":
+				that.commentFields[2].addClass("text-error").text(msg);
+				break;
+		}
 	}
 }
 
+EventValidator.prototype.showCreateSuccess = function (msg) {
+	$(".event-submit-comment").html(msg);
+	that.createEventAlert.show();
+}
+
 EventValidator.prototype.validateForm = function () {
+	debugger;
+
 	if (this.validateName(this.formFields[0].val()) ===  false) {
-		console.log("Invalid name");
+		this.showErrors("name", "Event name cannot be blank");
+		return false;
+	}
+	if (this.validateLocation(this.formFields[2].val()) === false) {
+		this.showErrors("location", "Location cannot be blank");
 		return false;
 	}
 
@@ -1757,27 +1812,27 @@ $(document).ready(function() {
 					setTimeout(function() {
 						window.location.href = "/";
 					}, 2000);
-				} else {
-					switch (data.error) {
-						case "Username taken":
-							av.showInvalidUsername();
-							break;
-						case "E-mail in use":
-							av.showInvalidEmail();
-							break;
-						case "Invalid username":
-							av.showErrors("username", "Must be between 4 and 30 characters, numbers and letters only.");
-							break;
-						case "Invalid password":
-							av.showErrors("password", "Must be at least 6 characters.");
-							break;
-						case "Field cannot be empty":
-							av.showErrors("default", "You must complete all fields.");
-							break;
-						default:
-							av.showErrors("default", "An error occured. Please try again later.");
-							break;
-					}
+				}
+
+				switch (data.error) {
+					case "Username taken":
+						av.showInvalidUsername();
+						break;
+					case "E-mail in use":
+						av.showInvalidEmail();
+						break;
+					case "Invalid username":
+						av.showErrors("username", "Must be between 4 and 30 characters, numbers and letters only.");
+						break;
+					case "Invalid password":
+						av.showErrors("password", "Must be at least 6 characters.");
+						break;
+					case "Field cannot be empty":
+						av.showErrors("default", "You must complete all fields.");
+						break;
+					default:
+						av.showErrors("default", "An error occured. Please try again later.");
+						break;
 				}
 			},
 			error: function (jqXHR, textStatus, errorThrown) {
@@ -1846,14 +1901,12 @@ $(document).ready(function() {
 			success: function (data, textStatus, jqXHR) {
 				if (!data.error) {
 					ev.showEmailSuccess("Check your e-mail on how to reset your password.");
+				} else if (data.error === "Invalid e-mail") {
+					ev.showEmailAlert("<b>Oops!</b> There's no account associated with that e-mail. Please double check and try again.");
 				}
 			},
 			error: function (jqXHR, textStatus, errorThrown) {
-				if (err.responseText == "email-not-found") {
-					ev.showEmailAlert("<b>Oops!</b> There's no account associated with that e-mail. Please double check and try again.");
-				} else {
-					ev.showEmailAlert("Sorry, there was a problem. Please try again later!");
-				}
+				ev.showEmailAlert("Sorry, there was a problem. Please try again later!");
 			}
 		});
 	});
@@ -1871,7 +1924,8 @@ $(document).ready(function() {
 
         var data = {
             name: $("#event_name").val(),
-            description: $("#event_description").val()
+            description: $("#event_description").val(),
+            location: $("#event_location").val()
         };
 
         $.ajax({
@@ -1879,11 +1933,13 @@ $(document).ready(function() {
             type: "POST",
             data: data,
             beforeSend: function (jqXHR, settings) {
+                ev.resetCommentFields();
                 return ev.validateForm();
             },
             success: function (data, textStatus, jqXHR) {
                 if (!data.error) {
-                    console.log("Event created!");
+                    $("#new_event_form").resetForm();
+                    ev.showCreateSuccess("<b>Success!</b> Event successfully created!");
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {

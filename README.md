@@ -1,5 +1,46 @@
 # SeoulMix Setup Readme
 
+## Installation
+
+As with any Node installation, run "npm install" to install the required packages.
+See the Nginx section below to setup Nginx request proxy'ing, though it is possible
+to run the server without it (just start the app as usual).
+
+## Organization
+
+File organization is kept pretty simple. Assets in app/public, application code in app/server.
+The only piece that may need explanation is the client-side JavaScript (as always).
+
+- Views set up form controllers and modal windows.
+- Controllers handle user interaction.
+- Form validators validate incoming form data and display errors, notices, etc.
+
+These may overlap from time to time, but this is generally the flow of the app.
+
+## Grunt
+
+SeoulMix uses Grunt to compile, concatenate, and minify client-side JavaScript and CSS.
+The Gruntfile is ready to go assuming the directory structure is kept intact. Running
+"grunt" will begin the watch process.
+
+If you need to flush the resulting files, simply removing them
+and making an empty save is enough to trigger re-compilation.
+
+For development purposes, it may be necessary to change the Uglify beautifier on to make the
+resulting JavaScript easier.
+
+## Nginx
+
+SeoulMix uses Nginx to filter incoming requests. Since Nginx's static/asset serving is
+second-to-none, we let Nginx handle the asset loading while only the core requests
+hit the Node processes.
+
+As an added benefit, Nginx also offers some minimal asset caching and simplifies SSL
+when using Node.
+
+The file below is typically located at /etc/nginx/nginx.conf on *nix systems. YMMV.
+Be sure to change the directory paths to match your system.
+
 ## Nginx configuration file 
 
 
@@ -80,4 +121,3 @@
 	        }
 	    }
 	}
-

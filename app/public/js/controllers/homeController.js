@@ -2,22 +2,30 @@ function HomeController() {
     
     var that = this;
 
+    $(".event-alert").alert();
+
     // Logout confirmation
-    $("#navbar_logout").click(function() {
+    $("#navbar_logout").click(function () {
         if (window.confirm("Are you sure you want to log out?")) {
             that.attemptLogout();
         }
     });
 
+    $(".event-alert .close").click(function (event) {
+        event.preventDefault();
+
+        $(".event-alert").alert("close");
+    });
+
     // Remove profile picture
-    $("#delete_photo").click(function() {
+    $("#delete_photo").click(function () {
         if (window.confirm("Are you sure you want to remove your picture?")) {
             that.removePhoto();
         }
     });
 
     // Need to use a JS trigger to prevent this ajaxForm from submitting on click
-    $("#delete_account").click(function(event) {
+    $("#delete_account").click(function (event) {
         event.preventDefault();
 
         $("#profile_modal").modal("hide");
@@ -25,50 +33,57 @@ function HomeController() {
     });
 
     // Field focusing
-    $("#profile_modal").on("shown", function() {
+    $("#create_event_modal").on("shown", function () {
+        $("#event_name").focus();
+    }).on("hidden", function () {
+        $("#event_name").blur();
+    });
+
+    $("#profile_modal").on("shown", function () {
         $("#update_firstname").focus();
-    }).on("hidden", function() {
+    }).on("hidden", function () {
         $("#update_firstname").blur();
     });
 
-    $("#deleteacct_modal").on("shown", function() {
+    $("#deleteacct_modal").on("shown", function () {
         $("#delete_password").focus();
-    }).on("hidden", function() {
+    }).on("hidden", function () {
         $("#delete_password").blur();
     });
 
     // If the user changes profile username field, they edited
     // the HTML node. Append a warning even though it's not processed.
-    $("#update_username").change(function() {
+    $("#update_username").change(function () {
         $(".update-username-comment").addClass("error").text("Username cannot be changed!");
     });
 
     // Emulate a click on the hidden input field
-    $("#choose_existing_photo_link").click(function() {
+    $("#choose_existing_photo_link").click(function () {
         $("#choose_existing_photo").click();
     });
 
     // Do logout
-    this.attemptLogout = function() {
+    this.attemptLogout = function () {
         $.ajax({
-            url: "/home",
+            url: "/logout",
             type: "POST",
-            data: { logout: true },
-            success: function() {
-                window.location.href = "/";
+            success: function (data, textStatus, jqXHR) {
+                if (!data.error) {
+                    window.location.href = "/";
+                }
             },
-            error: function(err) {
+            error: function (jqXHR, textStatus, errorThrown) {
                 alert("Logout failed!");
             }
         });
     }
 
     // Remove profile photo
-    this.removePhoto = function() {
+    this.removePhoto = function () {
         $.ajax({
             url: "/api/users/:id/upload",
             type: "DELETE",
-            success: function() {
+            success: function () {
                 if (!data.error) {
                     $("#profile_picture_comment").addClass("text-success")
                         .text("Photo successfully removed.");
@@ -78,7 +93,7 @@ function HomeController() {
                         .text("Failed to remove.");
                 }
             },
-            error: function(err) {
+            error: function (err) {
                 $("#profile_picture_comment").addClass("text-error")
                     .text("Failed to remove.");
             }
