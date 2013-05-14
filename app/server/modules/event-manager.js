@@ -55,8 +55,6 @@ exports.addEvent = function (req, res) {
         description = req.param("description"),
         location = req.param("location");
 
-    console.log(data);
-
     if (!name) {
         res.send({"error": "Name cannot be blank"});
         return false;

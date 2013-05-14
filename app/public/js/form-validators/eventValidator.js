@@ -21,8 +21,22 @@ function EventValidator() {
 		return name.length > 0
 	}
 
-	that.validateLocation = function (location) {
+	that.validateLocationLength = function (location) {
 		return location.length > 0
+	}
+
+	that.validateLocation = function (location) {
+		var geocoder = new google.maps.Geocoder();
+
+		geocoder.geocode({
+			"address": location,
+			"region": "KR"
+		}, function (results, status) {
+			debugger;
+			if (status !== "OK") {
+				return false;
+			}
+		});
 	}
 
 	that.showErrors = function (type, msg) {
@@ -42,18 +56,20 @@ function EventValidator() {
 
 EventValidator.prototype.showCreateSuccess = function (msg) {
 	$(".event-submit-comment").html(msg);
-	that.createEventAlert.show();
+	this.createEventAlert.show();
 }
 
 EventValidator.prototype.validateForm = function () {
-	debugger;
-
 	if (this.validateName(this.formFields[0].val()) ===  false) {
 		this.showErrors("name", "Event name cannot be blank");
 		return false;
 	}
-	if (this.validateLocation(this.formFields[2].val()) === false) {
+	if (this.validateLocationLength(this.formFields[2].val()) === false) {
 		this.showErrors("location", "Location cannot be blank");
+		return false;
+	}
+	if (this.validateLocation(this.formFields[2].val()) === false) {
+		this.showErrors("location", "Location could not be found");
 		return false;
 	}
 
