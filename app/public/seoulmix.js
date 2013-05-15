@@ -336,22 +336,8 @@ function EventValidator() {
 		return name.length > 0
 	}
 
-	that.validateLocationLength = function (location) {
-		return location.length > 0
-	}
-
 	that.validateLocation = function (location) {
-		var geocoder = new google.maps.Geocoder();
-
-		geocoder.geocode({
-			"address": location,
-			"region": "KR"
-		}, function (results, status) {
-			debugger;
-			if (status !== "OK") {
-				return false;
-			}
-		});
+		return location.length > 0
 	}
 
 	that.showErrors = function (type, msg) {
@@ -369,6 +355,37 @@ function EventValidator() {
 	}
 }
 
+EventValidator.prototype.getLocation = function (address, callback) {
+	var geocoder = new google.maps.Geocoder();
+
+	geocoder.geocode({
+		"address": 	address,
+		"region": 	"KR"
+	}, function (results, status) {
+		if (status !== "OK" && status !== "ZERO_RESULTS") {
+			callback({"error":"An error has occured"});
+		} else if (status === "ZERO_RESULTS") {
+			callback({"error":"Address not found"});
+		}
+
+		r = results[0]
+
+		// Since we want to allow mixing in Seoul AND the surrounding area,
+		// We will only check if the address is in Korea.
+		for (var i = 0; i < r.address_components.length; i++) {
+			for (var j = 0; j < r.address_components[i].types.length; j++) {
+				if (r.address_components[i].types[j] === "country" &&
+					r.address_components[i].short_name !== "KR") {
+
+					callback({"error": "Not in Korea"});
+				}
+			}
+		}
+
+		callback(r);
+	});
+};
+
 EventValidator.prototype.showCreateSuccess = function (msg) {
 	$(".event-submit-comment").html(msg);
 	this.createEventAlert.show();
@@ -379,12 +396,8 @@ EventValidator.prototype.validateForm = function () {
 		this.showErrors("name", "Event name cannot be blank");
 		return false;
 	}
-	if (this.validateLocationLength(this.formFields[2].val()) === false) {
-		this.showErrors("location", "Location cannot be blank");
-		return false;
-	}
 	if (this.validateLocation(this.formFields[2].val()) === false) {
-		this.showErrors("location", "Location could not be found");
+		this.showErrors("location", "Location cannot be blank");
 		return false;
 	}
 
@@ -628,33 +641,29 @@ $(document).ready(function() {
 
 	// Instantiate the map and pass options
 	var map = new google.maps.Map(document.getElementById("map_canvas"),
-		mapOptions);
+		mapOptions),
+		geocoder = new google.maps.Geocoder(),
+		location,
+		coordArray = [];
 
-	// ! Marker testing!
-	var addressArray = new Array("Namsan, Seoul, Korea", "Yonsei University",
-								"Banpo Bridge, Seoul, Korea", "Gangnam, Seoul",
-								"Gwanaksan, Seoul, Korea", "Seoul National University",
-								"Hanguk University of Foreign Studies",
-								"Korea University", "Dongdaemun", "Sindorim Station",
-								"여의도공원");
-
-	var geocoder = new google.maps.Geocoder();
-
-	for (var i = 0; i < addressArray.length; i++) {
-		geocoder.geocode({
-			'address': addressArray[i]
-		}, function(results, status) {
-			if (status == google.maps.GeocoderStatus.OK) {
-				var marker = new google.maps.Marker({
-					map: map,
-					position: results[0].geometry.location
-				});
-			} else {
-				console.log("Geocode was not successful: " + status);
+	$.ajax({
+		url: "/api/events",
+		type: "GET",
+		success: function (data, textStatus, jqXHR) {
+			for (var i = 0; i < data.length; i++) {
+				populateMap(data[i].location.lat, data[i].location.lng);
 			}
+		}
+	});
+
+	var populateMap = function (lat, lng) {
+		var latLng = new google.maps.LatLng(lat, lng);
+		var marker = new google.maps.Marker({
+			map: map,
+			position: latLng,
+			animation: google.maps.Animation.DROP
 		});
 	}
-	// ! End marker testing!
 });
 
 /**
@@ -1941,27 +1950,60 @@ $(document).ready(function() {
         var data = {
             name: $("#event_name").val(),
             description: $("#event_description").val(),
-            location: $("#event_location").val()
+            address: $("#event_location").val()
         };
 
-        $.ajax({
-            url: "/api/events",
-            type: "POST",
-            data: data,
-            beforeSend: function (jqXHR, settings) {
-                ev.resetCommentFields();
-                return ev.validateForm();
-            },
-            success: function (data, textStatus, jqXHR) {
-                if (!data.error) {
-                    $("#new_event_form").resetForm();
-                    ev.showCreateSuccess("<b>Success!</b> Event successfully created!");
+        ev.getLocation(data.address, function (result) {
+            if (result.error) {
+                switch (result.error) {
+                    case "Address not found":
+                        ev.showErrors("location", "Address not found.");
+                        break;
+                    case "Not in Korea":
+                        ev.showErrors("location", "Address not in Korea.");
+                        break;
+                    default:
+                        ev.showErrors("location", "An error has occured.");
                 }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log("Error: " + textStatus + errorThrown);
+
+                return false;
+            } else {
+                data.location = [result.geometry.location.kb, result.geometry.location.lb];
+                postEvent(data);
             }
         });
+
+        var postEvent = function (data) {
+            $.ajax({
+                url: "/api/events",
+                type: "POST",
+                data: data,
+                beforeSend: function (jqXHR, settings) {
+                    ev.resetCommentFields();
+                    return ev.validateForm();
+                },
+                success: function (data, textStatus, jqXHR) {
+                    if (!data.error) {
+                        $("#new_event_form").resetForm();
+                        ev.showCreateSuccess("<b>Success!</b> Event successfully created!");
+                    } else {
+                        switch (data.error) {
+                            case "Name cannot be blank":
+                                ev.showErrors("name", "Name cannot be blank.");
+                                break;
+                            case "Location cannot be blank":
+                                ev.showErrors("location", "Location cannot be blank.");
+                                break;
+                            default:
+                                ev.showErrors("location", "An error has occured.");
+                        }
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    ev.showErrors("location", "An unknown error has occured.");
+                }
+            });
+        }
     });
 
     // Update profile

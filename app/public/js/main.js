@@ -30,31 +30,27 @@ $(document).ready(function() {
 
 	// Instantiate the map and pass options
 	var map = new google.maps.Map(document.getElementById("map_canvas"),
-		mapOptions);
+		mapOptions),
+		geocoder = new google.maps.Geocoder(),
+		location,
+		coordArray = [];
 
-	// ! Marker testing!
-	var addressArray = new Array("Namsan, Seoul, Korea", "Yonsei University",
-								"Banpo Bridge, Seoul, Korea", "Gangnam, Seoul",
-								"Gwanaksan, Seoul, Korea", "Seoul National University",
-								"Hanguk University of Foreign Studies",
-								"Korea University", "Dongdaemun", "Sindorim Station",
-								"여의도공원");
-
-	var geocoder = new google.maps.Geocoder();
-
-	for (var i = 0; i < addressArray.length; i++) {
-		geocoder.geocode({
-			'address': addressArray[i]
-		}, function(results, status) {
-			if (status == google.maps.GeocoderStatus.OK) {
-				var marker = new google.maps.Marker({
-					map: map,
-					position: results[0].geometry.location
-				});
-			} else {
-				console.log("Geocode was not successful: " + status);
+	$.ajax({
+		url: "/api/events",
+		type: "GET",
+		success: function (data, textStatus, jqXHR) {
+			for (var i = 0; i < data.length; i++) {
+				populateMap(data[i].location.lat, data[i].location.lng);
 			}
+		}
+	});
+
+	var populateMap = function (lat, lng) {
+		var latLng = new google.maps.LatLng(lat, lng);
+		var marker = new google.maps.Marker({
+			map: map,
+			position: latLng,
+			animation: google.maps.Animation.DROP
 		});
 	}
-	// ! End marker testing!
 });

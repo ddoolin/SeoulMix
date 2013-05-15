@@ -12,27 +12,60 @@ $(document).ready(function() {
         var data = {
             name: $("#event_name").val(),
             description: $("#event_description").val(),
-            location: $("#event_location").val()
+            address: $("#event_location").val()
         };
 
-        $.ajax({
-            url: "/api/events",
-            type: "POST",
-            data: data,
-            beforeSend: function (jqXHR, settings) {
-                ev.resetCommentFields();
-                return ev.validateForm();
-            },
-            success: function (data, textStatus, jqXHR) {
-                if (!data.error) {
-                    $("#new_event_form").resetForm();
-                    ev.showCreateSuccess("<b>Success!</b> Event successfully created!");
+        ev.getLocation(data.address, function (result) {
+            if (result.error) {
+                switch (result.error) {
+                    case "Address not found":
+                        ev.showErrors("location", "Address not found.");
+                        break;
+                    case "Not in Korea":
+                        ev.showErrors("location", "Address not in Korea.");
+                        break;
+                    default:
+                        ev.showErrors("location", "An error has occured.");
                 }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log("Error: " + textStatus + errorThrown);
+
+                return false;
+            } else {
+                data.location = [result.geometry.location.kb, result.geometry.location.lb];
+                postEvent(data);
             }
         });
+
+        var postEvent = function (data) {
+            $.ajax({
+                url: "/api/events",
+                type: "POST",
+                data: data,
+                beforeSend: function (jqXHR, settings) {
+                    ev.resetCommentFields();
+                    return ev.validateForm();
+                },
+                success: function (data, textStatus, jqXHR) {
+                    if (!data.error) {
+                        $("#new_event_form").resetForm();
+                        ev.showCreateSuccess("<b>Success!</b> Event successfully created!");
+                    } else {
+                        switch (data.error) {
+                            case "Name cannot be blank":
+                                ev.showErrors("name", "Name cannot be blank.");
+                                break;
+                            case "Location cannot be blank":
+                                ev.showErrors("location", "Location cannot be blank.");
+                                break;
+                            default:
+                                ev.showErrors("location", "An error has occured.");
+                        }
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    ev.showErrors("location", "An unknown error has occured.");
+                }
+            });
+        }
     });
 
     // Update profile

@@ -53,6 +53,7 @@ exports.addEvent = function (req, res) {
         user = req.session.user,
         name = req.param("name"),
         description = req.param("description"),
+        address = req.param("address"),
         location = req.param("location");
 
     if (!name) {
@@ -60,7 +61,7 @@ exports.addEvent = function (req, res) {
         return false;
     }
 
-    if (!location) {
+    if (!address || !location) {
         res.send({"error": "Location cannot be blank"});
         return false;
     }
@@ -72,7 +73,11 @@ exports.addEvent = function (req, res) {
     data.user = user.user
     data.name = name;
     data.description = description;
-    data.location = location;
+    data.address = address;
+    data.location = {
+        lat: location[0],
+        lng: location[1]
+    };
 
     events.insert(data, { safe: true }, function (err, result) {
         if (err) {

@@ -1,6 +1,11 @@
 # Don't include modules in the repository!
 node_modules
 
+# or compressed assets (should be built per machine)
+app/public/seoulmix.css
+app/public/seoulmix.js
+app/public/seoulmix.min.js
+
 # or e-mail settings
 # app/server/modules/email-settings.js
 

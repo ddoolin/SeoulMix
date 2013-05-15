@@ -21,22 +21,8 @@ function EventValidator() {
 		return name.length > 0
 	}
 
-	that.validateLocationLength = function (location) {
-		return location.length > 0
-	}
-
 	that.validateLocation = function (location) {
-		var geocoder = new google.maps.Geocoder();
-
-		geocoder.geocode({
-			"address": location,
-			"region": "KR"
-		}, function (results, status) {
-			debugger;
-			if (status !== "OK") {
-				return false;
-			}
-		});
+		return location.length > 0
 	}
 
 	that.showErrors = function (type, msg) {
@@ -54,6 +40,37 @@ function EventValidator() {
 	}
 }
 
+EventValidator.prototype.getLocation = function (address, callback) {
+	var geocoder = new google.maps.Geocoder();
+
+	geocoder.geocode({
+		"address": 	address,
+		"region": 	"KR"
+	}, function (results, status) {
+		if (status !== "OK" && status !== "ZERO_RESULTS") {
+			callback({"error":"An error has occured"});
+		} else if (status === "ZERO_RESULTS") {
+			callback({"error":"Address not found"});
+		}
+
+		r = results[0]
+
+		// Since we want to allow mixing in Seoul AND the surrounding area,
+		// We will only check if the address is in Korea.
+		for (var i = 0; i < r.address_components.length; i++) {
+			for (var j = 0; j < r.address_components[i].types.length; j++) {
+				if (r.address_components[i].types[j] === "country" &&
+					r.address_components[i].short_name !== "KR") {
+
+					callback({"error": "Not in Korea"});
+				}
+			}
+		}
+
+		callback(r);
+	});
+};
+
 EventValidator.prototype.showCreateSuccess = function (msg) {
 	$(".event-submit-comment").html(msg);
 	this.createEventAlert.show();
@@ -64,12 +81,8 @@ EventValidator.prototype.validateForm = function () {
 		this.showErrors("name", "Event name cannot be blank");
 		return false;
 	}
-	if (this.validateLocationLength(this.formFields[2].val()) === false) {
-		this.showErrors("location", "Location cannot be blank");
-		return false;
-	}
 	if (this.validateLocation(this.formFields[2].val()) === false) {
-		this.showErrors("location", "Location could not be found");
+		this.showErrors("location", "Location cannot be blank");
 		return false;
 	}
 

@@ -4,6 +4,9 @@
 Deploy Time:
 * Edit allowed referers for G. Maps API Key
 
+Normal:
+* Add introduction to site to front view
+* Add bottom menu: About, Help, Contact, Terms, copyright, etc
 * Remove console logs, breakpoints, etc
 * Shim, graceful degradation, etc
 * Swap bootstrap w/ custom/other styles
