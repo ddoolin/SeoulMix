@@ -6,6 +6,15 @@ As with any Node installation, run "npm install" to install the required package
 See the Nginx section below to setup Nginx request proxy'ing, though it is possible
 to run the server without it (just start the app as usual).
 
+Note: Create an email-settings.js with this module:
+
+	module.exports = {
+		host: "smtp.gmail.com",
+		user: "email@gmail.com",
+		password: "emailpassword",
+		sender: "SeoulMix <contact@seoulmix.com>"
+	};
+
 ## Organization
 
 File organization is kept pretty simple. Assets in app/public, application code in app/server.
