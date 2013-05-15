@@ -3,8 +3,11 @@
 
 Deploy Time:
 * Edit allowed referers for G. Maps API Key
+* Finish New Relic setup
+* Integrate with Google Analytics
 
 Normal:
+* Migrate TODO to Pivotal Tracker
 * Add introduction to site to front view
 * Add bottom menu: About, Help, Contact, Terms, copyright, etc
 * Remove console logs, breakpoints, etc
