@@ -15,6 +15,9 @@ $(document).ready(function() {
             address: $("#event_location").val()
         };
 
+        ev.resetCommentFields();
+        return ev.validateForm();
+
         ev.getLocation(data.address, function (result) {
             if (result.error) {
                 switch (result.error) {
@@ -40,10 +43,6 @@ $(document).ready(function() {
                 url: "/api/events",
                 type: "POST",
                 data: data,
-                beforeSend: function (jqXHR, settings) {
-                    ev.resetCommentFields();
-                    return ev.validateForm();
-                },
                 success: function (data, textStatus, jqXHR) {
                     if (!data.error) {
                         $("#new_event_form").resetForm();
