@@ -40,17 +40,45 @@ $(document).ready(function() {
 		type: "GET",
 		success: function (data, textStatus, jqXHR) {
 			for (var i = 0; i < data.length; i++) {
-				populateMap(data[i].location.lat, data[i].location.lng);
+				populateMap(data[i]);
 			}
 		}
 	});
 
-	var populateMap = function (lat, lng) {
-		var latLng = new google.maps.LatLng(lat, lng);
-		var marker = new google.maps.Marker({
+	var infoWindow;
+
+	var populateMap = function (data) {
+		var event = data,
+			latLng,
+			marker,
+			content;
+
+		latLng = new google.maps.LatLng(event.location.lat, event.location.lng);
+		marker = new google.maps.Marker({
 			map: map,
 			position: latLng,
-			animation: google.maps.Animation.DROP
+			animation: google.maps.Animation.DROP,
+			title: event.name
+		});
+
+		content = "<div id='content'>" +
+			"<div id='siteNotice'></div>" +
+			"<h2 id='firstHeading' class='firstHeading'>" + event.name +
+			"</h2><div id='bodyContent'>" +
+			"<p>" + event.description + "</p>" +
+			"</div>" +
+			"</div>";
+
+		google.maps.event.addListener(marker, "click", function () {
+			if (infoWindow) {
+				infoWindow.close();
+			}
+
+			infoWindow = new google.maps.InfoWindow({
+				content: content
+			});
+
+			infoWindow.open(map, marker);
 		});
 	}
 });
