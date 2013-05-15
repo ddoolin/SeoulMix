@@ -7,7 +7,7 @@ app/public/seoulmix.js
 app/public/seoulmix.min.js
 
 # or e-mail settings
-# app/server/modules/email-settings.js
+app/server/modules/email-settings.js
 
 # or uploads
 uploads
