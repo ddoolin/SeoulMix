@@ -16,7 +16,9 @@ $(document).ready(function() {
         };
 
         ev.resetCommentFields();
-        return ev.validateForm();
+        if (!ev.validateForm()) {
+            return false;
+        }
 
         ev.getLocation(data.address, function (result) {
             if (result.error) {
@@ -33,7 +35,7 @@ $(document).ready(function() {
 
                 return false;
             } else {
-                data.location = [result.geometry.location.kb, result.geometry.location.lb];
+                data.location = [result.geometry.location.lat(), result.geometry.location.lng()];
                 postEvent(data);
             }
         });
@@ -213,8 +215,7 @@ $(document).ready(function() {
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                // Stuff on error
-                console.log(jqXHR, textStatus, errorThrown);
+                uv.showErrors("picture", "An error has occured. Please try again later.");
             }
         });
     });
