@@ -13,6 +13,11 @@
 			padding: 1em;
 
 			.control-group {
+
+				.text-error {
+					margin: 0.75em 0 0 0;
+				}
+
 				.control-label {
 					margin-right: 1em;
 					text-align: left;
@@ -30,10 +35,16 @@
 				}
 
 				&.time-control-group {
+					margin-bottom: 10px;
+
 					.from, .to {
 						display: inline-block;
 						width: 100%;
 						margin-bottom: 1em;
+					}
+
+					.to {
+						margin-bottom: 0;
 					}
 
 					.inputs {
@@ -49,6 +60,10 @@
 						margin-right: 5px;
 					}
 				}
+			}
+
+			.event-alert {
+				margin-bottom: 0;
 			}
 		}
 	}
