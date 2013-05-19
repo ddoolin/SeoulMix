@@ -26,6 +26,9 @@ $(document).ready(function () {
 		location,
 		coordArray = [];
 
+	// Set the map to our global object...we're going to need it.
+	window.SeoulMix.map = map;
+
 	$.ajax({
 		url: "/api/events",
 		type: "GET",

@@ -6,6 +6,13 @@ $(document).ready(function () {
         uv = new seoulmix.updateProfileValidator(),
         dv = new seoulmix.deleteValidator();
 
+    // "Find on Map"
+    $("#find_location").click(function (event) {
+        event.preventDefault();
+
+        hc.findOnMap();
+    });
+
     // Create new event
     $("#event_submit").click(function (event) {
         event.preventDefault();

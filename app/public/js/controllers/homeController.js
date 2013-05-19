@@ -2,6 +2,12 @@ window.SeoulMix.homeController = function () {
 
     var that = this;
 
+    this.findOnMap = function () {
+        map = window.SeoulMix.map;
+
+        console.log(map);
+    };
+
     this.createEvent = function (ev) {
         var data = {
             name: $("#event_name").val(),
