@@ -164,16 +164,19 @@ exports.addUser = function (req, res) {
     // Make sure all fields are accounted for
     if (!user || !pass || !email) {
         res.send({"error": "Field cannot be empty"});
+        return false;
     }
 
     // Regexp the username and check the length (redundant)
     if (user.length < 4 || user.length > 30 || !regExp.test(user)) {
         res.send({"error": "Invalid username"});
+        return false;
     }
 
     // Check the password length
     if (pass.length < 6) {
         res.send({"error": "Invalid password"});
+        return false;
     }
 
     // Look for the username in the DB
@@ -182,6 +185,7 @@ exports.addUser = function (req, res) {
     }, function (err, result) {
         if (result) {
             res.send({"error": "Username taken"});
+            return false;
         }
 
         // Look for the email in the DB
@@ -190,6 +194,7 @@ exports.addUser = function (req, res) {
         }, function (err, result) {
             if (result) {
                 res.send({"error": "E-mail in use"});
+                return false;
             }
 
             // Hash the password
@@ -224,6 +229,7 @@ exports.addUser = function (req, res) {
             users.insert(data, {safe: true}, function (err, result) {
                 if (err) {
                     res.send({"error": "An error has occured"});
+                    return false;
                 }
 
                 req.session.user = result[0];
@@ -333,6 +339,7 @@ exports.updateProfileImage = function (req, res) {
             function (err, result) {
                 if (err) {
                     res.send({"error": "An error has occured"});
+                    return false;
                 }
 
                 req.session.user = result;
@@ -346,10 +353,12 @@ exports.updateProfileImage = function (req, res) {
 
         if (image.size > 716800) {
             res.send({"error": "Image too large"});
+            return false;
         }
 
         if (image.type !== "image/jpeg" && image.type !== "image/png") {
             res.send({"error": "Incorrect image format"});
+            return false;
         }
 
         users.findOne({
@@ -357,6 +366,7 @@ exports.updateProfileImage = function (req, res) {
         }, function (err, result) {
             if (err) {
                 res.send({"error": "An error has occured"});
+                return false;
             }
 
             // Prepare the uploader
@@ -377,6 +387,7 @@ exports.updateProfileImage = function (req, res) {
                     function (err, result) {
                         if (err) {
                             res.send({"error": "An error has occured"});
+                            return false;
                         }
 
                         req.session.user = result;
@@ -452,13 +463,15 @@ exports.getReset = function (req, res) {
 
 exports.postReset = function (req, res) {
     findByEmail(req.param("email"), function (err, result) {
-        if (err) {
+        if (err || !result) {
             res.send({"error": "Invalid e-mail"});
+            return false;
         }
 
         email.dispatchPasswordResetLink(result, function (err, msg) {
             if (err) {
                 res.send({"error": "An error has occured"});
+                return false;
             }
 
             res.send({"status": "success"});

@@ -1,27 +1,27 @@
-function UpdateValidator() {
+window.SeoulMix.updateProfileValidator = function () {
 
     var that = this;
 
-    that.updateProfile = $("#profile_modal");
-    that.updateProfileAlert = $("#update_done");
-    that.formFields = [$("#update_firstname"), $("#update_lastname"),
+    this.updateProfile = $("#profile_modal");
+    this.updateProfileAlert = $("#update_done");
+    this.formFields = [$("#update_firstname"), $("#update_lastname"),
         $("#update_email"), $("#update_password"),
         $("#update_password_confirm"), $("#profile_picture")];
 
-    that.commentFields = [$(".update-firstname-comment"),
+    this.commentFields = [$(".update-firstname-comment"),
         $(".update-lastname-comment"), $(".update-email-comment"),
         $(".update-password-comment"), $(".update-password-confirm-comment"),
         $(".profile-picture-comment")];
 
     // Clear form on hide, not show! 
-    that.updateProfile.on("hide", function () {
+    this.updateProfile.on("hide", function () {
 
         // Reset the form, clear the text, and remove the success if it exists
         $("#update_form").resetForm();
         that.resetFields();
     });
 
-    that.resetFields = function () {
+    this.resetFields = function () {
 
         for (var i = 0; i < that.commentFields.length; i++) {
             that.commentFields[i].removeClass("text-error").text("");
@@ -32,23 +32,23 @@ function UpdateValidator() {
     }
 
     // 50 characters should be enough for each
-    that.validateFirstname = function (firstname) {
+    this.validateFirstname = function (firstname) {
         return firstname.length <= 50;
     }
 
-    that.validateLastname = function (lastname) {
+    this.validateLastname = function (lastname) {
         return lastname.length <= 50;
     }
 
-    that.validatePassword = function (password) {
+    this.validatePassword = function (password) {
         return password.length >= 6;
     }
 
-    that.validateConfirm = function (password, confirm) {
+    this.validateConfirm = function (password, confirm) {
         return password === confirm;
     }
 
-    that.validateEmail = function (email) {
+    this.validateEmail = function (email) {
 
         // Basic example@example.com regular expression
         var regexp = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -56,11 +56,11 @@ function UpdateValidator() {
         return regexp.test(email);
     }
 
-    that.validatePictureSize = function (file) {
+    this.validatePictureSize = function (file) {
         return file.size > 0 && file.size <= 716800;
     }
 
-    that.validatePictureType = function (file) {
+    this.validatePictureType = function (file) {
         if (file.type == "image/jpeg" || file.type == "image/png") {
             return true;
         } else {
@@ -68,7 +68,7 @@ function UpdateValidator() {
         }
     }
 
-    that.showErrors = function (type, msg) {
+    this.showErrors = function (type, msg) {
         switch (type) {
             case "firstname":
                 that.commentFields[0].addClass("text-error").text(msg);
@@ -93,48 +93,47 @@ function UpdateValidator() {
                 break;
         }
     }
-}
 
-UpdateValidator.prototype.showUpdateAlert = function (classname, msg) {
-    this.updateProfileAlert.addClass(classname).html(msg);
-    this.updateProfileAlert.show();
-}
+    this.showUpdateAlert = function (classname, msg) {
+        that.updateProfileAlert.addClass(classname).html(msg);
+        that.updateProfileAlert.show();
+    };
 
-UpdateValidator.prototype.validateForm = function () {
-
-    if (this.validateFirstname(this.formFields[0].val()) === false) {
-        this.showErrors("firstname", "Must be less than 50 characters.");
-        return false;
-    }
-    if (this.validateLastname(this.formFields[1].val()) === false) {
-        this.showErrors("lastname", "Must be less than 50 characters.");
-        return false;
-    }
-    if (this.validateEmail(this.formFields[2].val()) === false) {
-        this.showErrors("email", "Please enter a valid e-mail address.");
-        return false;
-    }
-    if (this.formFields[3].val() != "") {
-        if (this.validatePassword(this.formFields[3].val()) === false) {
-            this.showErrors("password", "Must be at least 6 characters.");
+    this.validateForm = function () {
+        if (that.validateFirstname(that.formFields[0].val()) === false) {
+            that.showErrors("firstname", "Must be less than 50 characters.");
             return false;
         }
-    }
-    if (this.validateConfirm(this.formFields[3].val(),
-                                this.formFields[4].val()) === false) {
-        this.showErrors("confirm", "Passwords must match.");
-        return false;
-    }
-    if (this.formFields[5].val() != "") {
-        if (this.validatePictureSize(this.formFields[5].val()) === false) {
-            this.showErrors("picture", "File too large.");
-            return false;        
-        }
-        if (this.validatePictureType(this.formFields[5].val()) === false) {
-            this.showErrors("picture", "File is not a .JPG or .PNG.");
+        if (that.validateLastname(that.formFields[1].val()) === false) {
+            that.showErrors("lastname", "Must be less than 50 characters.");
             return false;
         }
-    }
+        if (that.validateEmail(that.formFields[2].val()) === false) {
+            that.showErrors("email", "Please enter a valid e-mail address.");
+            return false;
+        }
+        if (that.formFields[3].val() != "") {
+            if (that.validatePassword(that.formFields[3].val()) === false) {
+                that.showErrors("password", "Must be at least 6 characters.");
+                return false;
+            }
+        }
+        if (that.validateConfirm(that.formFields[3].val(),
+                                    that.formFields[4].val()) === false) {
+            that.showErrors("confirm", "Passwords must match.");
+            return false;
+        }
+        if (that.formFields[5].val() != "") {
+            if (that.validatePictureSize(that.formFields[5].val()) === false) {
+                that.showErrors("picture", "File too large.");
+                return false;        
+            }
+            if (that.validatePictureType(that.formFields[5].val()) === false) {
+                that.showErrors("picture", "File is not a .JPG or .PNG.");
+                return false;
+            }
+        }
 
-    return true;
-}
+        return true;
+    };
+};

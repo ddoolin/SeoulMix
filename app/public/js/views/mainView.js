@@ -1,26 +1,11 @@
-
 $(document).ready(function() {
-
-	// Initializing and populating the map --
-
-	// Doesn't work with Korea...can't style maps -- all features disappear
-
-	// var mapStyles = [{
-	// 	featureType: "all",
-	// 	elementType: "all",
-	// 	stylers: [
-	// 		{visibility: "on"},
-	// 		{saturation: -100},
-	// 		{gamma: 1.94}
-	// 	]
-	// }];
 
 	// Options to pass to the map instance
 	var mapOptions = {
 		center: new google.maps.LatLng(37.525, 127.000),
 		zoom: 12,
 		streetViewControl: false,
-		panControl: false,
+		panControl: false	,
 		mapTypeControl: false,
 		zoomControlOptions: {
 			position: google.maps.ControlPosition.LEFT_CENTER

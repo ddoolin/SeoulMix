@@ -18,10 +18,11 @@ Note: Create an email-settings.js with this module:
 ## Organization
 
 File organization is kept pretty simple. Assets in app/public, application code in app/server.
-The only piece that may need explanation is the client-side JavaScript (as always).
+The only piece that may need explanation is the client-side JavaScript. If you're familiar with
+Ember.js name scheming, this will be easier for you.
 
-- Views set up form controllers and modal windows.
-- Controllers handle user interaction.
+- Views handle user interaction.
+- Controllers contain method called by views and relay data to and from the server.
 - Form validators validate incoming form data and display errors, notices, etc.
 
 These may overlap from time to time, but this is generally the flow of the app.

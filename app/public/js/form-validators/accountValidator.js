@@ -1,21 +1,21 @@
-function AccountValidator() {
+window.SeoulMix.accountValidator = function () {
 
 	var that = this;
 
-	that.userRegistration = $("#registration_modal");
-	that.formFields = [$("#signup_username"), $("#signup_password"),
-		$("#signup_password_confirm"), $("#signup_email")];
+	this.userRegistration = $("#registration_modal");
+	this.formFields = [$("#signup_username"), $("#signup_password"),
+			$("#signup_password_confirm"), $("#signup_email")];
 
-	that.commentFields = [$(".signup-username-comment"),
-		$(".signup-password-comment"), $(".signup-password-confirm-comment"),
-		$(".signup-email-comment"), $(".signup-submit-comment")];
+	this.commentFields = [$(".signup-username-comment"),
+			$(".signup-password-comment"), $(".signup-password-confirm-comment"),
+			$(".signup-email-comment"), $(".signup-submit-comment")];
 
-	that.userRegistration.on("hide", function() {
+	this.userRegistration.on("hide", function () {
 		$("#new_user_form").resetForm();
 		that.resetFields();
 	});
 
-	that.resetFields = function() {
+	this.resetFields = function () {
 
 		// Remove the error class (red text) and reset text to default
 		for (var i = 0; i < that.commentFields.length; i++) {
@@ -29,7 +29,7 @@ function AccountValidator() {
 		that.commentFields[4].text("");
 	}
 
-	that.validateUsername = function(username) {
+	this.validateUsername = function (username) {
 
 		// Alphanumeric only, 4 to 30 characters
 		var regexp = /^[A-Za-z0-9_]{4,30}$/;
@@ -40,15 +40,15 @@ function AccountValidator() {
 			&& regexp.test(username);
 	}
 
-	that.validatePassword = function(password) {
+	this.validatePassword = function (password) {
 		return password.length >= 6;
 	}
 
-	that.validateConfirm = function(password, confirm) {
+	this.validateConfirm = function (password, confirm) {
 		return password === confirm;
 	}
 
-	that.validateEmail = function(email) {
+	this.validateEmail = function (email) {
 
 		// Basic example@example.com regular expression
 		var regexp = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -56,7 +56,7 @@ function AccountValidator() {
 		return regexp.test(email);
 	}
 
-	that.showErrors = function(type, msg) {
+	this.showErrors = function (type, msg) {
 		switch (type) {
 			case "username":
 				that.commentFields[0].addClass("text-error").text(msg);
@@ -74,42 +74,41 @@ function AccountValidator() {
 				that.commentFields[4].addClass("text-error")
 					.text("An error occurred.Please try again.");
 				break;
+		};
+	};
+
+	this.showInvalidUsername = function () {
+		that.commentFields[0].addClass("text-error");
+		that.showErrors("username", "Username unavailable.");
+	};
+
+	this.showInvalidEmail = function () {
+		that.commentFields[3].addClass("text-error");
+		that.showErrors("email", "E-mail address already in use.");
+	};
+
+	this.showCreateSuccess = function (msg) {
+		that.commentFields[4].addClass("text-success").html(msg);
+	};
+
+	this.validateForm = function () {
+		if (that.validateUsername(that.formFields[0].val()) === false) {
+			that.showErrors("username", "Must be between 4 and 30 characters.");
+			return false;
 		}
-	}
-}
+		if (that.validatePassword(that.formFields[1].val()) === false) {
+			that.showErrors("password", "Must be at least 6 characters.");
+			return false;
+		}
+		if (that.validateConfirm(that.formFields[1].val(), that.formFields[2].val()) === false) {
+			that.showErrors("confirm", "Passwords don't match.");
+			return false;
+		}
+		if (that.validateEmail(that.formFields[3].val()) === false) {
+			that.showErrors("email", "Please enter a valid e-mail address.");
+			return false;
+		}
 
-AccountValidator.prototype.showInvalidUsername = function() {
-	this.commentFields[0].addClass("text-error");
-	this.showErrors("username", "Username unavailable.");
-}
-
-AccountValidator.prototype.showInvalidEmail = function() {
-	this.commentFields[3].addClass("text-error");
-	this.showErrors("email", "E-mail address already in use.");
-}
-
-AccountValidator.prototype.showCreateSuccess = function(msg) {
-	this.commentFields[4].addClass("text-success").html(msg);
-}
-
-AccountValidator.prototype.validateForm = function() {
-
-	if (this.validateUsername(this.formFields[0].val()) === false) {
-		this.showErrors("username", "Must be between 4 and 30 characters.");
-		return false;
-	}
-	if (this.validatePassword(this.formFields[1].val()) === false) {
-		this.showErrors("password", "Must be at least 6 characters.");
-		return false;
-	}
-	if (this.validateConfirm(this.formFields[1].val(), this.formFields[2].val()) === false) {
-		this.showErrors("confirm", "Passwords don't match.");
-		return false;
-	}
-	if (this.validateEmail(this.formFields[3].val()) === false) {
-		this.showErrors("email", "Please enter a valid e-mail address.");
-		return false;
-	}
-
-	return true;
-}
+		return true;
+	};
+};

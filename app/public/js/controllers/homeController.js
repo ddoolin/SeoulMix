@@ -1,82 +1,126 @@
-function HomeController() {
-    
+window.SeoulMix.homeController = function () {
+
     var that = this;
 
-    $(".event-alert").alert();
+    this.createEvent = function (ev) {
+        var data = {
+            name: $("#event_name").val(),
+            description: $("#event_description").val(),
+            address: $("#event_location").val()
+        };
 
-    // Logout confirmation
-    $("#navbar_logout").click(function () {
-        if (window.confirm("Are you sure you want to log out?")) {
-            that.attemptLogout();
+        ev.resetCommentFields();
+        if (!ev.validateForm()) {
+            return false;
         }
-    });
 
-    $(".event-alert .close").click(function (event) {
-        event.preventDefault();
+        ev.getLocation(data.address, function (result) {
+            if (result.error) {
+                switch (result.error) {
+                    case "Address not found":
+                        ev.showErrors("location", "Address not found.");
+                        break;
+                    case "Not in Korea":
+                        ev.showErrors("location", "Address not in Korea.");
+                        break;
+                    default:
+                        ev.showErrors("location", "An error has occured.");
+                }
 
-        $(".event-alert").alert("close");
-    });
+                return false;
+            } else {
 
-    // Remove profile picture
-    $("#delete_photo").click(function () {
-        if (window.confirm("Are you sure you want to remove your picture?")) {
-            that.removePhoto();
+                data.location = [result.geometry.location.lat(), result.geometry.location.lng()];
+
+                $.ajax({
+                    url: "/api/events",
+                    type: "POST",
+                    data: data,
+                    success: function (data, textStatus, jqXHR) {
+                        if (!data.error) {
+                            $("#new_event_form").resetForm();
+                            ev.showCreateSuccess("<b>Success!</b> Event successfully created!");
+                        } else {
+                            switch (data.error) {
+                                case "Name cannot be blank":
+                                    ev.showErrors("name", "Name cannot be blank.");
+                                    break;
+                                case "Location cannot be blank":
+                                    ev.showErrors("location", "Location cannot be blank.");
+                                    break;
+                                default:
+                                    ev.showErrors("location", "An error has occured.");
+                            }
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        ev.showErrors("location", "An unknown error has occured.");
+                    }
+                });
+            }
+        });
+    };
+
+    this.updatePhoto = function (uv, event) {
+        var profileImage = event.target.files[0],
+            profileImageName = profileImage.name,
+            profileImageSize = profileImage.size,
+            profileImageText = $("#profile_picture_comment"),
+            formData = null;
+
+        if (profileImageSize > 716800) {
+            profileImageText.addClass("text-error").text("File too large!");
+            return;
+        } else if (profileImage.type != "image/jpeg" && profileImage.type != "image/png") {
+            profileImageText.addClass("text-error").text("Not a .JPG or .PNG!");
+            return;
+        } else {
+            profileImageText.text(profileImageName);
         }
-    });
 
-    // Need to use a JS trigger to prevent this ajaxForm from submitting on click
-    $("#delete_account").click(function (event) {
-        event.preventDefault();
+        if (window.FileReader) {
+            var reader = new FileReader();
 
-        $("#profile_modal").modal("hide");
-        $("#deleteacct_modal").modal("show");
-    });
+            reader.onload = function (file) {
+                $("#profile_picture").attr("src", file.target.result);
+            };
 
-    // Field focusing
-    $("#create_event_modal").on("shown", function () {
-        $("#event_name").focus();
-    }).on("hidden", function () {
-        $("#event_name").blur();
-    });
+            reader.readAsDataURL(profileImage);
+        }
 
-    $("#profile_modal").on("shown", function () {
-        $("#update_firstname").focus();
-    }).on("hidden", function () {
-        $("#update_firstname").blur();
-    });
+        if (window.FormData) {
+            formData = new FormData();
+        }
 
-    $("#deleteacct_modal").on("shown", function () {
-        $("#delete_password").focus();
-    }).on("hidden", function () {
-        $("#delete_password").blur();
-    });
+        if (formData) {
+            formData.append("images[]", profileImage);
+        }
 
-    // If the user changes profile username field, they edited
-    // the HTML node. Append a warning even though it's not processed.
-    $("#update_username").change(function () {
-        $(".update-username-comment").addClass("error").text("Username cannot be changed!");
-    });
-
-    // Emulate a click on the hidden input field
-    $("#choose_existing_photo_link").click(function () {
-        $("#choose_existing_photo").click();
-    });
-
-    // Do logout
-    this.attemptLogout = function () {
         $.ajax({
-            url: "/logout",
-            type: "POST",
+            url: "/api/users/" + $("#user_id").val() + "/upload",
+            type: "PUT",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
             success: function (data, textStatus, jqXHR) {
                 if (!data.error) {
-                    window.location.href = "/";
+                    profileImageText.addClass("text-success").text("Picture updated!");
+                    $("<li class='delete-photo'>").appendTo("#profile_dropdown");
+                    $("<a id='delete_photo'>Delete photo</a></li>").appendTo(".delete-photo");
+
+                    $("#delete_photo").click(function () {
+                        if (window.confirm("Are you sure you want to remove your picture?")) {
+                            that.removePhoto();
+                        }
+                    });
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                alert("Logout failed!");
+                uv.showErrors("picture", "An error has occured. Please try again later.");
             }
         });
-    }
+    };
 
     // Remove profile photo
     this.removePhoto = function () {
@@ -98,5 +142,101 @@ function HomeController() {
                     .text("Failed to remove.");
             }
         });
-    }
-}
+    };
+
+    this.updateAccount = function (uv) {
+        var data = {
+            firstname: $("#update_firstname").val(),
+            lastname: $("#update_lastname").val(),
+            email: $("#update_email").val(),
+            pass: $("#update_pass").val()
+        };
+
+        $.ajax({
+            url: "/api/users/" + $("#user_id").val(),
+            type: "PUT",
+            data: data,
+            beforeSend: function (jqXHR, settings) {
+                uv.resetFields();
+                return uv.validateForm();
+            },
+            success: function (data, textStatus, jqXHR) {
+                if (!data.error) {
+                    uv.showUpdateAlert("alert-success", "<b>Success:</b> Account updated!");
+
+                    if (data.firstname) {
+                        $(".banner-welcome-title").text("Hello, " + data.firstname + "!");
+                    } else {
+                        $(".banner-welcome-title").text("Hello, " + data.user + "!");
+                    }
+                } else {
+                    switch (data.error) {
+                        case "First name too long":
+                        case "Last name too long":
+                            uv.showErrors("firstname", "Personal names have a maximum limit of 50 characters.");
+                            break;
+                        case "E-mail in use":
+                            uv.showErrors("email", "That e-mail address is already in use.");
+                            break;
+                        case "Invalid password":
+                            uv.showErrors("password", "Must be at least 6 characters.");
+                            break;
+                        default:
+                            uv.showUpdateAlert("alert-error", "<b>Error:</b> There was a pretty complicated error. Please try again later.");
+                            break;
+                    }
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                uv.showUpdateAlert("alert-error", "<b>Error:</b> There was a pretty complicated error. Please try again later.");
+            }
+        });
+    };
+
+    this.deleteAccount = function (dv) {
+        $.ajax({
+            url: "/api/users/" + $("#user_id").val(),
+            type: "DELETE",
+            data: {
+                pass: $("#delete_password").val()
+            },
+            beforeSend: function (jqXHR, setttings) {
+                return dv.validateForm();
+            },
+            success: function (data, textStatus, jqXHR) {
+                if (!data.error) {
+                    dv.showDeleteSuccess("<b>Success:</b> Account deleted. Redirecting to front page...");
+
+                    setTimeout(function() {
+                        window.location.href = "/";
+                    }, 2500);
+                } else {
+                    if (data.error === "Invalid password") {
+                        dv.showInvalidPassword("<b>Error:</b> Invalid password. Please try again.");
+                    } else {
+                        dv.showInvalidPassword("<b>Error:</b> There was a pretty complicated error. Please try again later.");
+                    }
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+
+            }
+        });
+    };
+
+    // Do logout
+    this.attemptLogout = function () {
+        $.ajax({
+            url: "/logout",
+            type: "POST",
+            success: function (data, textStatus, jqXHR) {
+                if (!data.error) {
+                    window.location.href = "/";
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("Logout failed!");
+            }
+        });
+    };
+};
