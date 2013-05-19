@@ -261,18 +261,21 @@ exports.updateUser = function (req, res) {
     }, function (err, result) {
         if (err) {
             res.send({"error": "An error has occured"});
+            return false;
         }
 
         self = result;
 
-        if (firstname.length > 50) {
+        if (firstname && firstname.length > 50) {
             res.send({"error": "First name too long"});
+            return false;
         } else {
             data.firstname = firstname;
         }
 
-        if (lastname.length > 50) {
+        if (lastname && lastname.length > 50) {
             res.send({"error": "Last name too long"});
+            return false;
         } else {
             data.lastname = lastname;
         }
@@ -282,6 +285,7 @@ exports.updateUser = function (req, res) {
                 findByEmail(email, function (err, result) {
                     if (result) {
                         res.send({"error": "E-mail in use"});
+                        return false;
                     } else {
                         data.email = email;
                     }
@@ -289,13 +293,12 @@ exports.updateUser = function (req, res) {
             } else {
                 data.email = self.email;
             }
-        } else {
-            res.send({"error": "Invalid e-mail"});
         }
 
         if (pass) {
             if (pass.length < 6) {
                 res.send({"error": "Invalid password"});
+                return false;
             }
 
             data.pass = generatePassword(pass);
@@ -311,6 +314,7 @@ exports.updateUser = function (req, res) {
             function (err, result) {
                 if (err) {
                     res.send({"error": "An error has occured"});
+                    return false;
                 }
 
                 req.session.user = result;
@@ -449,14 +453,15 @@ exports.getReset = function (req, res) {
         res.redirect("/");
     }
 
-    users.find({
+    users.findOne({
         $and: [{
             email: email,
             pass: passhash
         }]
     }, function (err, result) {
-        if (err) {
+        if (err || !result) {
             res.redirect("/");
+            return false;
         }
 
         res.render("reset", {

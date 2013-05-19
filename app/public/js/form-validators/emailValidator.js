@@ -17,7 +17,8 @@ window.SeoulMix.emailValidator = function () {
     };
 
     this.showEmailAlert = function (msg) {
-        that.retrievePasswordAlert.attr('class', 'alert alert-error lostpass-error');
+        that.retrievePasswordAlert.removeClasS("alert-success")
+            .addClass("alert-error");
         that.retrievePasswordAlert.html(msg);
         that.retrievePasswordAlert.show();
     };

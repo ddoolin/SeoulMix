@@ -35,9 +35,6 @@ app.configure('production', function() {
   app.use(express.errorHandler());
 });
 
-app.locals.cloudinary_api_key = cloudinary.config().api_key;
-app.locals.cloudinary_cloud_name = cloudinary.config().cloud_name;
-
 require('./app/router')(app);
 
 app.listen(app.get('port'), function() {

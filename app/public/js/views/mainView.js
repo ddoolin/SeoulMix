@@ -1,4 +1,10 @@
-$(document).ready(function() {
+$(document).ready(function () {
+
+	// Set the cloudinary config
+	$.cloudinary.config({
+		"api_key": "389689266184749",
+		"cloud_name": "seoulmix"
+	});
 
 	// Options to pass to the map instance
 	var mapOptions = {
@@ -65,5 +71,5 @@ $(document).ready(function() {
 
 			infoWindow.open(map, marker);
 		});
-	}
+	};
 });

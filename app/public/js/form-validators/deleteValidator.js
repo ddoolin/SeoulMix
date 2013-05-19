@@ -16,13 +16,15 @@ window.SeoulMix.deleteValidator = function () {
     }
 
     this.showInvalidPassword = function (msg) {
-        that.deleteAccountAlert.attr("class", "alert alert-error");
+        that.deleteAccountAlert.removeClass("alert-success")
+            .addClass("alert-error");
         that.deleteAccountAlert.html(msg);
         that.deleteAccountAlert.show();
     };
 
     this.showDeleteSuccess = function (msg) {
-        that.deleteAccountAlert.attr("class", "alert alert-success");
+        that.deleteAccountAlert.removeClass("alert-error")
+            .addClass("alert-success");
         that.deleteAccountAlert.html(msg);
         that.deleteAccountAlert.show();
     };

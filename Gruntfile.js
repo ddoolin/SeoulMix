@@ -16,6 +16,9 @@ module.exports = function (grunt) {
         },
         concat: {
             seoulmix: {
+                options: {
+                    separator: ";"
+                },
                 src: "app/public/js/**/*.js",
                 dest: "app/public/seoulmix.js"
             }

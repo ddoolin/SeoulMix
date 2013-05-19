@@ -125,10 +125,13 @@ window.SeoulMix.homeController = function () {
     // Remove profile photo
     this.removePhoto = function () {
         $.ajax({
-            url: "/api/users/:id/upload",
+            url: "/api/users/" + $("#user_id").val() + "/upload",
             type: "DELETE",
-            success: function () {
+            success: function (data, textStatus, jqXHR) {
                 if (!data.error) {
+                    newImageURL = $.cloudinary.url(data.profileImage.id + "." + data.profileImage.format);
+                    $("#profile_picture").attr("src", newImageURL);
+
                     $("#profile_picture_comment").addClass("text-success")
                         .text("Photo successfully removed.");
                     $(".delete-photo").hide();
@@ -137,7 +140,7 @@ window.SeoulMix.homeController = function () {
                         .text("Failed to remove.");
                 }
             },
-            error: function (err) {
+            error: function (jqXHR, textStatus, errorThrown) {
                 $("#profile_picture_comment").addClass("text-error")
                     .text("Failed to remove.");
             }

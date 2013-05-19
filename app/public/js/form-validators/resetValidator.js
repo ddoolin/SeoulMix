@@ -1,39 +1,39 @@
-function ResetValidator(){
+window.SeoulMix.resetValidator = function (){
+
+    var that = this;
     
     this.setPassword = $("#newpass_form");
     this.setPasswordAlert = $("#newpass_error");
-}
 
-ResetValidator.prototype.validatePassword = function(password, confirm)
-{
-    if (password.length >= 6){
-        if (password === confirm) {
-            return true;
-        } else {
-            this.showAlert("<b>Error:</b> Passwords do not match.");
+    this.validatePassword = function (password, confirm) {
+        if (password.length >= 6){
+            if (password === confirm) {
+                return true;
+            } else {
+                that.showAlert("<b>Error:</b> Passwords do not match.");
+                return false;
+            }
+        }   else{
+            that.showAlert("<b>Error:</b> Password should be at least 6 characters");
             return false;
         }
-    }   else{
-        this.showAlert("<b>Error:</b> Password should be at least 6 characters");
-        return false;
-    }
-}
+    };
 
-ResetValidator.prototype.showAlert = function(msg)
-{
-    this.setPasswordAlert.attr("class", "alert alert-error");
-    this.setPasswordAlert.html(msg);
-    this.setPasswordAlert.show();
-}
+    this.showAlert = function (msg) {
+        that.setPasswordAlert.removeClass("alert-success")
+            .addClass("alert-error");
+        that.setPasswordAlert.html(msg);
+        that.setPasswordAlert.show();
+    };
 
-ResetValidator.prototype.hideAlert = function()
-{
-    this.setPasswordAlert.hide();
-}
+    this.hideAlert = function () {
+        that.setPasswordAlert.hide();
+    };
 
-ResetValidator.prototype.showSuccess = function(msg)
-{
-    this.setPasswordAlert.attr("class", "alert alert-success");
-    this.setPasswordAlert.html(msg);
-    this.setPasswordAlert.fadeIn(500);
-}
+    this.showSuccess = function (msg) {
+        that.setPasswordAlert.removeClass("alert-error")
+            .addClass("alert-success");
+        that.setPasswordAlert.html(msg);
+        that.setPasswordAlert.fadeIn(500);
+    };
+};
