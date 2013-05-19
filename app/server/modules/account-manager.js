@@ -41,13 +41,15 @@ exports.manualLogin = function (req, res) {
     users.findOne({
         user: user
     }, function (err, result) {
-        if (err) {
-            res.send({"error":"Incorrect login"});
+        if (err || !result) {
+            res.send({"error": "Incorrect login"});
+            return false;
         }
 
         // Hash the password provided and callback invalid if no match
         if (!passHash.verify(pass, result.pass)) {
             res.send({"error": "Incorrect login"});
+            return false;
         } else {
 
             var ipAddress,
@@ -79,6 +81,7 @@ exports.manualLogin = function (req, res) {
                 function (err, result) {
                     if (err) {
                         res.send({"error": "An error has occured"});
+                        return false;
                     }
 
                     req.session.user = result;
@@ -99,6 +102,7 @@ exports.logout = function (req, res) {
     req.session.destroy(function (err) {
         if (err) {
             res.send({"error": "An error has occured"});
+            return false;
         }
 
         res.send({"status": "success"});
