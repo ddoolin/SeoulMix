@@ -14,6 +14,10 @@ window.SeoulMix.homeController = function () {
         banner.fadeOut();
         location_finder.fadeIn(600);
 
+        location_finder.draggable({
+            containment: "parent"
+        }).draggable("enable");
+
         setTimeout(function () {
             marker = new window.SeoulMix.mainController().createMarker();
 
@@ -27,12 +31,21 @@ window.SeoulMix.homeController = function () {
             });
         }, 500);
 
+        $("#accept_address").click(function (event) {
+            $("#event_location").val($("#location_result").val());
+            marker.setMap(null);
+            modal.modal("show");
+            location_finder.fadeOut();
+            banner.fadeIn();
+        });
+
         $("#cancel_finder").click(function (event) {
             event.preventDefault();
 
             marker.setMap(null);
             modal.modal("show");
             location_finder.fadeOut();
+            location_finder.draggable("disable");
             banner.fadeIn();
         });
     };

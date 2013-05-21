@@ -1,5 +1,9 @@
 #location_finder_popup
-	input#location_result.location-result(type="text", placeholder="Address", disabled="disabled")
+	input#location_result.location-result(type="text", placeholder="Address")
 	.buttons
 		button#accept_address.btn.btn-success Use Address
-		button#cancel_finder.btn.btn-danger Cancel Find
+		button#cancel_finder.btn.btn-danger.cancel-finder Cancel Find
+		.movable-info
+			div.help Help!
+			span.info Move me!
+			i.icon-move.icon-white

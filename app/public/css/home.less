@@ -75,10 +75,12 @@
 }
 #location_finder_popup {
 	.rounded-corners(5px);
+	.drop-shadow(5px, 8px, 25px, -3px, 0.5);
 	position: absolute;
-	top: 35%;
-	right: 10%;
+	top: 25%;
+	left: 75%;
 	display: none;
+	border: 1px solid rgba(255, 255, 255, 0.4);
 	background: rgba(0, 0, 0, .85);
 	color: white;
 
@@ -88,10 +90,31 @@
 	}
 
 	.buttons {
+		position: relative;
 		margin: 0em 1em 1em 1em;
 
-		#cancel_finder {
+		.cancel-finder {
 			margin-left: 1em;
+		}
+
+		.movable-info {
+			display: inline;
+			position: absolute;
+			right: 0em;
+			bottom: -0.3em;
+
+			.help {
+				text-decoration: underline;
+				text-align: center;
+			}
+
+			.info {
+				margin-right: 0.3em;
+			}
+
+			.info, .icon-move, .help {
+				opacity: 0.6;
+			}
 		}
 	}
 }
