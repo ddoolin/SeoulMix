@@ -21,10 +21,7 @@ $(document).ready(function () {
 
 	// Instantiate the map and pass options
 	var map = new google.maps.Map(document.getElementById("map_canvas"),
-		mapOptions),
-		geocoder = new google.maps.Geocoder(),
-		location,
-		coordArray = [];
+		mapOptions);
 
 	// Set the map to our global object...we're going to need it.
 	window.SeoulMix.map = map;

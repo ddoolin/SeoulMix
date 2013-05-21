@@ -2,7 +2,7 @@ extends layout-in
 
 block content
     #map_canvas(style='width: 100%; height: 100%;')
-    .banner-main
+    #banner_main.banner-main
       a.banner-logo(href='') SeoulMix
       span.divider
       .banner-welcome
@@ -21,3 +21,4 @@ block content
     include modals/profile
     include modals/delete-account
     include modals/create-event
+    include popups/location-finder

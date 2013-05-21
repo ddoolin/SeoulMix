@@ -23,7 +23,12 @@
 					text-align: left;
 				}
 
+				.event-description {
+					min-height: 4.5em;
+				}
+
 				&.location-control-group {
+
 					.or-divider {
 						text-align: center;
 						margin: 10px;
@@ -67,6 +72,15 @@
 			}
 		}
 	}
+}
+#location_finder_popup {
+	.rounded-corners(5px);
+	position: absolute;
+	top: 35%;
+	right: 10%;
+	display: none;
+	background: rgba(0, 0, 0, .85);
+	color: white;
 }
 #profile_modal {
 	width: 37em;

@@ -8,19 +8,19 @@
 					label.name.control-label
 						| Event Name
 					.controls
-						input#event_name.event-name(required="required", type="text", title="Event name", name="event-name", placeholder="event name")
+						input#event_name.event-name(required="required", type="text", title="Event name", name="event-name", placeholder="The name of the event")
 						p.event-name-comment.text-error
 				.control-group
 					label.description.control-label
 						| Event Description
 					.controls
-						textarea#event_description.event-description(title="Event description", name="event-description", placeholder="event description")
+						textarea#event_description.event-description(title="Event description", name="event-description", placeholder="A short (or long!) descript of what the event is all about")
 						p.event-description-comment.text-error
 				.location-control-group.control-group
 					label.location.control-label
 						| Location
 					.controls
-						input#event_location.event-location(required="required", type="text", title="Event location", name="event-location", placeholder="event location")
+						input#event_location.event-location(required="required", type="text", title="Event location", name="event-location", placeholder="Place name or full address")
 						p.or-divider - or -
 						.button-container
 							button.btn#find_location Find on map

@@ -3,9 +3,34 @@ window.SeoulMix.homeController = function () {
     var that = this;
 
     this.findOnMap = function () {
-        map = window.SeoulMix.map;
+        var map = window.SeoulMix.map,
+        geocoder = new google.maps.Geocoder(),
+            modal = $("#create_event_modal"),
+            banner = $("#banner_main"),
+            location_finder = $("#location_finder_popup"),
+            marker;
 
-        console.log(map);
+        modal.modal("hide");
+        banner.fadeOut();
+        location_finder.fadeIn(600);
+
+        setTimeout(function () {
+            marker = new google.maps.Marker({
+                map: map,
+                draggable: true,
+                animation: google.maps.Animation.DROP,
+                position: new google.maps.LatLng(37.525, 127.000)
+            });
+
+            google.maps.event.addListener(marker, "dragend", function () {
+                geocoder.geocode({
+                    "latLng": marker.getPosition(),
+                    "region": "KR"
+                }, function (results, status) {
+                    console.log(results, status);
+                });
+            });
+        }, 500);
     };
 
     this.createEvent = function (ev) {
