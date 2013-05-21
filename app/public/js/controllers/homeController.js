@@ -15,22 +15,26 @@ window.SeoulMix.homeController = function () {
         location_finder.fadeIn(600);
 
         setTimeout(function () {
-            marker = new google.maps.Marker({
-                map: map,
-                draggable: true,
-                animation: google.maps.Animation.DROP,
-                position: new google.maps.LatLng(37.525, 127.000)
-            });
+            marker = new window.SeoulMix.mainController().createMarker();
 
             google.maps.event.addListener(marker, "dragend", function () {
                 geocoder.geocode({
                     "latLng": marker.getPosition(),
                     "region": "KR"
                 }, function (results, status) {
-                    console.log(results, status);
+                    $("#location_result").val(results[0].formatted_address);
                 });
             });
         }, 500);
+
+        $("#cancel_finder").click(function (event) {
+            event.preventDefault();
+
+            marker.setMap(null);
+            modal.modal("show");
+            location_finder.fadeOut();
+            banner.fadeIn();
+        });
     };
 
     this.createEvent = function (ev) {

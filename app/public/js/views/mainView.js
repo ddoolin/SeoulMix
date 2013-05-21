@@ -1,5 +1,10 @@
 $(document).ready(function () {
 
+	var seoulmix = window.SeoulMix,
+		mc = new seoulmix.mainController();
+
+	mc.createMarker();
+
 	// Set the cloudinary config
 	$.cloudinary.config({
 		"api_key": "389689266184749",

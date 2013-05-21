@@ -19,7 +19,11 @@ module.exports = function (grunt) {
                 options: {
                     separator: ";"
                 },
-                src: "app/public/js/**/*.js",
+                src: ["app/public/js/application.js",
+                      "app/public/js/vendor/*.js",
+                      "app/public/js/controllers/*.js",
+                      "app/public/js/form-validators/*.js",
+                      "app/public/js/views/*.js"],
                 dest: "app/public/seoulmix.js"
             }
         },
