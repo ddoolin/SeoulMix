@@ -13,6 +13,11 @@ $(document).ready(function () {
         hc.findOnMap();
     });
 
+    $("#location_finder_popup .help").tooltip({
+        title: "Enter an address and press find to drop the marker on that location (if it exists). Drag and drop the marker around the map to find more precise addresses.",
+        placement: "top"
+    });
+
     // Create new event
     $("#event_submit").click(function (event) {
         event.preventDefault();

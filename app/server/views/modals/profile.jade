@@ -1,5 +1,6 @@
 #profile_modal.modal.hide.fade
     .modal-header Account Profile
+        span.username (#{userdata.user})
         button.close(data-dismiss="modal") x
     form#update_form.form-horizontal.update-form(method="post", enctype="multitype/form-data")
         fieldset(name="update-profile")
@@ -48,12 +49,6 @@
                     .controls
                         input#update_email(type="email", name="update-email", title="New e-mail address", placeholder="e-mail", value= userdata.email)
                         p.update-email-comment.text-error
-                .control-group
-                    label.username.control-label
-                        | Username
-                    .controls
-                        input#update_username(type="text", name="update-username", title="Cannot be changed", value= userdata.user, disabled="disabled")
-                        p.update-username-comment.text-error
                 .control-group
                     label.password.control-label
                         | New Password

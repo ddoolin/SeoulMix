@@ -1,9 +1,11 @@
 #location_finder_popup
-	input#location_result.location-result(type="text", placeholder="Address")
+	input#address.address(type="text", placeholder="Address")
 	.buttons
-		button#accept_address.btn.btn-success Use Address
+		span.badge.badge-important
+		button#find_address.btn Find
+		button#accept_address.btn.btn-success.use-address Use Address
 		button#cancel_finder.btn.btn-danger.cancel-finder Cancel Find
 		.movable-info
-			div.help Help!
+			.help Help!
 			span.info Move me!
 			i.icon-move.icon-white

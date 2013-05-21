@@ -13,6 +13,7 @@
 			padding: 1em;
 
 			.control-group {
+				margin-bottom: 5px;
 
 				.text-error {
 					margin: 0.75em 0 0 0;
@@ -30,12 +31,13 @@
 				&.location-control-group {
 
 					.or-divider {
+						font-weight: bold;
 						text-align: center;
 						margin: 10px;
 					}
 
 					.button-container {
-						text-align: center;
+						margin: 0.9em 0em 0em 1.6em;
 					}
 				}
 
@@ -77,14 +79,14 @@
 	.rounded-corners(5px);
 	.drop-shadow(5px, 8px, 25px, -3px, 0.5);
 	position: absolute;
-	top: 25%;
-	left: 75%;
+	top: 75%;
+	left: 60%;
 	display: none;
 	border: 1px solid rgba(255, 255, 255, 0.4);
 	background: rgba(0, 0, 0, .85);
 	color: white;
 
-	.location-result {
+	.address {
 		margin: 1em;
 		width: 27em;
 	}
@@ -93,8 +95,14 @@
 		position: relative;
 		margin: 0em 1em 1em 1em;
 
-		.cancel-finder {
-			margin-left: 1em;
+		.badge {
+			position: absolute;
+			top: -8px;
+			left: -10px;
+		}
+
+		.cancel-finder, .use-address {
+			margin-left: 0.5em;
 		}
 
 		.movable-info {
@@ -104,8 +112,14 @@
 			bottom: -0.3em;
 
 			.help {
+				width: 37px;
+				margin-bottom: 2px;
+				cursor: pointer;
 				text-decoration: underline;
-				text-align: center;
+			}
+
+			.tooltip {
+				width: 275px;
 			}
 
 			.info {
@@ -125,6 +139,12 @@
 		padding: 0.6em;
 		font-size: 28px;
 		font-family: "Lobster", cursive;
+
+		.username {
+			margin-left: 0.6em;
+			font-size: 20px;
+			font-family: arial;
+		}
 	}
 
 	.update-form {

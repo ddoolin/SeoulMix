@@ -48,8 +48,10 @@ window.SeoulMix.eventValidator = function () {
 		}, function (results, status) {
 			if (status !== "OK" && status !== "ZERO_RESULTS") {
 				callback({"error":"An error has occured"});
+				return false;
 			} else if (status === "ZERO_RESULTS") {
 				callback({"error":"Address not found"});
+				return false;
 			}
 
 			r = results[0]

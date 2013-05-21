@@ -4,7 +4,7 @@ window.SeoulMix.homeController = function () {
 
     this.findOnMap = function () {
         var map = window.SeoulMix.map,
-        geocoder = new google.maps.Geocoder(),
+            geocoder = new google.maps.Geocoder(),
             modal = $("#create_event_modal"),
             banner = $("#banner_main"),
             location_finder = $("#location_finder_popup"),
@@ -19,20 +19,60 @@ window.SeoulMix.homeController = function () {
         }).draggable("enable");
 
         setTimeout(function () {
-            marker = new window.SeoulMix.mainController().createMarker();
+            marker = new window.SeoulMix.mainController().createColoredMarker("blue");
 
             google.maps.event.addListener(marker, "dragend", function () {
                 geocoder.geocode({
                     "latLng": marker.getPosition(),
                     "region": "KR"
                 }, function (results, status) {
-                    $("#location_result").val(results[0].formatted_address);
+                    $("#address").val(results[0].formatted_address);
                 });
             });
         }, 500);
 
+        $("#find_address").click(function (event) {
+            errorBadge = $("#location_finder_popup .badge");
+            address = $("#address").val();
+
+            // Badge collapses if no text value
+            errorBadge.text("").tooltip("destroy");
+
+            if (address.length < 3) {
+                errorBadge.text("!");
+                errorBadge.tooltip({
+                    title: "Address too short",
+                    placement: "left"
+                });
+                return false;
+            }
+
+            geocoder.geocode({
+                "address": address,
+                "region": "KR"
+            }, function (results, status) {
+                if (status !== "OK" && status !== "ZERO_RESULTS") {
+                    errorBadge.text("!");
+                    errorBadge.tooltip({
+                        title: "Unknown error",
+                        placement: "left"
+                    });
+                    return false;
+                } else if (status === "ZERO_RESULTS") {
+                    errorBadge.text("!");
+                    errorBadge.tooltip({
+                        title: "Address not found",
+                        placement: "left"
+                    });
+                    return false;
+                }
+
+                marker.setPosition(results[0].geometry.location);
+            });
+        });
+
         $("#accept_address").click(function (event) {
-            $("#event_location").val($("#location_result").val());
+            $("#event_location").val($("#address").val());
             marker.setMap(null);
             modal.modal("show");
             location_finder.fadeOut();
@@ -41,6 +81,7 @@ window.SeoulMix.homeController = function () {
 
         $("#cancel_finder").click(function (event) {
             event.preventDefault();
+            $("#address").val("");
 
             marker.setMap(null);
             modal.modal("show");
