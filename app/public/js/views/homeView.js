@@ -28,7 +28,6 @@ $(document).ready(function () {
     $("#to_date").val((date.getMonth() + 1) + "/" + (((hour + 1) >= 24) ? date.getDay() + 1 : date.getDay()) + "/" + date.getFullYear());
 
     // Warning: Crazy nested ternary operations below
-    hour = 24;
     $("#from_time").val(((hour > 12) ? hour - 12 : hour) + ":00 " + ((hour === 24 || hour < 12) ? "am" : "pm"));
     $("#to_time").val(
         (((hour + 1) > 12)
