@@ -12,13 +12,13 @@
 						p.event-name-comment.text-error
 				.control-group
 					label.description.control-label
-						| Event Description
+						| What
 					.controls
-						textarea#event_description.event-description(title="Event description", name="event-description", placeholder="A short (or long!) descript of what the event is all about")
+						textarea#event_description.event-description(title="Event description", name="event-description", placeholder="A short (or long!) description of what the event is all about")
 						p.event-description-comment.text-error
 				.location-control-group.control-group
 					label.location.control-label
-						| Location
+						| Where
 					.controls
 						input#event_location.event-location(required="required", type="text", title="Event location", name="event-location", placeholder="Place name or full address")
 						.button-container
@@ -27,15 +27,13 @@
 						p.event-location-comment.text-error
 				.time-control-group.control-group
 					label.time.control-label
-						| Time
+						| When
 					.controls
 						.from
-							span.from-label From:
 							.inputs
 								input#from_date.from-date(type="text")
 								input#from_time.from-time(type="text")
 						.to
-							span.to-label To:
 							.inputs
 								input#to_date.to-date(type="text")
 								input#to_time.to-time(type="text")

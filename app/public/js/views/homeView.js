@@ -4,7 +4,32 @@ $(document).ready(function () {
         hc = new seoulmix.homeController(),
         ev = new seoulmix.eventValidator(),
         uv = new seoulmix.updateProfileValidator(),
-        dv = new seoulmix.deleteValidator();
+        dv = new seoulmix.deleteValidator(),
+        date = new Date(),
+        hour = date.getHours();
+
+    // Instantiate alerts
+    $(".event-alert").alert();
+
+    // Instantiate datepickers
+    $("#from_date").datepicker({
+        minDate: new Date(),
+        altField: $("#from_date"),
+        dateFormat: "m/d/yy"
+    });
+    $("#to_date").datepicker({
+        minDate: new Date(),
+        altField: $("#to_date"),
+        dateFormat: "m/d/yy"
+    });
+
+    // Fill date/time values
+    $("#from_date").val((date.getMonth() + 1) + "/" + date.getDay() + "/" + date.getFullYear());
+    $("#to_date").val((date.getMonth() + 1) + "/" + (((hour + 1) >= 24) ? date.getDay() + 1 : date.getDay()) + "/" + date.getFullYear());
+
+    // Warning: Crazy ternary operations below
+    $("#from_time").val(((hour > 12) ? hour - 12 : hour) + ":00 " + ((hour === 24 || hour < 12) ? "am" : "pm"));
+    $("#to_time").val((((hour + 1) > 12) ? (hour + 1) - 12 : (hour + 1)) + ":00 " + (((hour + 1) === 24 || (hour + 1) < 12) ? "am" : "pm"));
 
     // "Find on Map"
     $("#find_location").click(function (event) {
@@ -23,6 +48,10 @@ $(document).ready(function () {
         event.preventDefault();
 
         hc.createEvent(ev);
+    });
+
+    $("#from_date, #to_date").focus(function (event) {
+        $(event.target).datepicker("show");
     });
 
     // Update profile picture
@@ -50,8 +79,6 @@ $(document).ready(function () {
 
         hc.deleteAccount(dv);
     });
-
-    $(".event-alert").alert();
 
     // Logout confirmation
     $("#navbar_logout").click(function () {

@@ -24,12 +24,12 @@ window.SeoulMix.mainController = function () {
             image,
             shadow;
 
-        image = new google.maps.MarkerImage("img/" + color + "-marker.png",
+        image = new google.maps.MarkerImage("images/" + color + "-marker.png",
             new google.maps.Size(32, 32),
             new google.maps.Point(0, 0),
             new google.maps.Point(12, 32));
 
-        shadow = new google.maps.MarkerImage("img/marker-shadow.png",
+        shadow = new google.maps.MarkerImage("images/marker-shadow.png",
             new google.maps.Size(40, 37),
             new google.maps.Point(0, 0),
             new google.maps.Point(12, 32));
