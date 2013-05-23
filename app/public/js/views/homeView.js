@@ -6,7 +6,7 @@ $(document).ready(function () {
         uv = new seoulmix.updateProfileValidator(),
         dv = new seoulmix.deleteValidator(),
         date = new Date(),
-        hour = date.getHours();
+        hour = date.getHours() + 1;
 
     // Instantiate alerts
     $(".event-alert").alert();
@@ -27,9 +27,16 @@ $(document).ready(function () {
     $("#from_date").val((date.getMonth() + 1) + "/" + date.getDay() + "/" + date.getFullYear());
     $("#to_date").val((date.getMonth() + 1) + "/" + (((hour + 1) >= 24) ? date.getDay() + 1 : date.getDay()) + "/" + date.getFullYear());
 
-    // Warning: Crazy ternary operations below
+    // Warning: Crazy nested ternary operations below
+    hour = 24;
     $("#from_time").val(((hour > 12) ? hour - 12 : hour) + ":00 " + ((hour === 24 || hour < 12) ? "am" : "pm"));
-    $("#to_time").val((((hour + 1) > 12) ? (hour + 1) - 12 : (hour + 1)) + ":00 " + (((hour + 1) === 24 || (hour + 1) < 12) ? "am" : "pm"));
+    $("#to_time").val(
+        (((hour + 1) > 12)
+        ? ((hour + 1) > 24)
+            ? Math.ceil((hour + 1) / 2) - 12
+            : (hour + 1) - 12
+        : (hour + 1)) + ":00 " + (((hour + 1) >= 24 || (hour + 1) < 12) ? "am" : "pm")
+    );
 
     // "Find on Map"
     $("#find_location").click(function (event) {
