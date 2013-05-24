@@ -1,6 +1,7 @@
 window.SeoulMix.homeController = function () {
 
-    var that = this;
+    var that = this,
+        mainController = new window.SeoulMix.mainController();
 
     this.findOnMap = function () {
         var map = window.SeoulMix.map,
@@ -19,7 +20,7 @@ window.SeoulMix.homeController = function () {
         }).draggable("enable");
 
         setTimeout(function () {
-            marker = new window.SeoulMix.mainController().createColoredMarker("blue");
+            marker = mainController.createColoredMarker("blue");
 
             google.maps.event.addListener(marker, "dragend", function () {
                 geocoder.geocode({
