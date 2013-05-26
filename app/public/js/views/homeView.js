@@ -23,7 +23,9 @@ $(document).ready(function () {
         dateFormat: "m/d/yy"
     });
 
-    // Fill date/time values
+    /*
+        Fill date/time values
+    */
     $("#from_date").val((date.getMonth() + 1) + "/" + date.getDay() + "/" + date.getFullYear());
     $("#to_date").val((date.getMonth() + 1) + "/" + (((hour + 1) >= 24) ? date.getDay() + 1 : date.getDay()) + "/" + date.getFullYear());
 
@@ -36,6 +38,20 @@ $(document).ready(function () {
             : (hour + 1) - 12
         : (hour + 1)) + ":00 " + (((hour + 1) >= 24 || (hour + 1) < 12) ? "am" : "pm")
     );
+
+    $("#from_time, #to_time").focus(function (event) {
+        $(event.target).siblings(".hour-select").show();
+    }).keydown(function (event) {
+        $(event.target).siblings(".hour-select").hide();
+    }).blur(function (event) {
+        $(event.target).siblings(".hour-select").hide();
+    });
+
+    $(".hour").mousedown(function (evt) {
+        parentInput = $(evt.target).parent().siblings().get(1);
+        $(parentInput).val($(evt.target).text());
+        $(event.target).parent().hide();
+    });
 
     // "Find on Map"
     $("#find_location").click(function (event) {

@@ -56,6 +56,28 @@
 
 					.inputs {
 						display: inline;
+						position: relative;
+
+						.hour-select {
+							position: absolute;
+							right: 0em;
+							border: 1px solid #CCCCCC;
+							background-color: white;
+							z-index: 2000;
+							display: none;
+							width: 7em;
+							height: 10em;
+							overflow-y: auto;
+							overflow-x: hidden;
+
+							.hour {
+								padding-left: 0.75em;
+
+								&:hover {
+									background-color: #E5E5E5;
+								}
+							}
+						}
 					}
 
 					.from-date, .from-time, .to-date, .to-time {

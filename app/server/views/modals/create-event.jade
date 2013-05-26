@@ -33,11 +33,13 @@
 							.inputs
 								input#from_date.from-date(type="text")
 								input#from_time.from-time(type="text")
+								include ../popups/hour-select
 						.to
 							span.to-label to  
 							.inputs
 								input#to_date.to-date(type="text")
 								input#to_time.to-time(type="text")
+								include ../popups/hour-select
 				.event-alert.alert.alert-success.hide.fade.in
 					button.close &times;
 					p.event-submit-comment
