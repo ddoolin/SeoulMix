@@ -100,6 +100,7 @@ window.SeoulMix.homeController = function () {
         };
 
         ev.resetCommentFields();
+
         if (!ev.validateForm()) {
             return false;
         }

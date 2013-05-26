@@ -8,7 +8,8 @@ window.SeoulMix.eventValidator = function () {
 		$("#event_location")];
 
 	this.commentFields = [$(".event-name-comment"),
-		$(".event-description-comment"), $(".event-location-comment")];
+		$(".event-description-comment"), $(".event-location-comment"),
+		$(".event-time-comment")];
 
     this.resetCommentFields = function () {
 
@@ -36,6 +37,8 @@ window.SeoulMix.eventValidator = function () {
 			case "location":
 				that.commentFields[2].addClass("text-error").text(msg);
 				break;
+			case "time":
+				that.commentFields[3].addClass("text-error").text(msg);
 		}
 	};
 
@@ -72,18 +75,63 @@ window.SeoulMix.eventValidator = function () {
 		});
 	};
 
+	this.validateTime = function () {
+		var now = new Date(),
+			startDay = $("#from_date").val(),
+			startTime = $("#from_time").val(),
+			endDay = $("#to_date").val(),
+			endTime = $("#to_time").val(),
+			startDate = new Date(startDay + " " + startTime),
+			endDate = new Date(endDay + " " + endTime);
+
+		if (!startDay || !startTime || !endDay || !endTime) {
+			return "Blank field";
+		}
+		if (startDate < now || endDate < now) {
+			return "Past";
+		}
+		if (startDate > endDate) {
+			return "Start after finish";
+		}
+		if (startDate == "Invalid Date" || endDate == "Invalid Date") {
+			return "Invalid date";
+		}
+	};
+
 	this.showCreateSuccess = function (msg) {
 		$(".event-submit-comment").html(msg);
 		that.createEventAlert.show();
 	};
 
 	this.validateForm = function () {
+		var dateMsg;
+
 		if (that.validateName(that.formFields[0].val()) ===  false) {
 			that.showErrors("name", "Event name cannot be blank");
 			return false;
 		}
 		if (that.validateLocation(that.formFields[2].val()) === false) {
 			that.showErrors("location", "Location cannot be blank");
+			return false;
+		}
+
+		dateMsg = that.validateTime();
+		if (dateMsg) {
+			switch (dateMsg) {
+				case "Blank field":
+					that.showErrors("time", "Times cannot be blank");
+					break;
+				case "Past":
+					that.showErrors("time", "Times cannot be in the past");
+					break;
+				case "Start after finish":
+					that.showErrors("time", "End time must come after the start time");
+					break;
+				case "Invalid date":
+					that.showErrors("time", "Invalid time");
+					break;
+			};
+
 			return false;
 		}
 

@@ -26,8 +26,9 @@ $(document).ready(function () {
     /*
         Fill date/time values
     */
-    $("#from_date").val((date.getMonth() + 1) + "/" + date.getDay() + "/" + date.getFullYear());
-    $("#to_date").val((date.getMonth() + 1) + "/" + (((hour + 1) >= 24) ? date.getDay() + 1 : date.getDay()) + "/" + date.getFullYear());
+    console.log()
+    $("#from_date").val((date.getMonth() + 1) + "/" + ((hour >= 24) ? date.getDate() + 1 : date.getDate()) + "/" + date.getFullYear());
+    $("#to_date").val((date.getMonth() + 1) + "/" + (((hour + 1) >= 24) ? date.getDate() + 1 : date.getDate()) + "/" + date.getFullYear());
 
     // Warning: Crazy nested ternary operations below
     $("#from_time").val(((hour > 12) ? hour - 12 : hour) + ":00 " + ((hour === 24 || hour < 12) ? "am" : "pm"));
