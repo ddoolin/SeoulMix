@@ -93,11 +93,14 @@ window.SeoulMix.homeController = function () {
     };
 
     this.createEvent = function (ev) {
-        var data = {
-            name: $("#event_name").val(),
-            description: $("#event_description").val(),
-            address: $("#event_location").val()
-        };
+        var marker,
+            data = {
+                name: $("#event_name").val(),
+                description: $("#event_description").val(),
+                address: $("#event_location").val(),
+                startTime: new Date($("#from_date").val() + " " + $("#from_time").val()),
+                endTime: new Date($("#to_date").val() + " " + $("#to_time").val())
+            };
 
         ev.resetCommentFields();
 
@@ -120,7 +123,6 @@ window.SeoulMix.homeController = function () {
 
                 return false;
             } else {
-
                 data.location = [result.geometry.location.lat(), result.geometry.location.lng()];
 
                 $.ajax({
@@ -129,8 +131,12 @@ window.SeoulMix.homeController = function () {
                     data: data,
                     success: function (data, textStatus, jqXHR) {
                         if (!data.error) {
-                            $("#new_event_form").resetForm();
+                            ev.resetFields();
                             ev.showCreateSuccess("<b>Success!</b> Event successfully created!");
+                            marker = mainController.createColoredMarker("green", [data.location.lat, data.location.lng]);
+                            setTimeout(function () {
+                                $("#create_event_modal").modal("hide");
+                            }, 1000);
                         } else {
                             switch (data.error) {
                                 case "Name cannot be blank":
@@ -138,6 +144,18 @@ window.SeoulMix.homeController = function () {
                                     break;
                                 case "Location cannot be blank":
                                     ev.showErrors("location", "Location cannot be blank.");
+                                    break;
+                                case "Times cannot be blank":
+                                    ev.showErrors("time", "Times cannot be blank.");
+                                    break;
+                                case "Times cannot be in the past":
+                                    ev.showErrors("time", "Times cannot be in the past.");
+                                    break;
+                                case "End time must come after start time":
+                                    ev.showErrors("time", "End time must come after start time.");
+                                    break;
+                                case "Invalid time":
+                                    ev.showErrors("time", "Invalid time.");
                                     break;
                                 default:
                                     ev.showErrors("location", "An error has occured.");

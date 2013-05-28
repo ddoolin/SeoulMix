@@ -30,23 +30,21 @@ $(document).ready(function () {
 	// Autofocusing fields
 	$("#login_username").focus();
 
-	$("#registration_modal").on("shown", function() {
-		$("#login_username").blur();
+	$("#registration_modal").on("shown", function () {
 		$("#signup_username").focus();	
-	});
-
-	$("#registration_modal").on("hidden", function() {
-		$("#signup_username").blur();
+	}).on("hidden", function () {
 		$("#login_username").focus();
 	});
 
-	$("#lostpass_modal").on("shown", function() {
-		$("#signup_username").blur();
+	$("#lostpass_modal").on("shown", function () {
 		$("#lostpass_email").focus();
+	}).on("hidden", function () {
+		$("#login_username").focus();
 	});
 
-	$("#lostpass_modal").on("hidden", function() {
-		$("#lostpass_email").blur();
-		$("#login_username").focus();
+	$("#loginerr_modal").on("shown", function () {
+		$("#loginerr_modal .btn-info").focus();
+	}).on("hidden", function () {
+		$("#login_password").focus();
 	});
 });

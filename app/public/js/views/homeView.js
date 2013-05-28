@@ -4,9 +4,7 @@ $(document).ready(function () {
         hc = new seoulmix.homeController(),
         ev = new seoulmix.eventValidator(),
         uv = new seoulmix.updateProfileValidator(),
-        dv = new seoulmix.deleteValidator(),
-        date = new Date(),
-        hour = date.getHours() + 1;
+        dv = new seoulmix.deleteValidator();
 
     // Instantiate alerts
     $(".event-alert").alert();
@@ -23,22 +21,8 @@ $(document).ready(function () {
         dateFormat: "m/d/yy"
     });
 
-    /*
-        Fill date/time values
-    */
-    console.log()
-    $("#from_date").val((date.getMonth() + 1) + "/" + ((hour >= 24) ? date.getDate() + 1 : date.getDate()) + "/" + date.getFullYear());
-    $("#to_date").val((date.getMonth() + 1) + "/" + (((hour + 1) >= 24) ? date.getDate() + 1 : date.getDate()) + "/" + date.getFullYear());
-
-    // Warning: Crazy nested ternary operations below
-    $("#from_time").val(((hour > 12) ? hour - 12 : hour) + ":00 " + ((hour === 24 || hour < 12) ? "am" : "pm"));
-    $("#to_time").val(
-        (((hour + 1) > 12)
-        ? ((hour + 1) > 24)
-            ? Math.ceil((hour + 1) / 2) - 12
-            : (hour + 1) - 12
-        : (hour + 1)) + ":00 " + (((hour + 1) >= 24 || (hour + 1) < 12) ? "am" : "pm")
-    );
+    // Set the form to default
+    ev.resetFields();
 
     $("#from_time, #to_time").focus(function (event) {
         $(event.target).siblings(".hour-select").show();

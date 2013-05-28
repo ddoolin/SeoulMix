@@ -14,6 +14,7 @@ exports.getEvents = function (req, res) {
     events.find(/*{}, { _id: 0 }*/).toArray(function (err, result) {
         if (err) {
             res.send({"error": "An error has occured"});
+            return false;
         }
 
         res.send(result);
@@ -27,6 +28,7 @@ exports.getEvent = function (req, res) {
     function (err, result) {
         if (err) {
             res.send({"error": "An error has occured"});
+            return false;
         }
 
         res.send(result);
@@ -40,6 +42,7 @@ exports.getUserEvents = function (req, res) {
     ).toArray(function (err, result) {
         if (err) {
             res.send({"error": "An error has occured"});
+            return false;
         }
 
         res.send(result);
@@ -54,8 +57,12 @@ exports.addEvent = function (req, res) {
         name = req.param("name"),
         description = req.param("description"),
         address = req.param("address"),
-        location = req.param("location");
+        location = req.param("location"),
+        startTime = req.param("startTime"),
+        endTime = req.param("endTime"),
+        now = new Date();
 
+    // Validation
     if (!name) {
         res.send({"error": "Name cannot be blank"});
         return false;
@@ -66,22 +73,44 @@ exports.addEvent = function (req, res) {
         return false;
     }
 
-    // Set the creation date
-    data.creationDate = moment()
-        .format("dddd, MMMM Do YYYY, h:mm:ss a");
+    if (!startTime || !endTime) {
+        res.send({"error": "Times cannot be blank"});
+        return false;
+    }
 
-    data.user = user.user
-    data.name = name;
-    data.description = description;
-    data.address = address;
-    data.location = {
-        lat: location[0],
-        lng: location[1]
+    if (startTime < now || endTime < now) {
+        res.send({"error": "Times cannot be in the past"});
+        return false;
+    }
+
+    if (startTime > endTime) {
+        res.send({"error": "End time must come after start time"});
+        return false;
+    }
+
+    if (!moment(startTime).isValid() || !moment(endTime).isValid()) {
+        res.send({"error": "Invalid time"});
+        return false;
+    }
+
+    data = {
+        creationDate: moment().format("dddd, MMMM Do YYYY, h:mm:ss a"),
+        user: user.user,
+        name: name,
+        description: description,
+        address: address,
+        location: {
+            lat: location[0],
+            lng: location[1]
+        },
+        startTime: startTime,
+        endTime: endTime
     };
 
     events.insert(data, { safe: true }, function (err, result) {
         if (err) {
             res.send({"error": "An error has occured"});
+            return false;
         }
 
         res.send(result[0]);
