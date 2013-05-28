@@ -1,7 +1,11 @@
 $(document).ready(function () {
 
 	var seoulmix = window.SeoulMix,
-		mc = new seoulmix.mainController();
+		mc = new seoulmix.mainController(),
+		mapOptions,
+		map,
+		infoWindow,
+		populateMap;
 
 	mc.createMarker();
 
@@ -12,7 +16,7 @@ $(document).ready(function () {
 	});
 
 	// Options to pass to the map instance
-	var mapOptions = {
+	mapOptions = {
 		center: new google.maps.LatLng(37.525, 127.000),
 		zoom: 12,
 		streetViewControl: false,
@@ -25,7 +29,7 @@ $(document).ready(function () {
 	};
 
 	// Instantiate the map and pass options
-	var map = new google.maps.Map(document.getElementById("map_canvas"),
+	map = new google.maps.Map(document.getElementById("map_canvas"),
 		mapOptions);
 
 	// Set the map to our global object...we're going to need it.
@@ -41,9 +45,7 @@ $(document).ready(function () {
 		}
 	});
 
-	var infoWindow;
-
-	var populateMap = function (data) {
+	populateMap = function (data) {
 		var event = data,
 			latLng,
 			marker,
@@ -57,24 +59,6 @@ $(document).ready(function () {
 			title: event.name
 		});
 
-		content = "<div id='content'>" +
-			"<div id='siteNotice'></div>" +
-			"<h2 id='firstHeading' class='firstHeading'>" + event.name +
-			"</h2><div id='bodyContent'>" +
-			"<p>" + event.description + "</p>" +
-			"</div>" +
-			"</div>";
-
-		google.maps.event.addListener(marker, "click", function () {
-			if (infoWindow) {
-				infoWindow.close();
-			}
-
-			infoWindow = new google.maps.InfoWindow({
-				content: content
-			});
-
-			infoWindow.open(map, marker);
-		});
+		mc.createInfoWindow(false, marker, event);
 	};
 });

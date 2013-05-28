@@ -4,8 +4,7 @@ window.SeoulMix.homeController = function () {
         mainController = new window.SeoulMix.mainController();
 
     this.findOnMap = function () {
-        var map = window.SeoulMix.map,
-            geocoder = new google.maps.Geocoder(),
+        var geocoder = new google.maps.Geocoder(),
             modal = $("#create_event_modal"),
             banner = $("#banner_main"),
             location_finder = $("#location_finder_popup"),
@@ -133,9 +132,14 @@ window.SeoulMix.homeController = function () {
                         if (!data.error) {
                             ev.resetFields();
                             ev.showCreateSuccess("<b>Success!</b> Event successfully created!");
+
                             marker = mainController.createColoredMarker("green", [data.location.lat, data.location.lng]);
+                            mainController.createInfoWindow(false, marker, data);
+                            window.SeoulMix.map.setCenter(new google.maps.LatLng(data.location.lat, data.location.lng));
+
                             setTimeout(function () {
                                 $("#create_event_modal").modal("hide");
+                                $(".event-alert").hide();
                             }, 1000);
                         } else {
                             switch (data.error) {

@@ -1,6 +1,6 @@
 #registration_modal.modal.hide.fade
     .modal-header Sign Up
-        button.close(data-dismiss='modal') x
+        button.close(data-dismiss="modal") x
     .modal-content
         .signup.signup-container
             .modal-signup-body
@@ -9,16 +9,16 @@
                         form#new_user_form(method="post")
                             fieldset(name="user-registration")
                                 .signup-username-container
-                                    input#signup_username.signup-username(required='required', type='text', pattern='^[A-Za-z0-9_]{4,30}$', title='4 character minimum. Must start with a number or letter. Alpha-numeric and underscores only.', name='signup-username', placeholder='username')
+                                    input#signup_username.signup-username(required="required", type="text", pattern="^[A-Za-z0-9_]{4,30}$", title="4 character minimum. Must start with a number or letter. Alpha-numeric and underscores only.", name="signup-username", placeholder="username")
                                     .signup-username-comment Cannot be changed later.
                                 .signup-password-container
-                                    input#signup_password.signup-password(required='required', type='password', pattern='.{6,}', title='6 character minimum', name='signup-password', placeholder='password')
+                                    input#signup_password.signup-password(required="required", type="password", pattern=".{6,}", title="6 character minimum", name="signup-password", placeholder="password")
                                     .signup-password-comment At least 6 characters.
-                                    input#signup_password_confirm.signup-password-confirm(required='required', type='password', pattern='.{6,}', title='Must be the same as the field above', name='signup-password-confirm', placeholder='confirm password')
+                                    input#signup_password_confirm.signup-password-confirm(required="required", type="password", pattern=".{6,}", title="Must be the same as the field above", name="signup-password-confirm", placeholder="confirm password")
                                     .signup-password-confirm-comment
                                 .signup-email-container
-                                    input#signup_email.signup-email(required='required', type='email', name='signup-email', placeholder='e-mail address')
+                                    input#signup_email.signup-email(required="required", type="email", name="signup-email", placeholder="e-mail address")
                                     .signup-email-comment A valid e-mail is required.
                                 .signup-submit-container
-                                    input#signup_submit.signup-submit(type='submit', value='Create Account!')
+                                    input#signup_submit.signup-submit(type="submit", value="Create Account!")
                                     .signup-submit-comment

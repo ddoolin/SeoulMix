@@ -18,7 +18,13 @@ window.SeoulMix.eventValidator = function () {
     };
 
     this.resetFields = function () {
-        $("#event_name, #event_description, #event_description").val("");
+        that.formFields.forEach(function (element, index, array) {
+            $(element).val("");
+        });
+
+        that.commentFields.forEach(function (element, index, array) {
+            $(element).text("");
+        });
 
         that.setDefaultTimes();
     };

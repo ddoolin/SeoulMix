@@ -8,7 +8,7 @@
 					label.name.control-label
 						| Event Name
 					.controls
-						input#event_name.event-name(required="required", type="text", title="Event name", name="event-name", placeholder="The name of the event")
+						input#event_name.event-name(required="required", type="text", title="Event name", name="event-name", placeholder="The name of the event", required="required")
 						p.event-name-comment.text-error
 				.control-group
 					label.description.control-label
@@ -20,7 +20,7 @@
 					label.location.control-label
 						| Where
 					.controls
-						input#event_location.event-location(required="required", type="text", title="Event location", name="event-location", placeholder="Place name or full address")
+						input#event_location.event-location(required="required", type="text", title="Event location", name="event-location", placeholder="Place name or full address", required="required")
 						.button-container
 							span.or-divider - or -
 							button.btn#find_location Find on map

@@ -21,8 +21,8 @@ $(document).ready(function () {
         dateFormat: "m/d/yy"
     });
 
-    // Set the form to default
-    ev.resetFields();
+    // Set the times to default
+    ev.setDefaultTimes();
 
     $("#from_time, #to_time").focus(function (event) {
         $(event.target).siblings(".hour-select").show();
@@ -103,7 +103,7 @@ $(document).ready(function () {
     $(".event-alert .close").click(function (event) {
         event.preventDefault();
 
-        $(".event-alert").alert("close");
+        $(".event-alert").hide();
     });
 
     // Need to use a JS trigger to prevent this ajaxForm from submitting on click
