@@ -5,11 +5,44 @@ window.SeoulMix.mainController = function () {
         infoWindow = new google.maps.InfoWindow();
 
     this.formatDate = function (date) {
+
         // Change from "Wed May 29 2013" to "Wednesday, May 29, 2013" and return
+        var date = new Date(date),
+            days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
+                "Friday", "Saturday"],
+            day = days[date.getDay()],
+            months = ["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"];
+            month = months[date.getMonth()],
+            monthDay = date.getDate(),
+            year = date.getFullYear(),
+            formattedDate = day + ", " + month + " " + monthDay + ", " + year;
+
+        return formattedDate;
     }
 
     this.formatTime = function (date) {
+
         // Change from "23:0" to "11:00 PM" and return
+        var date = new Date(date),
+            hour = date.getHours(),
+            minutes = date.getMinutes(),
+            meridiem = "am",
+            formattedTime;
+
+        if (hour > 12) {
+            hour = hour - 12,
+            meridiem = "pm";
+        } else if (hour === 12) {
+            meridiem = "pm";
+        } else if (hour === 0) {
+            hour = 12;
+            meridiem = "am";
+        }
+
+        formattedTime = hour + ":" + (((minutes < 10) ? "0" : "") + minutes) + " " + meridiem;
+
+        return formattedTime;
     }
 
     this.createMarker = function (position) {
@@ -33,15 +66,14 @@ window.SeoulMix.mainController = function () {
             markup = "<div class='content'>" +
                 "<h3 class='firstHeading'>" + event.name +
                 "</h3><div class='bodyContent'>" +
-                "<p class='time'>" + time.toDateString() +
-                " @ "+ time.getHours() +":" + time.getMinutes() + "</p>" +
+                "<p class='time'>" + that.formatDate(time) +
+                " @ "+ that.formatTime(time) + "</p>" +
                 "<p class='description'>" + event.description + "</p>" +
                 "</div>" +
                 "</div>";
         }
 
         google.maps.event.addListener(marker, "click", function () {
-            infoWindow.close();
             infoWindow.setContent(markup);
             infoWindow.open(window.SeoulMix.map, this);
         });
