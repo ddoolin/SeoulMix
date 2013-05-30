@@ -1,12 +1,31 @@
 # SeoulMix Setup Readme
 
+## The SeoulMix Project
+
+This project originally started because I wanted to practice Node.js. It evolved into
+more of a project for me to encompass and showcase what I believe to be good practices
+when writing web application code.
+
+This project is a completely open-source website, from front-to-back. The reason I decided
+to make this project open-source is not only for my own benefit (feedback), but also
+because I found it very rare to find good, working examples when searching for code samples.
+So, with that said, I hope someone can find what they're looking for in 5 minutes rather
+than the hours it took me to compile all the knowledge.
+
+As an example, I learned not to commit sensitive data like passwords or API secrets. Now,
+hopefully you can be reminded not to do the same by reading this (ha!)
+
+## Task Manager
+
+You can find the public Pivotal Tracker for this project [here](https://www.pivotaltracker.com/projects/824705)
+
 ## Installation
 
 As with any Node installation, run "npm install" to install the required packages.
 See the Nginx section below to setup Nginx request proxy'ing, though it is possible
 to run the server without it (just start the app as usual).
 
-Note: Create an email-settings.js with this module:
+**Note:** Create an app/server/modules/email-settings.js with these details:
 
 	module.exports = {
 		host: "smtp.gmail.com",
@@ -14,6 +33,14 @@ Note: Create an email-settings.js with this module:
 		password: "emailpassword",
 		sender: "SeoulMix <contact@seoulmix.com>"
 	};
+
+**Note #2:** Create an app/server/modules/constants.js with these details
+(You will also need to upload app/public/images/default_profile.png to your Cloudinary):
+
+	exports.DEFAULT_PROFILE_IMAGE_ID = "your_default_profile_image_id";
+	exports.CLOUDINARY_API_KEY = "YourAPIKey";
+	exports.CLOUDINARY_API_SECRET = "KTS0MeAPeeEye$eCR3tZAi8";
+	exports.CLOUDINARY_BASE_URL = "https://somebaseurl.com/yourcloudinaryproject";
 
 ## Organization
 
