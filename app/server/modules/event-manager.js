@@ -68,8 +68,8 @@ exports.addEvent = function (req, res) {
         description = req.param("description"),
         address = req.param("address"),
         location = req.param("location"),
-        startTime = req.param("startTime"),
-        endTime = req.param("endTime"),
+        startTime = new Date(req.param("startTime")),
+        endTime = new Date(req.param("endTime")),
         now = new Date();
 
     // Validation

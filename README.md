@@ -49,6 +49,12 @@ via a command line interface (you can find the variable on the account details p
 
 	$ set
 
+**Note #3:** Jasmine is used for testing. I recommend something along these lines while writing specs...
+
+	jasmine-node spec/ --autotest
+
+That will watch for changes in the spec directory. You can find more options [here](https://github.com/mhevery/jasmine-node)
+
 ## Organization
 
 File organization is kept pretty simple. Assets in app/public, application code in app/server.

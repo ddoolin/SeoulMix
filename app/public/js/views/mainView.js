@@ -36,7 +36,7 @@ $(document).ready(function () {
 	window.SeoulMix.map = map;
 
 	$.ajax({
-		url: "/api/events?front=1",
+		url: (window.location.pathname === "/" ? "/api/events?front=1" : "/api/events"),
 		type: "GET",
 		success: function (data, textStatus, jqXHR) {
 			for (var i = 0; i < data.length; i++) {

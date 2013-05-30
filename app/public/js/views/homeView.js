@@ -97,7 +97,7 @@ $(document).ready(function () {
     $("#create_event_modal #clear_form").click(function (event) {
         event.preventDefault();
 
-        $("#new_event_form").resetForm();
+        ev.resetFields();
     });
 
     $(".event-alert .close").click(function (event) {
