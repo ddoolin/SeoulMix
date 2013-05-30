@@ -38,9 +38,16 @@ to run the server without it (just start the app as usual).
 (You will also need to upload app/public/images/default_profile.png to your Cloudinary):
 
 	exports.DEFAULT_PROFILE_IMAGE_ID = "your_default_profile_image_id";
-	exports.CLOUDINARY_API_KEY = "YourAPIKey";
-	exports.CLOUDINARY_API_SECRET = "KTS0MeAPeeEye$eCR3tZAi8";
-	exports.CLOUDINARY_BASE_URL = "https://somebaseurl.com/yourcloudinaryproject";
+
+To go along with that, you'll need to set your CLOUDINARY_URL environment variable like so
+via a command line interface (you can find the variable on the account details panel):
+
+	$ CLOUDINARY_URL=cloudinary://apikey:apisecret@cloudname
+	$ export CLOUDINARY_URL
+
+*Tip:* You can view your enviroment variables using
+
+	$ set
 
 ## Organization
 
