@@ -11,13 +11,23 @@ var database = require("../../database"),
 // Get events
 
 exports.getEvents = function (req, res) {
-    events.find(/*{}, { _id: 0 }*/).toArray(function (err, result) {
+    events.find({}, { _id: 0 }).toArray(function (err, result) {
         if (err) {
             res.send({"error": "An error has occured"});
             return false;
         }
 
-        res.send(result);
+        if (req.query["front"]) {
+            result.forEach(function (item) {
+                delete item.address;
+                delete item.startTime;
+                delete item.endTime;
+            });
+
+            res.send(result);
+        } else {
+            res.send(result);
+        }
     });
 };
 

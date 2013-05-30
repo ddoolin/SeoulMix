@@ -60,15 +60,21 @@ window.SeoulMix.mainController = function () {
     };
 
     this.createInfoWindow = function (markup, marker, event) {
-        var time = new Date(event.startTime);
+        var time;
 
         if (!markup) {
             markup = "<div class='content'>" +
                 "<h3 class='firstHeading'>" + event.name +
-                "</h3><div class='bodyContent'>" +
-                "<p class='time'>" + that.formatDate(time) +
-                " @ "+ that.formatTime(time) + "</p>" +
-                "<p class='description'>" + event.description + "</p>" +
+                "</h3><div class='bodyContent'>";
+
+            if (event.startTime) {
+                time = new Date(event.startTime);
+
+                markup += "<p class='time'>" + that.formatDate(time) +
+                " @ "+ that.formatTime(time) + "</p>";
+            }
+
+            markup += "<p class='description'>" + event.description + "</p>" +
                 "</div>" +
                 "</div>";
         }

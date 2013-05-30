@@ -36,7 +36,7 @@ $(document).ready(function () {
 	window.SeoulMix.map = map;
 
 	$.ajax({
-		url: "/api/events",
+		url: "/api/events?front=1",
 		type: "GET",
 		success: function (data, textStatus, jqXHR) {
 			for (var i = 0; i < data.length; i++) {
@@ -48,8 +48,7 @@ $(document).ready(function () {
 	populateMap = function (data) {
 		var event = data,
 			latLng,
-			marker,
-			content;
+			marker;
 
 		latLng = new google.maps.LatLng(event.location.lat, event.location.lng);
 		marker = new google.maps.Marker({
