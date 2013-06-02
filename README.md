@@ -27,33 +27,32 @@ to run the server without it (just start the app as usual).
 
 **Note:** Create an app/server/modules/email-settings.js with these details:
 
-	module.exports = {
-		host: "smtp.gmail.com",
-		user: "email@gmail.com",
-		password: "emailpassword",
-		sender: "SeoulMix <contact@seoulmix.com>"
-	};
+    module.exports = {
+        host: "smtp.gmail.com",
+        user: "email@gmail.com",
+        password: "emailpassword",
+        sender: "SeoulMix <contact@seoulmix.com>"
+    };
 
 **Note #2:** Create an app/server/modules/constants.js with these details
 (You will also need to upload app/public/images/default_profile.png to your Cloudinary):
 
-	exports.DEFAULT_PROFILE_IMAGE_ID = "your_default_profile_image_id";
+    exports.DEFAULT_PROFILE_IMAGE_ID = "your_default_profile_image_id";
 
 To go along with that, you'll need to set your CLOUDINARY_URL environment variable like so
 via a command line interface (you can find the variable on the account details panel):
 
-	$ CLOUDINARY_URL=cloudinary://apikey:apisecret@cloudname
-	$ export CLOUDINARY_URL
+    $ CLOUDINARY_URL=cloudinary://apikey:apisecret@cloudname
+    $ export CLOUDINARY_URL
+
+To make this setting permanent (otherwise the CLOUDINARY URL variable will be unset at the end of the user session),
+add this line to your .bash_profile:
+
+    export CLOUDINARY_URL=cloudinary://apikey:apisecret@cloudname
 
 *Tip:* You can view your enviroment variables using
 
-	$ set
-
-**Note #3:** Jasmine is used for testing. I recommend something along these lines while writing specs...
-
-	jasmine-node spec/ --autotest
-
-That will watch for changes in the spec directory. You can find more options [here](https://github.com/mhevery/jasmine-node)
+    $ set
 
 ## Organization
 
@@ -94,80 +93,80 @@ Be sure to change the directory paths to match your system.
 ## Nginx configuration file 
 
 
-	#user html;
-	worker_processes  1;
+    #user html;
+    worker_processes  1;
 
-	#error_log  logs/error.log;
-	#error_log  logs/error.log  notice;
-	#error_log  logs/error.log  info;
+    #error_log  logs/error.log;
+    #error_log  logs/error.log  notice;
+    #error_log  logs/error.log  info;
 
-	#pid        logs/nginx.pid;
+    #pid        logs/nginx.pid;
 
 
-	events {
-	    worker_connections  1024;
-	}
+    events {
+        worker_connections  1024;
+    }
 
-	user devin users;
+    user devin users;
 
-	http {
-	    # proxy_cache_path  /var/cache/nginx levels=1:2 keys_zone=one:8m max_size=3000m inactive=600m;
-	    # proxy_temp_path /var/tmp;
-	    include       mime.types;
-	    default_type  application/octet-stream;
-	    sendfile        on;
-	    keepalive_timeout  65;
+    http {
+        # proxy_cache_path  /var/cache/nginx levels=1:2 keys_zone=one:8m max_size=3000m inactive=600m;
+        # proxy_temp_path /var/tmp;
+        include       mime.types;
+        default_type  application/octet-stream;
+        sendfile        on;
+        keepalive_timeout  65;
 
-	    gzip on;
-	    gzip_comp_level 6;
-	    gzip_vary on;
-	    gzip_min_length  1000;
-	    gzip_proxied any;
-	    gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
-	    gzip_buffers 16 8k;
-	 
-	    # ssl_certificate /some/location/sillyfacesociety.com.bundle.crt;
-	    # ssl_certificate_key /some/location/sillyfacesociety.com.key;
-	    # ssl_protocols        SSLv3 TLSv1;
-	    # ssl_ciphers HIGH:!aNULL:!MD5;
+        gzip on;
+        gzip_comp_level 6;
+        gzip_vary on;
+        gzip_min_length  1000;
+        gzip_proxied any;
+        gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
+        gzip_buffers 16 8k;
 
-	    upstream seoulmix_upstream {
-	      server 127.0.0.1:8081;
-	      keepalive 64;
-	    }
+        # ssl_certificate /some/location/sillyfacesociety.com.bundle.crt;
+        # ssl_certificate_key /some/location/sillyfacesociety.com.key;
+        # ssl_protocols        SSLv3 TLSv1;
+        # ssl_ciphers HIGH:!aNULL:!MD5;
 
-	    server {
-	        listen 0.0.0.0:80;
-	        # listen 443 ssl;
+        upstream seoulmix_upstream {
+          server 127.0.0.1:8081;
+          keepalive 64;
+        }
 
-	        server_name localhost;
+        server {
+            listen 0.0.0.0:80;
+            # listen 443 ssl;
 
-	        error_page 502  /errors/502.html;
+            server_name localhost;
 
-	    	location ~* ^.+\.(jpg|jpeg|gif|png|ico|css|zip|tgz|gz|rar|bz2|pdf|txt|tar|wav|bmp|rtf|js|flv|swf)$ {
-	          root   /home/devin/NodeSites/seoulmix/app/public;
-	          access_log off;
-	          expires max;
-	    	}
+            error_page 502  /errors/502.html;
 
-	        location /errors {
-	          internal;
-	          alias /home/devin/NodeSites/seoulmix/app/public/errors;
-	        }
+            location ~* ^.+\.(jpg|jpeg|gif|png|ico|css|zip|tgz|gz|rar|bz2|pdf|txt|tar|wav|bmp|rtf|js|flv|swf)$ {
+              root   /home/devin/NodeSites/seoulmix/app/public;
+              access_log off;
+              expires max;
+            }
 
-	        location / {
-	          proxy_redirect off;
-	          proxy_set_header   X-Real-IP            $remote_addr;
-	          proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
-	          proxy_set_header   X-Forwarded-Proto $scheme;
-	          proxy_set_header   Host                   $http_host;
-	          proxy_set_header   X-NginX-Proxy    true;
-	          proxy_set_header   Connection "";
-	          proxy_http_version 1.1;
-	          # proxy_cache one;
-	          # proxy_cache_key sfs$request_uri$scheme;
-		  proxy_next_upstream error timeout http_502;
-	          proxy_pass         http://seoulmix_upstream;
-	        }
-	    }
-	}
+            location /errors {
+              internal;
+              alias /home/devin/NodeSites/seoulmix/app/public/errors;
+            }
+
+            location / {
+              proxy_redirect off;
+              proxy_set_header   X-Real-IP            $remote_addr;
+              proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+              proxy_set_header   X-Forwarded-Proto $scheme;
+              proxy_set_header   Host                   $http_host;
+              proxy_set_header   X-NginX-Proxy    true;
+              proxy_set_header   Connection "";
+              proxy_http_version 1.1;
+              # proxy_cache one;
+              # proxy_cache_key sfs$request_uri$scheme;
+          proxy_next_upstream error timeout http_502;
+              proxy_pass         http://seoulmix_upstream;
+            }
+        }
+    }

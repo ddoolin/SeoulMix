@@ -95,6 +95,7 @@ window.SeoulMix.eventValidator = function () {
                         r.address_components[i].short_name !== "KR") {
 
                         callback({"error": "Not in Korea"});
+                        return false;
                     }
                 }
             }

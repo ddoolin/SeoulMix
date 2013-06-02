@@ -7,8 +7,6 @@ $(document).ready(function () {
 		infoWindow,
 		populateMap;
 
-	mc.createMarker();
-
 	// Set the cloudinary config
 	$.cloudinary.config({
 		"api_key": "389689266184749",
@@ -20,7 +18,7 @@ $(document).ready(function () {
 		center: new google.maps.LatLng(37.525, 127.000),
 		zoom: 12,
 		streetViewControl: false,
-		panControl: false	,
+		panControl: false,
 		mapTypeControl: false,
 		zoomControlOptions: {
 			position: google.maps.ControlPosition.LEFT_CENTER
