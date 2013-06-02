@@ -387,6 +387,11 @@ exports.updateProfileImage = function (req, res) {
                 return false;
             }
 
+            // Remove the previous picture
+            cloudinary.api.delete_resources(
+                [result.profileImage.id], function (result) {}
+            );
+
             // Prepare the uploader
             cloudinaryStream = cloudinary.uploader.upload_stream(function (result) {
                 var data = {};
@@ -420,6 +425,11 @@ exports.updateProfileImage = function (req, res) {
                 { encoding: "binary" })
             .on("data", cloudinaryStream.write)
             .on("end", cloudinaryStream.end);
+
+            // Remove the temporary upload
+            fs.unlink(req.files.images[0].path, function (err) {
+                console.log(err);
+            });
         });
     }
 };
@@ -433,9 +443,10 @@ exports.deleteUser = function (req, res) {
         }
 
         if (passHash.verify(req.param("pass"), result.pass)) {
+
+            // Delete their profile picture from Cloudinary
             cloudinary.api.delete_resources(
-                [result.profileImage.id],
-                function (result) {}
+                [result.profileImage.id], function (result) {}
             );
 
             users.remove({

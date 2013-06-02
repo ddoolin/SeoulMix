@@ -219,8 +219,10 @@ window.SeoulMix.homeController = function () {
             success: function (data, textStatus, jqXHR) {
                 if (!data.error) {
                     profileImageText.addClass("text-success").text("Picture updated!");
-                    $("<li class='delete-photo'>").appendTo("#profile_dropdown");
-                    $("<a id='delete_photo'>Delete photo</a></li>").appendTo(".delete-photo");
+                    if (!$("#delete_photo")) {
+                        $("<li class='delete-photo'>").appendTo("#profile_dropdown");
+                        $("<a id='delete_photo'>Delete photo</a></li>").appendTo(".delete-photo");
+                    }
 
                     $("#delete_photo").click(function () {
                         if (window.confirm("Are you sure you want to remove your picture?")) {
@@ -230,7 +232,7 @@ window.SeoulMix.homeController = function () {
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                uv.showErrors("picture", "An error has occured. Please try again later.");
+                uv.showErrors("picture", "An error has occured.");
             }
         });
     };

@@ -12,9 +12,6 @@ app/server/modules/email-settings.js
 # or constants
 app/server/modules/constants.js
 
-# or uploads
-uploads
-
 # Sublime project/workspace
 seoulmix.sublime-*
 
