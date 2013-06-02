@@ -1,4 +1,4 @@
-var AM = require("./server/modules/account-manager"),
+var UM = require("./server/modules/user-manager"),
     EM = require("./server/modules/event-manager"),
     cloudinary = require("cloudinary"),
     constants = require("./server/modules/constants");
@@ -13,13 +13,13 @@ module.exports = function (app) {
 
     // Users
 
-    app.get("/api/users", AM.getUsers);
-    app.get("/api/users/:id", AM.getUser);
-    app.post("/api/users", AM.addUser);
-    app.put("/api/users/:id", AM.updateUser);
-    app.put("/api/users/:id/upload", AM.updateProfileImage);
-    app.del("/api/users/:id/upload", AM.updateProfileImage);
-    app.del("/api/users/:id", AM.deleteUser);
+    app.get("/api/users", UM.getUsers);
+    app.get("/api/users/:id", UM.getUser);
+    app.post("/api/users", UM.addUser);
+    app.put("/api/users/:id", UM.updateUser);
+    app.put("/api/users/:id/upload", UM.updateProfileImage);
+    app.del("/api/users/:id/upload", UM.updateProfileImage);
+    app.del("/api/users/:id", UM.deleteUser);
 
     // Events
 
@@ -35,10 +35,10 @@ module.exports = function (app) {
 
     // Users
 
-    app.get("/", AM.getFront);
-    app.post("/login", AM.manualLogin)
-    app.get("/users/reset", AM.getReset);
-    app.post("/users/reset", AM.postReset);
-    app.get("/home", AM.getHome);
-    app.post("/logout", AM.logout);
+    app.get("/", UM.getFront);
+    app.post("/login", UM.manualLogin)
+    app.get("/users/reset", UM.getReset);
+    app.post("/users/reset", UM.postReset);
+    app.get("/home", UM.getHome);
+    app.post("/logout", UM.logout);
 };

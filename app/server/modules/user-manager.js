@@ -11,6 +11,16 @@ var database = require("../../database"),
     users = db.collection("users"),
     that = this;
 
+// Create an index on the username field --
+// We'll be querying it many times (also supports querying on email)
+users.createIndex({ "user": 1, "email": 1 }, {}, function (err) {
+    if (err) {
+        console.log(err);
+    } else {
+        console.log("Indexing users collection");
+    }
+});
+
 // Login/Logout
 
 exports.autoLogin = function (req, res) {
@@ -381,7 +391,7 @@ exports.updateProfileImage = function (req, res) {
             cloudinaryStream = cloudinary.uploader.upload_stream(function (result) {
                 var data = {};
 
-                data.profileImage = { 
+                data.profileImage = {
                     id: result.public_id,
                     format: result.format,
                     default_image: false
