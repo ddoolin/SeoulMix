@@ -387,10 +387,12 @@ exports.updateProfileImage = function (req, res) {
                 return false;
             }
 
-            // Remove the previous picture
-            cloudinary.api.delete_resources(
-                [result.profileImage.id], function (result) {}
-            );
+            // Remove the previous picture if it's not the default one
+            if (!result.profileImage.default_image) {
+                cloudinary.api.delete_resources(
+                    [result.profileImage.id], function (result) {}
+                );
+            }
 
             // Prepare the uploader
             cloudinaryStream = cloudinary.uploader.upload_stream(function (result) {
