@@ -68,15 +68,24 @@ These may overlap from time to time, but this is generally the flow of the app.
 
 ## Grunt
 
-SeoulMix uses Grunt to compile, concatenate, and minify client-side JavaScript and CSS.
-The Gruntfile is ready to go assuming the directory structure is kept intact. Running
-"grunt" will begin the watch process.
+SeoulMix uses Grunt to compile, concatenate, and minify client-side JavaScript and CSS. It is not necessary
+to install Grunt to simply run the project, but any changes to the client JS or CSS will require Grunt to
+include the changes. The Gruntfile is ready to go assuming the directory structure is kept intact. Install
+grunt with
+
+    npm install -g grunt-cli
+
+If you previously installed grunt locally, uninstall it with
+
+    npm uninstall grunt
+
+in the project directory before installing grunt-cli. Running "grunt" will begin the watch process.
 
 If you need to flush the resulting files, simply removing them
 and making an empty save is enough to trigger re-compilation.
 
 For development purposes, it may be necessary to change the Uglify beautifier on to make the
-resulting JavaScript easier.
+resulting JavaScript easier (it is on by default).
 
 ## Nginx
 
