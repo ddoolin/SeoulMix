@@ -1,7 +1,9 @@
 var express = require("express"),
     path = require("path"),
     cloudinary = require("cloudinary"),
-    app = express();
+    app = express(),
+    server = require("http").createServer(app),
+    io = require("socket.io").listen(server);
 
 app.configure(function() {
 	app.set("port", 8081);
@@ -36,6 +38,10 @@ app.configure('production', function() {
 
 require('./app/router')(app);
 
-app.listen(app.get('port'), function() {
+server.listen(app.get('port'), function() {
 	console.log("HTTP server listening on port " + app.get('port'));
+});
+
+io.sockets.on("connection", function (socket) {
+  console.log("Socket.io connected");
 });
