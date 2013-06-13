@@ -5,12 +5,6 @@ block content
     .banner-main
       a.banner-logo(href='')
         p SeoulMix
-      span.divider
-      .banner-welcome
-          p.banner-welcome-text.out
-            | In a city of over 10 million people, meeting new people has never been easier.
-            br
-            | Find fellow <b>Seoulites</b> to do & share with, or open your own event for others.
       .login-container
         form#login_form(method="post")
           fieldset(name="user-login")
@@ -27,6 +21,7 @@ block content
           b New?
         a#register_btn.btn.register-btn(data-toggle='modal', href='#registration_modal') Sign Up
 
+    include popups/introduction
     include modals/login-error
     include modals/lost-password
     include modals/registration-form

@@ -1,4 +1,4 @@
-$(document).ready(function () {
+(function ($) {
 
 	var seoulmix = window.SeoulMix,
 		fc = new seoulmix.frontController(),
@@ -47,4 +47,4 @@ $(document).ready(function () {
 	}).on("hidden", function () {
 		$("#login_password").focus();
 	});
-});
+})(jQuery);

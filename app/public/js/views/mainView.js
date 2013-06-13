@@ -1,4 +1,4 @@
-$(document).ready(function () {
+(function ($) {
 
 	var seoulmix = window.SeoulMix,
 		mc = new seoulmix.mainController(),
@@ -58,4 +58,4 @@ $(document).ready(function () {
 
 		mc.createInfoWindow(false, marker, event);
 	};
-});
+})(jQuery);

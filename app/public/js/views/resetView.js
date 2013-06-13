@@ -1,4 +1,4 @@
-$(document).ready(function () {
+(function ($) {
 
     var seoulmix = window.SeoulMix,
         rc = new seoulmix.resetController(),
@@ -11,4 +11,4 @@ $(document).ready(function () {
     });
 
     $("#new_password").focus();
-});
+})(jQuery);

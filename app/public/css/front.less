@@ -13,15 +13,19 @@
 	z-index: 10;
 	height: 85px;
 	width: 100%;
-	background: rgba(0, 0, 0, .85);
+	background-color: rgba(0, 0, 0, .85);
 	border-top: 1px solid white;
 	border-bottom: 1px solid white;
+
+	@media only screen and (max-height: 800px) {
+		bottom: 35px;
+	}
 
 	.banner-logo {
 		display: inline;
 		float: left;
 		line-height: 1.2em;
-		margin: 0em 0.8em 0em 0.3em;
+		margin: 0em 0.8em 0em 0.7em;
 		text-decoration: none;
 		color: white;
 		font-family: 'Lobster', cursive;
@@ -30,7 +34,7 @@
 
 	.divider {
 		position: absolute;
-		left: 25em;
+		left: 27em;
 		top: 0.6em;
 		height: 5em;
 		border-left: 1px solid #CCC;
@@ -42,9 +46,9 @@
 		margin-left: 2em;
 		color: white;
 
-			@media only screen and (max-width: 1500px) {
-				display: none;
-			}
+		@media only screen and (max-width: 1500px) {
+			display: none;
+		}
 
 		.banner-welcome-title {
 			margin: 12px 0px 0px 0px;
@@ -70,6 +74,10 @@
 		padding: 0.1em 2.6em 0em 0em;
 		border-right: 1px solid #CCC;
 
+		@media only screen and (max-width: 910px) {
+			display: none;
+		}
+
 		.new-signup-text {
 			position: relative;
 			left: 1.2em;
@@ -89,6 +97,10 @@
 		float: right;
 		display: inline;
 		margin: 0.8em 1em 0em 1.8em;
+
+		@media only screen and (max-width: 730px) {
+			display: none;
+		}
 
 		form {
 			margin: 0px;
@@ -136,6 +148,36 @@
 
 		.banner-btn {
 			margin-right: 1em;
+		}
+	}
+}
+#intro_popup {
+	.rounded-corners(5px);
+	.drop-shadow(3px, 3px, 10px, 0px, 0.5);
+	z-index: 1000;
+	position: absolute;
+	top: 20%;
+	right: 5%;
+	width: 375px;
+	padding: 0.5em 1.5em;
+	background-color: rgba(0, 0, 0, 0.80);
+	border: 1px solid white;
+	color: white;
+	font-family: 'Arvo', serif;
+
+	@media only screen and (max-height: 700px) {
+		top: 10%;
+	}
+
+	.title {
+		margin-bottom: 5px;
+	}
+
+	.content {
+		font-size: 16px;
+
+		.seoulites {
+			color: #BBB;
 		}
 	}
 }
@@ -344,5 +386,18 @@
 
 	.newpass-error {
 		margin: 10px 0px 0px 0px;
+	}
+}
+@media only screen and (max-width: 700px) {
+	#intro_popup {
+		width: 320px;
+	}
+	#intro_popup .content {
+		display: none;
+	}
+}
+@media only screen and (max-width: 630px) {
+	.banner-main .main-button-container, .banner-main .divider {
+		display: none;
 	}
 }

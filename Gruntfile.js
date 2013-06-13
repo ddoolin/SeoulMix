@@ -46,7 +46,7 @@ module.exports = function (grunt) {
                 livereload: 8081
             },
             styles: {
-                files: ["app/public/css/**/*.less", "app/public/css/**/*.css"],
+                files: ["app/public/css/*.less", "app/public/css/vendor/*.css"],
                 tasks: ["less:seoulmix"],
             },
             scripts: {

@@ -1,4 +1,4 @@
-$(document).ready(function () {
+(function ($) {
 
     var seoulmix = window.SeoulMix,
         hc = new seoulmix.homeController(),
@@ -143,4 +143,4 @@ $(document).ready(function () {
     $("#choose_existing_photo_link").click(function () {
         $("#choose_existing_photo").click();
     });
-});
+})(jQuery);
