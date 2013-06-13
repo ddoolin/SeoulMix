@@ -20,6 +20,7 @@ module.exports = function (grunt) {
                     separator: ";"
                 },
                 src: ["app/public/js/application.js",
+                      "app/public/js/websockets.js",
                       "app/public/js/vendor/*.js",
                       "app/public/js/controllers/*.js",
                       "app/public/js/form-validators/*.js",

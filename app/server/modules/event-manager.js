@@ -1,4 +1,5 @@
 var database = require("../../database"),
+    seoulmix = require("../../../seoulmix"),
     ObjectID = require("mongodb").ObjectID,
     path = require("path"),
     fs = require("fs"),
@@ -122,6 +123,8 @@ exports.addEvent = function (req, res) {
             res.send({"error": "An error has occured"});
             return false;
         }
+
+        // Broadcast event data via socket
 
         res.send(result[0]);
     });

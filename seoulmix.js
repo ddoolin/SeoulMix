@@ -3,7 +3,8 @@ var express = require("express"),
     cloudinary = require("cloudinary"),
     app = express(),
     server = require("http").createServer(app),
-    io = require("socket.io").listen(server);
+    io = require("socket.io").listen(server),
+    smixsocket;
 
 app.configure(function() {
 	app.set("port", 8081);
@@ -44,4 +45,9 @@ server.listen(app.get('port'), function() {
 
 io.sockets.on("connection", function (socket) {
   console.log("Socket.io connected");
+  smixsocket = socket;
 });
+
+module.exports.getSocket = function () {
+  return smixsocket;
+}
