@@ -39,8 +39,8 @@ app.configure('production', function() {
 
 require('./app/router')(app);
 
-server.listen(app.get('port'), function() {
-	console.log("HTTP server listening on port " + app.get('port'));
+server.listen((process.env["PORT"] || app.get('port')), function() {
+	console.log("HTTP server listening on port " + (process.env["PORT"] || app.get('port')));
 });
 
 io.sockets.on("connection", function (socket) {
