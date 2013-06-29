@@ -37,7 +37,7 @@
   "readmeFilename": "README.md",
   "gitHead": "b542e2727b4cec8d5b821b134d1a52889f3afcf6",
   "engines": {
-    "node": "0.9.10-pre"
+    "node": "0.10.12"
   },
   "subdomain": "ddoolin.seoulmix"
 }
