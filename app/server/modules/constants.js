@@ -1,0 +1,1 @@
+exports.DEFAULT_PROFILE_IMAGE_ID = process.env["DEFAULT_PROFILE_IMAGE_ID"];

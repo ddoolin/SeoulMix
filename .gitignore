@@ -3,12 +3,6 @@ node_modules
 
 app/public/seoulmix.js
 
-# or e-mail settings
-app/server/modules/email-settings.js
-
-# or constants
-app/server/modules/constants.js
-
 # Sublime project/workspace
 seoulmix.sublime-*
 

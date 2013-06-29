@@ -25,30 +25,32 @@ As with any Node installation, run "npm install" to install the required package
 See the Nginx section below to setup Nginx request proxy'ing, though it is possible
 to run the server without it (just start the app as usual).
 
-**Note:** Create an app/server/modules/email-settings.js with these details:
+**Note:** There are a few environment variables you need to set and be aware of. The first is
+the DEFAULT_PROFILE_IMAGE_ID. This is the ID given to the default profile picture uploaded (by you, 
+find it in the public image directory). Set it via a command line interface like so (don't type the $):
 
-    module.exports = {
-        host: "smtp.gmail.com",
-        user: "email@gmail.com",
-        password: "emailpassword",
-        sender: "SeoulMix <contact@seoulmix.com>"
-    };
+    $ DEFAULT_PROFILE_IMAGE_ID=the_image_id_here
+    $ export DEFAULT_PROFILE_IMAGE_ID
 
-**Note #2:** Create an app/server/modules/constants.js with these details
-(You will also need to upload app/public/images/default_profile.png to your Cloudinary):
+The next two are the e-mail and e-mail password that will be used to dispatch e-mails for things like
+forgotten passwords, etc:
 
-    exports.DEFAULT_PROFILE_IMAGE_ID = "your_default_profile_image_id";
+    $ DISPATCH_EMAIL=example@example.com
+    $ export DISPATCH_EMAIL
 
-To go along with that, you'll need to set your CLOUDINARY_URL environment variable like so
-via a command line interface (you can find the variable on the account details panel):
+    $ DISPATCH_EMAIL_PASS=s0mepa$$word!1
+    $ export DISPATCH_EMAIL_PASS
+
+To go along with that, you'll need to set your CLOUDINARY_URL environment variable like so (you can 
+find the variable on the account details panel):
 
     $ CLOUDINARY_URL=cloudinary://apikey:apisecret@cloudname
     $ export CLOUDINARY_URL
 
-To make this setting permanent (otherwise the CLOUDINARY URL variable will be unset at the end of the user session),
-add this line to your .bash_profile:
+To make these settings permanent (otherwise they will be unset at the end of the user session), add these lines to your .bashrc, typically found at ~/.bashrc:
 
     export CLOUDINARY_URL=cloudinary://apikey:apisecret@cloudname
+    // Repeat for the other environment variables above!
 
 *Tip:* You can view your enviroment variables using
 
@@ -87,7 +89,7 @@ and making an empty save is enough to trigger re-compilation.
 For development purposes, it may be necessary to change the Uglify beautifier on to make the
 resulting JavaScript easier (it is on by default).
 
-## Nginx
+## Nginx (optional)
 
 SeoulMix uses Nginx to filter incoming requests. Since Nginx's static/asset serving is
 second-to-none, we let Nginx handle the asset loading while only the core requests
