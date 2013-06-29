@@ -47,6 +47,12 @@ find the variable on the account details panel):
     $ CLOUDINARY_URL=cloudinary://apikey:apisecret@cloudname
     $ export CLOUDINARY_URL
 
+The last environment variable is only for users NOT running the MongoDB locally on port 27017 (the default).
+If you're running Mongo locally and not on the default port, simply change the port definition in app/database.js
+
+    MONGO_URL=mongodb://user:pass@address:port/dbname
+    export MONGO_URL
+
 To make these settings permanent (otherwise they will be unset at the end of the user session), add these lines to your .bashrc, typically found at ~/.bashrc:
 
     export CLOUDINARY_URL=cloudinary://apikey:apisecret@cloudname
