@@ -2,7 +2,9 @@ window.SeoulMix.mainController = function () {
 
     var that = this,
         map = window.SeoulMix.map,
-        infoWindow = new google.maps.InfoWindow();
+        infoWindow = new google.maps.InfoWindow({
+            maxWidth: 300
+        });
 
     this.formatDate = function (date) {
 
@@ -64,8 +66,9 @@ window.SeoulMix.mainController = function () {
 
         if (!markup) {
             markup = "<div class='content'>" +
+                "<a href='/events/" + event._id + "'>" + 
                 "<h3 class='firstHeading'>" + event.name +
-                "</h3><div class='bodyContent'>";
+                "</h3></a><div class='bodyContent'>";
 
             if (event.startTime) {
                 time = new Date(event.startTime);
