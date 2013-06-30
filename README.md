@@ -1,9 +1,5 @@
 # SeoulMix Setup Readme
 
-## Testing
-
-This project is live for demo/testing on Heroku, [here](http://sheltered-tundra-7520.herokuapp.com/)
-
 ## The SeoulMix Project
 
 This project originally started because I wanted to practice Node.js. It evolved into
@@ -19,9 +15,13 @@ than the hours it took me to compile all the knowledge.
 As an example, I learned not to commit sensitive data like passwords or API secrets. Now,
 hopefully you can be reminded not to do the same by reading this (ha!)
 
+## Testing
+
+This project is live for demo/testing on Heroku, [here](http://sheltered-tundra-7520.herokuapp.com/).
+
 ## Task Manager
 
-You can find the public Pivotal Tracker for this project [here](https://www.pivotaltracker.com/projects/824705)
+You can find the public Pivotal Tracker for this project [here](https://www.pivotaltracker.com/projects/824705).
 
 ## Installation
 
@@ -103,7 +103,8 @@ resulting JavaScript easier (it is on by default).
 
 SeoulMix uses Nginx to filter incoming requests. Since Nginx's static/asset serving is
 second-to-none, we let Nginx handle the asset loading while only the core requests
-hit the Node processes.
+hit the Node processes. However, this is optional, as Node will handle the asset requests
+fine if Nginx isn't configured.
 
 As an added benefit, Nginx also offers some minimal asset caching and simplifies SSL
 when using Node.
