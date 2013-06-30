@@ -43,6 +43,9 @@ server.listen((process.env["PORT"] || app.get('port')), function() {
 	console.log("HTTP server listening on port " + (process.env["PORT"] || app.get('port')));
 });
 
+// Reduce the annoyingly verbose socket.io log level
+io.set("log level", 1);
+
 io.sockets.on("connection", function (socket) {
   console.log("Socket.io connected");
   smixsocket = socket;
