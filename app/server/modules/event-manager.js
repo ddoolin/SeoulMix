@@ -3,6 +3,7 @@ var database = require("../../database"),
     ObjectID = require("mongodb").ObjectID,
     path = require("path"),
     fs = require("fs"),
+    cloudinary = require("cloudinary"),
     moment = require("moment"),
 
     events = db.collection("events"),
@@ -20,13 +21,27 @@ events.ensureIndex({ "user": 1 }, {}, function (err) {
 // Look-up
 
 exports.getEventPage = function (req, res) {
-    // Find event somehow...
+    var eventId = ObjectID(req.param("id"));
+
+    events.findOne({
+        _id: eventId
+    }, function (err, result) {
+        // !result is probably enough but lets be explicit
+        if (err || !result) {
+            // Render something?
+        } else {
+            res.render("event", {
+                event: result,
+                cloudinary: cloudinary
+            });
+        }
+    });
 }
 
 // Get events
 
 exports.getEvents = function (req, res) {
-    events.find({}, { _id: 0 }).toArray(function (err, result) {
+    events.find({}, { /*_id: 0*/ }).toArray(function (err, result) {
         if (err) {
             res.send({"error": "An error has occured"});
             return false;
@@ -49,7 +64,7 @@ exports.getEvents = function (req, res) {
 exports.getEvent = function (req, res) {
     events.findOne(
         { _id: ObjectID(req.param("id")) },
-        { _id: 0 },
+        { /*_id: 0*/ },
     function (err, result) {
         if (err) {
             res.send({"error": "An error has occured"});
@@ -63,7 +78,7 @@ exports.getEvent = function (req, res) {
 exports.getUserEvents = function (req, res) {
     events.find(
         { user: req.param("id") },
-        { _id: 0 }
+        { /*_id: 0*/ }
     ).toArray(function (err, result) {
         if (err) {
             res.send({"error": "An error has occured"});
