@@ -63,5 +63,6 @@
                         p.update-password-confirm-comment.text-error
                 #update_done.alert.alert-success.hide.update-done
             .modal-footer
+                a.view-full(href="/users/#{userdata.user}") View full profile
                 input#update_submit(type="submit", value="Update").btn
                 button#delete_account.btn.btn-danger.delete-account Delete Account

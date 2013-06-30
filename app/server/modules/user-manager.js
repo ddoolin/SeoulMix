@@ -9,6 +9,7 @@ var database = require("../../database"),
     email = require("./email-dispatcher"),
 
     users = db.collection("users"),
+    events = db.collection("events"),
     that = this;
 
 // Create an index on the username field --
@@ -141,6 +142,26 @@ exports.getHome = function (req, res) {
         cloudinary: cloudinary
     });
 };
+
+exports.getUserPage = function (req, res) {
+    var username = req.param("id");
+
+    users.findOne({
+        user: username
+    }, function (err, result) {
+        if (result) {
+            events.find({
+                user: username
+            }).toArray(function (err, results) {
+                result.events = results;
+                res.render("user", {
+                    user: result,
+                    cloudinary: cloudinary
+                }); 
+            });
+        }
+    });
+}
 
 // Account lookup
 

@@ -36,9 +36,14 @@ module.exports = function (app) {
     // Users
 
     app.get("/", UM.getFront);
-    app.post("/login", UM.manualLogin)
+    app.post("/login", UM.manualLogin);
+    app.get("/users/:id", UM.getUserPage);
     app.get("/users/reset", UM.getReset);
     app.post("/users/reset", UM.postReset);
     app.get("/home", UM.getHome);
     app.post("/logout", UM.logout);
+
+    // Events
+
+    app.get("/events/:id", EM.getEventPage);
 };

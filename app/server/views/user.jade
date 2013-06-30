@@ -1,0 +1,6 @@
+extends layout-in
+
+block content
+	.user-main
+		img.profile-image(src= cloudinary.url(user.profileImage.id + "." + user.profileImage.format))
+		h1= user.user
