@@ -1,5 +1,9 @@
 # SeoulMix Setup Readme
 
+## Testing
+
+This project is live for demo/testing on Heroku, [here](http://sheltered-tundra-7520.herokuapp.com/)
+
 ## The SeoulMix Project
 
 This project originally started because I wanted to practice Node.js. It evolved into
