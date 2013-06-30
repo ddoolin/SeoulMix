@@ -1,20 +1,52 @@
 .user-main {
-	.rounded-corners(4px);
 	margin: 60px auto 0 auto;
 	width: 900px;
-	padding: 10px;
-	background-color: white;
-	border: 1px solid #DDD;
 
-	.profile-image {
-		.rounded-corners;
-		width: 81px;
-		height: 81px;
-		border: 1px solid #CCC;
+	.left-column {
+		.rounded-corners(4px);
+		text-align: center;
+		float: left;
+		width: 230px;
+		padding: 10px;
+		background-color: white;
+		border: 1px solid #DDD;
+
+		.profile-image {
+			width: 90px;
+			height: 90px;
+			border: 1px solid #CCC;
+		}
+
+		.username {
+			margin-top: 10px;
+			font-family: "Lobster", cursive;
+			font-size: 40px;
+		}
 	}
 
-	h1 {
-		font-family: "Lobster", cursive;
-		font-size: 60px;
+	.right-column {
+		.rounded-corners(4px);
+		float: right;
+		width: 610px;
+		padding: 20px 10px 10px 10px;
+		border: 1px solid #DDD;
+		background-color: white;
+
+		.header {
+			font-size: 48px;
+			font-family: "Lobster", cursive;
+		}
+
+		.events-container {
+			margin-top: 20px;
+
+			.event-title {
+				font-size: 24px;
+			}
+
+			.event-description {
+
+			}
+		}
 	}
 }

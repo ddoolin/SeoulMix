@@ -1,6 +1,17 @@
 extends layout-in
 
 block content
-	.user-main
-		img.profile-image(src= cloudinary.url(user.profileImage.id + "." + user.profileImage.format))
-		h1= user.user
+	.user-main.clearfix
+		.left-column
+			img.profile-image.img-circle(src= cloudinary.url(user.profileImage.id + "." + user.profileImage.format))
+			h1.username= user.user
+			.info
+				if user.location
+					p= user.location
+		.right-column
+			h1.header My Events
+			.events-container
+				each event in user.events
+					.event
+						a.event-title(href="/events/#{event._id}")= event.name
+						p.event-description= event.description

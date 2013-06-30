@@ -149,7 +149,9 @@ exports.getUserPage = function (req, res) {
     users.findOne({
         user: username
     }, function (err, result) {
-        if (result) {
+        if (err || !result) {
+            // Render something?
+        } else {
             events.find({
                 user: username
             }).toArray(function (err, results) {
