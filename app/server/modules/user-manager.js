@@ -14,7 +14,7 @@ var database = require("../../database"),
 
 // Create an index on the username field --
 // We'll be querying it many times (also supports querying on email)
-users.createIndex({ "user": 1, "email": 1 }, {}, function (err) {
+users.ensureIndex({ "user": 1, "email": 1 }, {}, function (err) {
     if (err) {
         console.log(err);
     } else {

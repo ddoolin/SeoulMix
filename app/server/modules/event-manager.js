@@ -9,7 +9,7 @@ var database = require("../../database"),
     users = db.collection("users"),
     that = this;
 
-events.ensureIndex({ "user": 1}, {}, function (err) {
+events.ensureIndex({ "user": 1 }, {}, function (err) {
     if (err) {
         console.log(err);
     } else {
