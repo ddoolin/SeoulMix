@@ -122,7 +122,9 @@ exports.logout = function (req, res) {
 
 exports.getFront = function (req, res) {
     if (req.session.user === undefined) {
-        res.render("front");
+        res.render("front", {
+            user: req.session.user
+        });
         return false;
     }
 
@@ -138,7 +140,7 @@ exports.getHome = function (req, res) {
     // Render the home page and send the session data with it
     // Also send the cloudinary object for use in the views
     res.render("home", {
-        userdata: req.session.user,
+        user: req.session.user,
         cloudinary: cloudinary
     });
 };

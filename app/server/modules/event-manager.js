@@ -31,6 +31,7 @@ exports.getEventPage = function (req, res) {
             // Render something?
         } else {
             res.render("event", {
+                user: req.session.user,
                 event: result,
                 cloudinary: cloudinary
             });

@@ -1,6 +1,6 @@
 #profile_modal.modal.hide.fade
     .modal-header Account Profile
-        span.username (#{userdata.user})
+        span.username (#{user.user})
         button.close(data-dismiss="modal") x
     form#update_form.form-horizontal.update-form(method="post", enctype="multitype/form-data")
         fieldset(name="update-profile")
@@ -8,7 +8,7 @@
                 .profile-photo-controls.clearfix
                     .profile-picture-uploader
                         .picture-wrapper
-                            img#profile_picture(src= cloudinary.url(userdata.profileImage.id + "." + userdata.profileImage.format)).profile-picture
+                            img#profile_picture(src= cloudinary.url(user.profileImage.id + "." + user.profileImage.format)).profile-picture
                         .uploader-tools
                             #photo_uploader
                                 #choose_photo.dropdown
@@ -16,7 +16,7 @@
                                         | Change Photo 
                                         span.caret
                                     p#profile_picture_comment.profile-picture-comment
-                                    - if (userdata.profileImage.default_image)
+                                    - if (user.profileImage.default_image)
                                         ul#profile_dropdown.dropdown-menu
                                             li.choose-exisiting-photo
                                                 a#choose_existing_photo_link Choose existing photo
@@ -35,19 +35,19 @@
                     label.first-name.control-label
                         | First Name
                     .controls
-                        input#update_firstname(type="text", name="update-firstname", title="First name", placeholder="first name", value= userdata.firstname)
+                        input#update_firstname(type="text", name="update-firstname", title="First name", placeholder="first name", value= user.firstname)
                         p.update-firstname-comment.text-error
                 .control-group
                     label.last-name.control-label
                         | Last Name
                     .controls
-                        input#update_lastname(type="text", name="update-lastname", title="Last name", placeholder="last name", value= userdata.lastname)
+                        input#update_lastname(type="text", name="update-lastname", title="Last name", placeholder="last name", value= user.lastname)
                         p.update-lastname-comment.text-error
                 .control-group
                     label.email.control-label
                         | E-mail
                     .controls
-                        input#update_email(type="email", name="update-email", title="New e-mail address", placeholder="e-mail", value= userdata.email)
+                        input#update_email(type="email", name="update-email", title="New e-mail address", placeholder="e-mail", value= user.email)
                         p.update-email-comment.text-error
                 .control-group
                     label.password.control-label
@@ -63,6 +63,6 @@
                         p.update-password-confirm-comment.text-error
                 #update_done.alert.alert-success.hide.update-done
             .modal-footer
-                a.view-full(href="/users/#{userdata.user}") View full profile
+                a.view-full(href="/users/#{user.user}") View full profile
                 input#update_submit(type="submit", value="Update").btn
                 button#delete_account.btn.btn-danger.delete-account Delete Account
