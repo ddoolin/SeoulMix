@@ -12,16 +12,6 @@ var database = require("../../database"),
     events = db.collection("events"),
     that = this;
 
-// Create an index on the username field --
-// We'll be querying it many times (also supports querying on email)
-users.ensureIndex({ "user": 1, "email": 1 }, {}, function (err) {
-    if (err) {
-        console.log(err);
-    } else {
-        console.log("Indexing users collection");
-    }
-});
-
 // Login/Logout
 
 exports.autoLogin = function (req, res) {

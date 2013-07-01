@@ -10,14 +10,6 @@ var database = require("../../database"),
     users = db.collection("users"),
     that = this;
 
-events.ensureIndex({ "user": 1 }, {}, function (err) {
-    if (err) {
-        console.log(err);
-    } else {
-        console.log("Indexing events collection");
-    }
-});
-
 // Look-up
 
 exports.getEventPage = function (req, res) {

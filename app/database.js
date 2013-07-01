@@ -27,6 +27,14 @@ db.open(function (err, db) {
 			console.log(err);
 		} else {
 			db.authenticate(dbUser, dbPass, {}, function (err) {
+				// Ensure the indexes
+				db.collection("users").ensureIndex({ "user": 1, "email": 1 }, {}, function (err) {
+					(err) ? console.log(err) : console.log("Indexing users collection");
+				});
+				db.collection("events").ensureIndex({ "user": 1 }, {}, function (err) {
+					(err) ? console.log(err) : console.log("Indexing events collection");
+				});
+
 				console.log("Connected and authenicated to database :: " + dbName);
 			});
 		}
