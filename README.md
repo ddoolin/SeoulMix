@@ -2,6 +2,9 @@
 
 ## The SeoulMix Project
 
+**Note:** This is no longer current and needs to be rewritten on the front to better
+accomodate best practices (MVC, function length, methodology, etc).
+
 This project originally started because I wanted to practice Node.js. It evolved into
 more of a project for me to encompass and showcase what I believe to be good practices
 when writing web application code.
@@ -17,7 +20,7 @@ hopefully you can be reminded not to do the same by reading this (ha!)
 
 ## Testing
 
-This project is live for demo/testing on Heroku, [here](http://sheltered-tundra-7520.herokuapp.com/).
+This project is live for demo/testing on Heroku, [here](http://seoulmix.herokuapp.com/).
 
 ## Task Manager
 
